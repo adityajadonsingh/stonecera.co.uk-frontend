@@ -54,7 +54,7 @@ export default function CheckoutPage() {
     async function fetchUser() {
       const res = await fetch("/api/auth/me", { credentials: "include" });
       if (res.ok) {
-        const userData = (await res.json()) as AppUser;
+        const userData = (await res.json()) as AppUser; 
         setUser(userData);
         setContactEmail(userData.email || "");
         if (userData.userDetails?.fullName) {
