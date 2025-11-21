@@ -1,19 +1,19 @@
+import { getUserDetails } from "@/lib/api/getUserDetails";
 import { getCurrentUser } from "@/lib/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function AccountDashboardPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await getUserDetails();
+   if (!user) {
+     redirect("/login");
+   }
 
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
       <p className="text-gray-700">
-        Hello, <strong>{user.userDetails?.fullName ?? user.username}</strong>!
+        Hello, <strong>{user.userDetails?.firstName}</strong>!
       </p>
       <p className="mt-2 text-gray-600">
         From your account dashboard you can view your{" "}

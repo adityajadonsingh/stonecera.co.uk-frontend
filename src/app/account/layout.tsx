@@ -3,7 +3,11 @@ import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import AccountSidebar from "@/components/account/AccountSidebar";
 
-export default async function AccountLayout({ children }: { children: ReactNode }) {
+export default async function AccountLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -19,9 +23,7 @@ export default async function AccountLayout({ children }: { children: ReactNode 
         </div>
 
         {/* Main Content */}
-        <div className="md:col-span-3">
-          {children}
-        </div>
+        <div className="md:col-span-3">{children}</div>
       </div>
     </main>
   );

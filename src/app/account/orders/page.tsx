@@ -25,6 +25,7 @@ export default async function OrdersPage() {
           <p>Order list will be displayed here.</p>
         </div>
       )}
+      
     </div>
   );
 }

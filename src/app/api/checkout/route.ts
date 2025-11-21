@@ -11,25 +11,30 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const token = req.cookies.get("token")?.value;
 
     const body = (await req.json()) as unknown;
-    if (!isRecord(body)) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    if (!isRecord(body))
+      return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-    // Prepare payload for Strapi "order" content-type (adjust fields to your schema)
     const payload = {
-        user: token ? { /* you can send user id or let Strapi resolve via token */ } : null,
-        items: body.items ?? [],
-        shipping: body.shipping ?? {},
-        totals: body.totals ?? {},
-        status: "pending",  
+      user: token ? {} : null,
+      items: body.items ?? [],
+      shipping: body.shipping ?? {},
+      totals: body.totals ?? {},
+      contact: body.contact ?? {}, 
+      shipping_address: body.shippingAddress ?? {},
+      status: "pending",
     };
 
-    const upstream = await fetch(`${STRAPI.replace(/\/$/, "")}/api/orders/checkout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify(payload),
-    });
+    const upstream = await fetch(
+      `${STRAPI.replace(/\/$/, "")}/api/orders/checkout`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
     const contentType = upstream.headers.get("content-type") ?? "";
     if (!contentType.includes("application/json")) {

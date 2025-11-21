@@ -1,138 +1,143 @@
-// FILE: frontend/src/components/account/UserDetailsForm.tsx
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { UserDetails } from "@/lib/types";
+
+type PhoneItem = { phone?: string };
+
+/** Minimal shape expected from server's GET /api/user-details */
+export type UserDetails = {
+  id?: number;
+  firstName?: string | null;
+  lastName?: string | null;
+  profileImage?: { id?: number | null; url?: string | null } | null;
+  phoneNumbers?: PhoneItem[] | null;
+};
 
 interface Props {
   initialData?: UserDetails | null;
 }
 
-type SimplePhone = { phone?: string };
-type SimpleAddress = { address?: string };
-
-function isRecord(x: unknown): x is Record<string, unknown> {
-  return typeof x === "object" && x !== null;
-}
-
-function toNumber(x: unknown): number | null {
-  if (typeof x === "number" && Number.isFinite(x)) return x;
-  if (typeof x === "string" && x.trim() !== "" && !Number.isNaN(Number(x))) return Number(x);
-  return null;
-}
-
-function toString(x: unknown): string | null {
-  return typeof x === "string" && x.trim() !== "" ? x : null;
-}
-
-function toAbsolute(url?: string | null): string | null {
+/** helpers */
+const absoluteUrl = (url?: string | null) => {
   if (!url) return null;
   if (url.startsWith("http")) return url;
-  const base = (process.env.NEXT_PUBLIC_STRAPI_API_URL ?? "").replace(/\/+$/, "");
+  const base = (process.env.NEXT_PUBLIC_MEDIA_URL ?? "").replace(
+    /\/+$/,
+    ""
+  );
   return base ? `${base}${url.startsWith("/") ? url : `/${url}`}` : url;
-}
+};
 
-/**
- * Safely extract image id from a possibly-typed object:
- * Cast through unknown -> Record<string, unknown> to avoid TS complaining
- * about converting between incompatible object types.
- */
-function getInitialProfileImageId(initial?: UserDetails | null): number | null {
-  const img = initial?.profileImage;
-  if (!img) return null;
+const safeString = (v?: unknown) => (typeof v === "string" ? v : "");
 
-  // Cast via unknown to allow index access without using `any`
-  const record = img as unknown as Record<string, unknown>;
-  return toNumber(record["id"] ?? null);
-}
+/** Extract id/url from upload response (works with your upload proxy) */
+function extractFileInfo(json: unknown): {
+  id: number | null;
+  url: string | null;
+} {
+  if (!json) return { id: null, url: null };
+  // common shapes: { id, url }, { data: { id, attributes: { url } } }, array[0], etc.
+  const asAny = json as any;
+  const candidates: any[] = [];
 
-/**
- * Safely extract image url and return absolute URL (or null)
- */
-function getInitialProfileImageUrl(initial?: UserDetails | null): string | null {
-  const img = initial?.profileImage;
-  if (!img) return null;
+  if (Array.isArray(asAny) && asAny.length) candidates.push(asAny[0]);
+  if (asAny?.data) candidates.push(asAny.data);
+  if (asAny?.data?.attributes) candidates.push(asAny.data.attributes);
+  if (asAny?.attributes) candidates.push(asAny.attributes);
+  candidates.push(asAny);
 
-  const record = img as unknown as Record<string, unknown>;
-  const maybeUrl = toString(record["url"] ?? null);
-  return maybeUrl ? toAbsolute(maybeUrl) : null;
-}
+  let id: number | null = null;
+  let url: string | null = null;
 
-function extractUploadInfo(json: unknown): { id: number | null; url: string | null } {
-  // This expects the upload proxy's normalized shapes (or Strapi's shapes).
-  if (!isRecord(json)) return { id: null, url: null };
-
-  let id = toNumber(json["id"] ?? null);
-  if (id === null && isRecord(json["data"])) id = toNumber(json["data"]["id"]);
-  if (id === null && isRecord(json["attributes"])) id = toNumber(json["attributes"]["id"]);
-  if (id === null && isRecord(json["data"]) && isRecord(json["data"]["attributes"])) id = toNumber(json["data"]["attributes"]["id"]);
-
-  let url = toString(json["url"] ?? null);
-  if (url === null && isRecord(json["attributes"])) url = toString(json["attributes"]["url"]);
-  if (url === null && isRecord(json["data"])) url = toString(json["data"]["url"]);
-  if (url === null && isRecord(json["data"]) && isRecord(json["data"]["attributes"])) url = toString(json["data"]["attributes"]["url"]);
+  for (const c of candidates) {
+    if (!c) continue;
+    if (id === null && (typeof c.id === "number" || typeof c.id === "string")) {
+      const n = Number(c.id);
+      if (!Number.isNaN(n)) id = n;
+    }
+    if (!url) {
+      if (typeof c.url === "string") url = c.url;
+      if (c?.formats?.small?.url && !url) url = c.formats.small.url;
+      if (c?.attributes?.url && !url) url = c.attributes.url;
+    }
+    if (id !== null && url) break;
+  }
 
   return { id, url };
 }
 
+/** Component */
 export default function UserDetailsForm({ initialData = null }: Props) {
   const router = useRouter();
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
-  const [fullName, setFullName] = useState<string>(initialData?.fullName ?? "");
-  const [phoneNumbers, setPhoneNumbers] = useState<SimplePhone[]>(
-    initialData?.phoneNumbers && initialData.phoneNumbers.length ? initialData.phoneNumbers : [{ phone: "" }]
+  // controlled fields
+  const [firstName, setFirstName] = useState<string>(
+    safeString(initialData?.firstName)
   );
-  const [savedAddresses, setSavedAddresses] = useState<SimpleAddress[]>(
-    initialData?.savedAddresses && initialData.savedAddresses.length ? initialData.savedAddresses : [{ address: "" }]
+  const [lastName, setLastName] = useState<string>(
+    safeString(initialData?.lastName)
+  );
+  const [phoneNumbers, setPhoneNumbers] = useState<PhoneItem[]>(
+    (initialData?.phoneNumbers && initialData.phoneNumbers.length
+      ? initialData.phoneNumbers
+      : [{ phone: "" }]) as PhoneItem[]
   );
 
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(
-    getInitialProfileImageUrl(initialData) ?? "/media/user.png"
+    initialData?.profileImage?.url
+      ? absoluteUrl(initialData.profileImage.url)
+      : "/media/user.png"
   );
-  const [profileImageId, setProfileImageId] = useState<number | null>(getInitialProfileImageId(initialData));
+  const [profileImageId, setProfileImageId] = useState<number | null>(
+    initialData?.profileImage?.id ?? null
+  );
 
+  const [editing, setEditing] = useState<boolean>(false);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    setFullName(initialData?.fullName ?? "");
-    setPhoneNumbers(initialData?.phoneNumbers && initialData.phoneNumbers.length ? initialData.phoneNumbers : [{ phone: "" }]);
-    setSavedAddresses(initialData?.savedAddresses && initialData.savedAddresses.length ? initialData.savedAddresses : [{ address: "" }]);
-    setProfileImageUrl(getInitialProfileImageUrl(initialData) ?? "/media/user.png");
-    setProfileImageId(getInitialProfileImageId(initialData));
+    setFirstName(safeString(initialData?.firstName));
+    setLastName(safeString(initialData?.lastName));
+    setPhoneNumbers(
+      initialData?.phoneNumbers && initialData.phoneNumbers.length
+        ? initialData.phoneNumbers
+        : [{ phone: "" }]
+    );
+    setProfileImageUrl(
+      initialData?.profileImage?.url
+        ? absoluteUrl(initialData.profileImage.url)
+        : "/media/user.png"
+    );
+    setProfileImageId(initialData?.profileImage?.id ?? null);
   }, [initialData]);
 
-  function updatePhone(idx: number, val: string): void {
-    setPhoneNumbers((s) => s.map((p, i) => (i === idx ? { phone: val } : p)));
+  // phones handlers
+  function updatePhone(i: number, value: string) {
+    setPhoneNumbers((s) =>
+      s.map((p, idx) => (idx === i ? { phone: value } : p))
+    );
   }
-  function removePhone(idx: number): void {
-    setPhoneNumbers((s) => s.filter((_, i) => i !== idx));
-  }
-  function addPhone(): void {
+  function addPhone() {
     setPhoneNumbers((s) => [...s, { phone: "" }]);
   }
-
-  function updateAddress(idx: number, val: string): void {
-    setSavedAddresses((s) => s.map((p, i) => (i === idx ? { address: val } : p)));
-  }
-  function removeAddress(idx: number): void {
-    setSavedAddresses((s) => s.filter((_, i) => i !== idx));
-  }
-  function addAddress(): void {
-    setSavedAddresses((s) => [...s, { address: "" }]);
+  function removePhone(i: number) {
+    setPhoneNumbers((s) => s.filter((_, idx) => idx !== i));
   }
 
-  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>): Promise<void> {
+  // file upload
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
     setError(null);
+
     try {
       const form = new FormData();
-      form.append("files", file); // Strapi expects 'files'
+      form.append("files", file);
 
       const res = await fetch("/api/user-details/upload", {
         method: "POST",
@@ -146,43 +151,65 @@ export default function UserDetailsForm({ initialData = null }: Props) {
         return;
       }
 
-      const json = (await res.json()) as unknown;
-      const { id, url } = extractUploadInfo(json);
+      const json = await res.json().catch(() => null);
+      const { id, url } = extractFileInfo(json);
 
       if (!id || !url) {
-        setError("Upload did not return file info");
+        setError("Upload succeeded but response is missing file info.");
         return;
       }
 
       setProfileImageId(id);
-      setProfileImageUrl(toAbsolute(url));
+      setProfileImageUrl(absoluteUrl(url));
     } catch (err: unknown) {
       // eslint-disable-next-line no-console
       console.error("Upload error:", err);
-      setError(err instanceof Error ? err.message : "Upload error");
+      setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (fileRef.current) fileRef.current.value = "";
     }
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
-    e.preventDefault();
+  // Cancel editing -> reset to initial values
+  function handleCancel() {
+    setEditing(false);
+    setError(null);
+    // reset fields to initialData
+    setFirstName(safeString(initialData?.firstName));
+    setLastName(safeString(initialData?.lastName));
+    setPhoneNumbers(
+      initialData?.phoneNumbers && initialData.phoneNumbers.length
+        ? initialData.phoneNumbers
+        : [{ phone: "" }]
+    );
+    setProfileImageUrl(
+      initialData?.profileImage?.url
+        ? absoluteUrl(initialData.profileImage.url)
+        : "/media/user.png"
+    );
+    setProfileImageId(initialData?.profileImage?.id ?? null);
+  }
+
+  // Save
+  async function handleSave(e?: React.FormEvent) {
+    if (e) e.preventDefault();
     setSaving(true);
     setError(null);
 
     try {
+      const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim() || null;
+
       const payload = {
-        fullName: fullName || null,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        fullName,
+        profileImageId: profileImageId ?? null,
         phoneNumbers: phoneNumbers
           .filter((p) => typeof p.phone === "string" && p.phone.trim())
           .map((p) => ({ phone: p.phone?.trim() })),
-        savedAddresses: savedAddresses
-          .filter((a) => typeof a.address === "string" && a.address.trim())
-          .map((a) => ({ address: a.address?.trim() })),
-        profileImageId: profileImageId ?? null,
       };
-
+      console.log(payload);
       const res = await fetch("/api/user-details", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -196,56 +223,140 @@ export default function UserDetailsForm({ initialData = null }: Props) {
         return;
       }
 
-      // notify current tab and other tabs, revalidate server components
-      window.dispatchEvent(new Event("auth"));
-      try {
-        localStorage.setItem("auth", String(Date.now()));
-      } catch {
-        /* ignore */
-      }
+      // clear redis cache
+      await fetch("/api/user-details", {
+        method: "DELETE",
+        credentials: "include",
+      });
 
-      router.refresh();
-      router.push("/account");
+      // 🔥 re-fetch latest clean data from /api/auth/me
+      const refreshed = await fetch("/api/auth/me", {
+        method: "GET",
+        credentials: "include",
+      }).then((r) => r.json());
+
+      const updated = refreshed?.userDetails ?? {};
+
+      // update UI state with latest data
+      setFirstName(updated.firstName ?? "");
+      setLastName(updated.lastName ?? "");
+      setPhoneNumbers(
+        updated?.phoneNumbers?.length ? updated.phoneNumbers : [{ phone: "" }]
+      );
+      setProfileImageUrl(
+        updated?.profileImage?.url
+          ? absoluteUrl(updated.profileImage.url)
+          : "/media/user.png"
+      );
+      setProfileImageId(updated?.profileImage?.id ?? null);
+
+      // Now exit edit mode
+      setEditing(false);
     } catch (err: unknown) {
-      // eslint-disable-next-line no-console
       console.error("Save error:", err);
-      setError(err instanceof Error ? err.message : "Unexpected error");
+      setError(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSaving(false);
     }
   }
 
-  function handleReset(): void {
-    setFullName(initialData?.fullName ?? "");
-    setPhoneNumbers(initialData?.phoneNumbers && initialData.phoneNumbers.length ? initialData.phoneNumbers : [{ phone: "" }]);
-    setSavedAddresses(initialData?.savedAddresses && initialData.savedAddresses.length ? initialData.savedAddresses : [{ address: "" }]);
-    setProfileImageUrl(getInitialProfileImageUrl(initialData) ?? "/media/user.png");
-    setProfileImageId(getInitialProfileImageId(initialData));
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSave} className="space-y-6">
       {error && <div className="text-red-600 text-sm">{error}</div>}
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Full name</label>
-        <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full border rounded p-2" />
+      {/* top action row */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold">Profile</h2>
+          <p className="text-sm text-gray-600">
+            Edit your name, profile image and phone numbers.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {!editing ? (
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              Edit
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-600 text-white rounded"
+                disabled={saving}
+              >
+                {saving ? "Saving…" : "Save"}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* First + Last name */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">First name</label>
+          <input
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            disabled={!editing}
+            className="w-full border rounded p-2"
+            placeholder="First name"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Last name</label>
+          <input
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            disabled={!editing}
+            className="w-full border rounded p-2"
+            placeholder="Last name"
+          />
+        </div>
+      </div>
+
+      {/* Profile image */}
       <div>
         <label className="block text-sm font-medium mb-1">Profile image</label>
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={profileImageUrl ?? "/media/user.png"} alt="profile" className="w-full h-full object-cover" />
+            <img
+              src={profileImageUrl ?? "/media/user.png"}
+              alt="profile"
+              className="w-full h-full object-cover"
+            />
           </div>
+
           <div>
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} />
-            {uploading && <div className="text-sm text-gray-600 mt-2">Uploading…</div>}
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              disabled={!editing || uploading}
+            />
+            {uploading && (
+              <div className="text-sm text-gray-600 mt-2">Uploading…</div>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Phone numbers */}
       <div>
         <label className="block text-sm font-medium mb-1">Phone numbers</label>
         <div className="space-y-2">
@@ -254,55 +365,33 @@ export default function UserDetailsForm({ initialData = null }: Props) {
               <input
                 value={p.phone ?? ""}
                 onChange={(e) => updatePhone(i, e.target.value)}
+                disabled={!editing}
                 className="flex-1 border rounded p-2"
                 placeholder="Phone number"
+                required={i === 0}
               />
-              <button type="button" className="px-2 py-1 text-sm border rounded" onClick={() => removePhone(i)} disabled={phoneNumbers.length === 1}>
+              <button
+                type="button"
+                onClick={() => removePhone(i)}
+                disabled={!editing || phoneNumbers.length === 1}
+                className="px-2 py-1 text-sm border rounded"
+              >
                 Remove
               </button>
             </div>
           ))}
 
           <div>
-            <button type="button" onClick={addPhone} className="px-3 py-1 bg-gray-100 rounded text-sm">
+            <button
+              type="button"
+              onClick={addPhone}
+              disabled={!editing}
+              className="px-3 py-1 bg-gray-100 rounded text-sm"
+            >
               Add phone
             </button>
           </div>
         </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1">Saved addresses</label>
-        <div className="space-y-2">
-          {savedAddresses.map((a, i) => (
-            <div key={i} className="flex gap-2 items-center">
-              <input
-                value={a.address ?? ""}
-                onChange={(e) => updateAddress(i, e.target.value)}
-                className="flex-1 border rounded p-2"
-                placeholder="Address"
-              />
-              <button type="button" className="px-2 py-1 text-sm border rounded" onClick={() => removeAddress(i)} disabled={savedAddresses.length === 1}>
-                Remove
-              </button>
-            </div>
-          ))}
-
-          <div>
-            <button type="button" onClick={addAddress} className="px-3 py-1 bg-gray-100 rounded text-sm">
-              Add address
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <button disabled={saving} type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
-          {saving ? "Saving…" : "Save"}
-        </button>
-        <button type="button" onClick={handleReset} className="px-3 py-2 border rounded">
-          Reset
-        </button>
       </div>
     </form>
   );

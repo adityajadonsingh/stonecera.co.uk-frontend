@@ -1,6 +1,5 @@
 // @/lib/types/index.ts
 
-
 export interface ImageAttributes {
   url: string;
   alt: string;
@@ -96,6 +95,13 @@ export interface CartAttributes {
   updatedAt?: string;
 }
 
+export interface CartMetadata {
+  productImage?: string;
+  productName?: string;
+  sku?: string;
+  variation: ProductVariation;
+}
+
 export type CartItem = StrapiEntity<CartAttributes>;
 export type CartCollectionResponse = StrapiCollectionResponse<CartAttributes>;
 
@@ -119,10 +125,11 @@ export interface Address {
 }
 export interface UserDetails {
   id?: number;
-  fullName?: string | null;
+  firstName: string | null;
+  lastName: string | null;
   profileImage?: ImageAttributes | null;
   phoneNumbers?: Array<{ phone?: string }>;
-  savedAddresses?: Address[];
+  savedAddresses: Address[];
 }
 
 export interface AppUser {
@@ -131,3 +138,38 @@ export interface AppUser {
   email?: string | null;
   userDetails?: UserDetails | null;
 }
+
+export interface AddressInput {
+  id: number;
+  address: string;
+  city: string;
+  pincode: string;
+  label?: string;
+}
+
+export interface CheckoutItem {
+  items: {
+    product: number;
+    variation_id: number;
+    quantity: number;
+    unit_price: number;
+  }[];
+  shipping: {
+    address: AddressInput;
+    method: string;
+    shippingCost: number;
+    tailLift: boolean;
+  };
+  totals: {
+    cartSubtotal: number;
+    shippingCost: number;
+    tailLift: number;
+    total: number;
+    itemPrices: {
+      variation_id: number;
+      checkoutPrice: number;
+    }[];
+  };
+
+};
+

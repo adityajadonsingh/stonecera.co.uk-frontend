@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 function currencyFormat(value: number) {
   return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 }
-// This is a server-side helper to fetch the specific order details
+
 async function getOrder(orderId: string) {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
@@ -22,14 +22,15 @@ async function getOrder(orderId: string) {
     return res.json();
 }
 
-export default async function OrderSuccessPage({ params }: { params: { orderId: string } }) {
-    const order = await getOrder(params.orderId);
-
+export default async function OrderSuccessPage({ params }: { params: Promise<{ orderId: string }> }) {
+    const { orderId } = await params; 
+    const order = await getOrder(orderId);
+    console.log(order);
     return (
         <main className="max-w-2xl mx-auto p-6 text-center">
             <h1 className="text-3xl font-bold text-green-600 mb-4">Thank you. Your order has been received.</h1>
             {order ? (
-                <div className="text-left bg-gray-50 p-6 rounded-lg border">
+                <div className="text-left  p-6 rounded-lg border">
                     <h2 className="text-xl font-semibold mb-4">Order Details</h2>
                     <p><strong>Order Number:</strong> {order.orderNumber}</p>
                     <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
@@ -40,7 +41,7 @@ export default async function OrderSuccessPage({ params }: { params: { orderId: 
                 <p>Loading order details...</p>
             )}
 
-            <div className="mt-8 text-left p-6 rounded-lg border bg-blue-50">
+            <div className="mt-8 text-left p-6 rounded-lg border ">
                 <h2 className="text-xl font-semibold mb-4">Our Bank Details (Dummy Info)</h2>
                 <p><strong>Bank:</strong> Stonecera Bank</p>
                 <p><strong>Account Name:</strong> Stonecera UK Ltd</p>

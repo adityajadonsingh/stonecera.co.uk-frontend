@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import type { AppUser } from "@/lib/types";
+import type { AppUser, CheckoutItem } from "@/lib/types";
 
 function currencyFormat(value: number) {
   return new Intl.NumberFormat("en-GB", {
@@ -11,13 +11,23 @@ function currencyFormat(value: number) {
   }).format(value);
 }
 
+const TAIL_LIFT_COST = 5;
+
+type DeliveryResponse = {
+  postcode?: string;
+  economy_price?: string;
+  premium_price?: string;
+};
+
 export default function CheckoutPage() {
   const router = useRouter();
 
-  const [checkoutData, setCheckoutData] = useState<any>(null);
-  const [user, setUser] = useState<AppUser | null>(null);
+  const [checkoutData, setCheckoutData] = useState<CheckoutItem | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [useSavedAddress, setUseSavedAddress] = useState<boolean>(true);
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState<number | null>(null);
 
   // Form state
   const [contactEmail, setContactEmail] = useState("");
@@ -31,97 +41,145 @@ export default function CheckoutPage() {
     country: "United Kingdom (UK)",
   });
 
+  // Delivery + recalculation states
+  const [delivery, setDelivery] = useState<DeliveryResponse | null>(null);
+  const [method, setMethod] = useState<"economy" | "premium" | null>(null);
+  const [tailLift, setTailLift] = useState(false);
+  const [loadingDelivery, setLoadingDelivery] = useState(false);
+  const [deliveryError, setDeliveryError] = useState<string | null>(null);
+  const [recalculated, setRecalculated] = useState(false);
+
+  // --- Load checkout + user ---
+
   useEffect(() => {
-    // Load data from session storage on component mount
     const data = sessionStorage.getItem("checkoutData");
     if (!data) {
       alert("Your session has expired. Redirecting to cart.");
       router.push("/cart");
       return;
     }
+
     const parsedData = JSON.parse(data);
     setCheckoutData(parsedData);
-
-    // Pre-fill pincode from the cart page
-    if (parsedData.shipping?.pincode) {
-      setShippingAddress((prev) => ({
-        ...prev,
-        pincode: parsedData.shipping.pincode,
-      }));
+     if (parsedData.shipping?.pincode) {
+      setShippingAddress((prev) => ({ ...prev, pincode: parsedData.shipping.pincode }));
     }
 
-    // Fetch user to pre-fill details if logged in
     async function fetchUser() {
       const res = await fetch("/api/auth/me", { credentials: "include" });
-      if (res.ok) {
-        const userData = (await res.json()) as AppUser; 
-        setUser(userData);
-        setContactEmail(userData.email || "");
-        if (userData.userDetails?.fullName) {
-          const [firstName, ...lastNameParts] =
-            userData.userDetails.fullName.split(" ");
-          setShippingAddress((prev) => ({
-            ...prev,
-            firstName,
-            lastName: lastNameParts.join(" "),
-          }));
-        }
+      if (!res.ok) return;
+      const userData = (await res.json()) as AppUser;
+      const savedAddrs = userData.userDetails?.savedAddresses ?? [];
+      setSavedAddresses(savedAddrs);
+
+      if (savedAddrs.length > 0) {
+        const addr = savedAddrs[0];
+        setUseSavedAddress(true);
+        setSelectedAddressIndex(0);
+        setShippingAddress({
+          firstName: userData.userDetails?.firstName || "",
+          lastName: userData.userDetails?.lastName || "",
+          address: addr.address || "",
+          city: addr.city || "",
+          pincode: addr.pincode || "",
+          country: "United Kingdom (UK)",
+        });
+      } else {
+        setUseSavedAddress(false);
       }
+
+      setContactEmail(userData?.email || "");
+      setContactPhone(userData.userDetails?.phoneNumbers?.[0]?.phone || "");
     }
+
     fetchUser();
   }, [router]);
 
+  // --- Delivery Fetch ---
+  async function fetchDelivery(pincodeValue: string) {
+    if (!pincodeValue) return;
+    setLoadingDelivery(true);
+    setDeliveryError(null);
+    setRecalculated(false);
+
+    try {
+      const res = await fetch(`/api/delivery/${encodeURIComponent(pincodeValue)}`);
+      if (!res.ok) throw new Error("Delivery check failed");
+      const data = (await res.json()) as DeliveryResponse;
+      setDelivery(data);
+      if (data.economy_price) setMethod("economy");
+      setRecalculated(true);
+    } catch (err) {
+      setDeliveryError("Could not connect to delivery service.");
+    } finally {
+      setLoadingDelivery(false);
+    }
+  }
+
+  // --- Totals ---
+  const cartSubtotal = useMemo(() => checkoutData?.totals?.cartSubtotal ?? 0, [checkoutData]);
+
+  const shippingCost = useMemo(() => {
+    if (!delivery || !method) return 0;
+    const value =
+      method === "economy"
+        ? Number(delivery.economy_price ?? 0)
+        : Number(delivery.premium_price ?? 0);
+    return value;
+  }, [delivery, method]);
+
+  const total = useMemo(() => {
+    return cartSubtotal + shippingCost + (tailLift ? TAIL_LIFT_COST : 0);
+  }, [cartSubtotal, shippingCost, tailLift]);
+
+  // --- Submit Order ---
+
   const handlePlaceOrder = async () => {
+    if (!recalculated || !method) {
+      alert("Please check delivery before placing your order.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
-    // Combine all data into the final order payload for Strapi
     const finalOrderPayload = {
       ...checkoutData,
       contact: { email: contactEmail, phone: contactPhone },
-      shippingAddress, // Add the detailed shipping address
+      shippingAddress: { ...shippingAddress, method, tailLift },
+      totals: { cartSubtotal, shippingCost, tailLift: tailLift ? TAIL_LIFT_COST : 0, total, itemPrices: checkoutData?.totals?.itemPrices},
     };
-    console.log(finalOrderPayload);
+
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalOrderPayload),
-        credentials: "include", // Important for passing the auth cookie
+        credentials: "include",
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || "Failed to place order.");
-      }
-
+      if (!res.ok) throw new Error(await res.text());
       const createdOrder = await res.json();
-
-      // Clear the cart/checkout data and redirect to a success page
       sessionStorage.removeItem("checkoutData");
-      // Optionally clear the cart from the backend as well
       await fetch("/api/cart", { method: "DELETE", credentials: "include" });
-
       router.push(`/order/success/${createdOrder.id}`);
     } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred."
-      );
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (!checkoutData) {
-    return <p className="p-6">Loading checkout session...</p>;
-  }
+  if (!checkoutData) return <p className="p-6">Loading checkout...</p>;
 
-  const { items, totals } = checkoutData;
+  const { items } = checkoutData;
+
+  // console.log(checkoutData.items);
 
   return (
     <main className="max-w-7xl mx-auto p-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Left Column: Form */}
+        {/* LEFT COLUMN */}
         <div>
           <form
             onSubmit={(e) => {
@@ -129,6 +187,7 @@ export default function CheckoutPage() {
               handlePlaceOrder();
             }}
           >
+            {/* CONTACT INFO */}
             <section className="mb-8">
               <h2 className="text-lg font-semibold">Contact information</h2>
               <input
@@ -148,17 +207,78 @@ export default function CheckoutPage() {
                 required
               />
             </section>
-
+            {/* SHIPPING */}
             <section className="mb-8">
-              <h2 className="text-lg font-semibold">Shipping address</h2>
-              <div className="grid grid-cols-2 gap-4 mt-2">
+              <h2 className="text-lg font-semibold mb-2">Shipping address</h2>
+
+              {savedAddresses.length > 0 && (
+                <div className="mb-4 border rounded-lg p-3">
+                  <label className="font-medium block mb-2">
+                    Select a saved address:
+                  </label>
+                  <div className="space-y-2">
+                    {savedAddresses.map((addr, i) => (
+                      <label key={addr.id} className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="savedAddress"
+                          value={i}
+                          checked={useSavedAddress && selectedAddressIndex === i}
+                          onChange={() => {
+                            setUseSavedAddress(true);
+                            setSelectedAddressIndex(i);
+                            setShippingAddress((prev) => ({
+                              ...prev,
+                              address: addr.address || "",
+                              city: addr.city || "",
+                              pincode: addr.pincode || "",
+                            }));
+                            setRecalculated(false);
+                          }}
+                        />
+                        <div>
+                          <p className="font-semibold">{addr.label || `Address ${i + 1}`}</p>
+                          <p className="text-sm text-gray-600">
+                            {addr.address}, {addr.city}, {addr.pincode}
+                          </p>
+                        </div>
+                      </label>
+                    ))}
+
+                    <label className="flex items-center gap-2 mt-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="savedAddress"
+                        value="new"
+                        checked={!useSavedAddress}
+                        onChange={() => {
+                          setUseSavedAddress(false);
+                          setSelectedAddressIndex(null);
+                          setShippingAddress((prev) => ({
+                            ...prev,
+                            address: "",
+                            city: "",
+                            pincode: "",
+                          }));
+                          setRecalculated(false);
+                        }}
+                      />
+                      <span>Add a new address</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {/* Address Inputs */}
+              <div
+                className={`grid grid-cols-2 gap-4 mt-2 ${
+                  useSavedAddress ? "opacity-60 pointer-events-none" : ""
+                }`}
+              >
                 <input
                   value={shippingAddress.firstName}
                   onChange={(e) =>
-                    setShippingAddress((p) => ({
-                      ...p,
-                      firstName: e.target.value,
-                    }))
+                    setShippingAddress((p) => ({ ...p, firstName: e.target.value }))
                   }
                   placeholder="First name"
                   className="p-2 border rounded"
@@ -167,16 +287,14 @@ export default function CheckoutPage() {
                 <input
                   value={shippingAddress.lastName}
                   onChange={(e) =>
-                    setShippingAddress((p) => ({
-                      ...p,
-                      lastName: e.target.value,
-                    }))
+                    setShippingAddress((p) => ({ ...p, lastName: e.target.value }))
                   }
                   placeholder="Last name"
                   className="p-2 border rounded"
                   required
                 />
               </div>
+
               <input
                 value={shippingAddress.address}
                 onChange={(e) =>
@@ -185,7 +303,9 @@ export default function CheckoutPage() {
                 placeholder="Address"
                 className="w-full mt-4 p-2 border rounded"
                 required
+                disabled={useSavedAddress}
               />
+
               <div className="grid grid-cols-3 gap-4 mt-4">
                 <input
                   value={shippingAddress.city}
@@ -193,55 +313,96 @@ export default function CheckoutPage() {
                     setShippingAddress((p) => ({ ...p, city: e.target.value }))
                   }
                   placeholder="City"
-                  className="p-2 border rounded col-span-1"
+                  className="p-2 border rounded"
                   required
+                  disabled={useSavedAddress}
                 />
                 <select
-                  className="p-2 border rounded col-span-1"
+                  className="p-2 border rounded"
                   value={shippingAddress.country}
                   onChange={(e) =>
-                    setShippingAddress((p) => ({
-                      ...p,
-                      country: e.target.value,
-                    }))
+                    setShippingAddress((p) => ({ ...p, country: e.target.value }))
                   }
+                  disabled={useSavedAddress}
                 >
                   <option>United Kingdom (UK)</option>
                 </select>
                 <input
                   value={shippingAddress.pincode}
-                  onChange={(e) =>
-                    setShippingAddress((p) => ({
-                      ...p,
-                      pincode: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => {
+                    setShippingAddress((p) => ({ ...p, pincode: e.target.value }));
+                    setRecalculated(false);
+                  }}
                   placeholder="Postcode"
-                  className="p-2 border rounded col-span-1"
+                  className="p-2 border rounded"
                   required
+                  disabled={useSavedAddress}
                 />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => fetchDelivery(shippingAddress.pincode)}
+                disabled={!shippingAddress.pincode || loadingDelivery}
+                className="mt-3 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 disabled:bg-gray-400"
+              >
+                {loadingDelivery ? "Checking..." : "Check Delivery"}
+              </button>
+
+              {deliveryError && (
+                <p className="text-sm text-red-500 mt-1">{deliveryError}</p>
+              )}
+
+              {/* Delivery Options */}
+              {delivery && (
+                <div className="mt-4 space-y-2">
+                  <label className="flex items-center gap-3 border rounded p-3 hover:bg-gray-100 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={method === "economy"}
+                      onChange={() => setMethod("economy")}
+                    />
+                    <span>
+                      Economy Delivery ({currencyFormat(Number(delivery.economy_price ?? 0))})
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 border rounded p-3 hover:bg-gray-100 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={method === "premium"}
+                      onChange={() => setMethod("premium")}
+                    />
+                    <span>
+                      Premium Delivery ({currencyFormat(Number(delivery.premium_price ?? 0))})
+                    </span>
+                  </label>
+                </div>
+              )}
+
+              <div className="mt-4">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={tailLift}
+                    onChange={(e) => setTailLift(e.target.checked)}
+                  />
+                  <span>Add Tail Lift (+{currencyFormat(TAIL_LIFT_COST)})</span>
+                </label>
               </div>
             </section>
 
+            {/* PAYMENT */}
             <section>
               <h2 className="text-lg font-semibold">Payment options</h2>
               <div className="mt-2 border rounded">
                 <div className="p-4 border-b">
                   <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="direct-bank-transfer"
-                      checked
-                      readOnly
-                    />
-                    Direct bank transfer
+                    <input type="radio" checked readOnly /> Direct bank transfer
                   </label>
                 </div>
                 <p className="p-4 text-sm text-gray-600 bg-gray-50">
-                  Make your payment directly into our bank account. Please use
-                  your Order ID as the payment reference. Your order will not be
-                  shipped until the funds have cleared in our account.
+                  Make your payment directly into our bank account. Use your Order ID
+                  as the reference. Order ships once payment clears.
                 </p>
               </div>
             </section>
@@ -249,8 +410,8 @@ export default function CheckoutPage() {
             <div className="mt-6">
               <button
                 type="submit"
-                disabled={isLoading}
-                className="w-full py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 disabled:bg-gray-400"
+                disabled={!recalculated || !method || isLoading}
+                className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400"
               >
                 {isLoading ? "Placing Order..." : "Place Order"}
               </button>
@@ -259,16 +420,13 @@ export default function CheckoutPage() {
           </form>
         </div>
 
-        {/* Right Column: Order Summary */}
-        <div className=" p-6 rounded-lg h-fit">
+        {/* RIGHT COLUMN */}
+        <div className="p-6 rounded-lg h-fit">
           <h2 className="text-lg font-semibold mb-4">Order summary</h2>
           <div className="space-y-4">
-            {items.map((item: any, index: number) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 border-b pb-4"
-              >
-                <div className="flex-grow">
+            {items.map((item, index) => (
+              <div key={index} className="flex justify-between border-b pb-3">
+                <div>
                   <p className="font-medium">Product ID: {item.product}</p>
                   <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                 </div>
@@ -279,21 +437,19 @@ export default function CheckoutPage() {
           <div className="space-y-2 mt-4 pt-4 border-t">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>{currencyFormat(totals.cartSubtotal)}</span>
+              <span>{currencyFormat(cartSubtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span>Delivery</span>
-              <span>{currencyFormat(totals.shippingCost)}</span>
+              <span>{shippingCost ? currencyFormat(shippingCost) : "—"}</span>
             </div>
-            {totals.tailLift > 0 && (
-              <div className="flex justify-between">
-                <span>Tail Lift</span>
-                <span>{currencyFormat(totals.tailLift)}</span>
-              </div>
-            )}
+            <div className="flex justify-between">
+              <span>Tail Lift</span>
+              <span>{tailLift ? currencyFormat(TAIL_LIFT_COST) : "—"}</span>
+            </div>
             <div className="flex justify-between font-bold text-xl mt-2">
               <span>Total</span>
-              <span>{currencyFormat(totals.total)}</span>
+              <span>{currencyFormat(total)}</span>
             </div>
           </div>
         </div>

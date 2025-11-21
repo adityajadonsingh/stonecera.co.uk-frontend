@@ -44,16 +44,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     if (!token) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
-
+    console.log("aa");
     const body = (await req.json()) as unknown;
     if (!isRecord(body)) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
-
-    // This is the line to fix. It should point to your custom route.
-    const upstreamUrl = `${STRAPI.replace(/\/$/, "")}/api/user-details/me`;
-
-    const upstream = await fetch(upstreamUrl, {
+    
+    const upstream = await fetch(`${STRAPI}/api/user-details/me`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +58,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       },
       body: JSON.stringify(body),
     });
-
     const contentType = upstream.headers.get("content-type") ?? "";
     if (!contentType.includes("application/json")) {
       const txt = await upstream.text();
