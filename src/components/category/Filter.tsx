@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { FilterCounts } from "@/lib/types";
+import { useTransition } from "react";
 
 interface FiltersProps {
   currentFilters: Record<string, string>;
@@ -15,32 +16,41 @@ export default function Filters({
   filterCounts,
 }: FiltersProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   // Handles toggle of a filter (keeps all others in URL)
-  const handleChange = (filterName: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const current = params.get(filterName);
+  const [isPending, startTransition] = useTransition();
 
-    if (current === value) {
-      params.delete(filterName);
-    } else {
-      params.set(filterName, value);
+  const handleChange = (filterName: string, value: string) => {
+    // 1. Convert to plain object
+    const paramObj: Record<string, string> = {};
+
+    for (const [key, val] of searchParams.entries()) {
+      paramObj[key] = val;
     }
 
-    // Always reset "page" when filters change
-    params.delete("page");
+    // 2. Toggle filter
+    if (paramObj[filterName] === value) {
+      delete paramObj[filterName];
+    } else {
+      paramObj[filterName] = value;
+    }
 
-    // ✅ Build URL for base category (not pagination)
+    // 3. Always reset pagination
+    delete paramObj.page;
+
+    // 4. Sort keys BEFORE creating query string
+    const sortedQuery = new URLSearchParams(
+      Object.entries(paramObj).sort(([a], [b]) => a.localeCompare(b))
+    ).toString();
+
+    // 5. Build URL
     const targetUrl = `/product-category/${categorySlug}${
-      params.toString() ? `?${params.toString()}` : ""
+      sortedQuery ? `?${sortedQuery}` : ""
     }`;
 
-    // You can either use router.push + refresh (SPA)
     router.push(targetUrl, { scroll: false });
-    // router.refresh();
-    window.location.assign(targetUrl);
+    router.refresh();
   };
 
   // Renders a UI section for any filter list
@@ -67,7 +77,7 @@ export default function Filters({
             >
               <input
                 type="checkbox"
-                disabled={count === 0}
+                disabled={isPending || count === 0}
                 checked={checked}
                 onChange={() => handleChange(fieldName, name)}
                 className="accent-black cursor-pointer"
@@ -86,7 +96,7 @@ export default function Filters({
   };
 
   return (
-    <aside className="mb-8 bg-black py-4 px-5">
+    <aside className="mb-8 bg-gray-100 py-4 px-5">
       <h2 className="font-bold text-lg mb-4">Filters</h2>
 
       {renderFilter("Price", "price", filterCounts.price)}

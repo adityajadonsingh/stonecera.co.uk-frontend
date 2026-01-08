@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useWishlistContext } from "@/context/WishlistContext";
 
 type FormState = {
   identifier: string;
@@ -13,12 +14,15 @@ export default function LoginForm() {
   const [form, setForm] = useState<FormState>({ identifier: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const wishlist = useWishlistContext();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -47,8 +51,11 @@ export default function LoginForm() {
 
       // revalidate server components (Header etc.)
       router.refresh();
+      await wishlist.merge();
 
-      // go to account
+      // optional: reload wishlist state
+      await wishlist.refresh();
+
       router.replace("/account");
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -63,18 +70,35 @@ export default function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm">Email or username</label>
-        <input name="identifier" value={form.identifier} onChange={handleChange} className="w-full border rounded p-2" required />
+        <input
+          name="identifier"
+          value={form.identifier}
+          onChange={handleChange}
+          className="w-full border rounded p-2"
+          required
+        />
       </div>
 
       <div>
         <label className="block text-sm">Password</label>
-        <input type="password" name="password" value={form.password} onChange={handleChange} className="w-full border rounded p-2" required />
+        <input
+          type="password"
+          name="password"
+          value={form.password}
+          onChange={handleChange}
+          className="w-full border rounded p-2"
+          required
+        />
       </div>
 
       {error && <div className="text-sm text-red-600">{error}</div>}
 
       <div>
-        <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded">
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
           {loading ? "Signing in…" : "Sign in"}
         </button>
       </div>

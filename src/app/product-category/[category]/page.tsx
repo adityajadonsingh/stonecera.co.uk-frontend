@@ -5,6 +5,7 @@ import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelecto
 import { getCategoryBySlug } from "@/lib/api/category";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function generateMetadata({
   params,
@@ -60,7 +61,7 @@ export default async function CategoryPage({
   });
 
   if (!categoryData.name) return notFound();
-
+  const user = await getCurrentUser();
   const totalProducts = categoryData.totalProducts || 0;
   const totalPages = Math.ceil(totalProducts / limit);
 
@@ -104,7 +105,7 @@ export default async function CategoryPage({
               />
             </div>
 
-            <ProductGrid products={categoryData.products} />
+            <ProductGrid user={user} products={categoryData.products} />
 
             <Pagination
               totalPages={totalPages}

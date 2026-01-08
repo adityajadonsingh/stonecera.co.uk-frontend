@@ -1,3 +1,5 @@
+// src/lib/api/auth.ts
+
 import { cookies } from "next/headers";
 import type { AppUser } from "@/lib/types";
 

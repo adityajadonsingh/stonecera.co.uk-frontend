@@ -1,3 +1,5 @@
+// File: src/app/order/success/[orderId]/page.tsx
+
 import Link from "next/link";
 import { cookies } from "next/headers";
 import type { Metadata } from "next";

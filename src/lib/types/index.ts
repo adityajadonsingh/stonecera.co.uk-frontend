@@ -19,6 +19,7 @@ export interface ProductVariation {
 }
 
 export interface Category {
+  id: number;
   name: string;
   slug: string;
   categoryDiscount: number;
@@ -27,6 +28,7 @@ export interface Category {
   products: CategoryProduct[];
   totalProducts: number;
   filterCounts?: FilterCounts;
+  startingFrom?: number;
 }
 
 export interface CategoryProduct {
@@ -55,6 +57,10 @@ export interface Product {
   productDiscount: number;
   categoryDiscount: number;
   images: ImageAttributes[];
+  image: {
+    url: string;
+    alt: string;
+  } | null;
   variations: ProductVariation[];
   category: { name: string; slug: string; categoryDiscount: number };
   priceBeforeDiscount?: {
@@ -170,6 +176,103 @@ export interface CheckoutItem {
       checkoutPrice: number;
     }[];
   };
+}
 
+export type PhoneNumber = {
+  id: number;
+  phone?: string;
+  label?: string;
 };
 
+export type Email = {
+  id: number;
+  email?: string;
+  label?: string;
+};
+
+export type FooterDetail = {
+  companyPhoneNumbers: PhoneNumber[];
+  companyEmails: Email[];
+  companyAddress: Address | null;
+  facebookLink: string;
+  twitterLink: string;
+  instagramLink: string;
+  linkedinLink: string;
+  pinterestLink: string;
+};
+
+export type Banner = {
+  id: number;
+  bannerImage: {
+    url: string;
+    alternativeText?: string;
+  };
+  heading: string;
+  subHeading: string;
+  link: string;
+};
+
+export interface FeaturedCategoriesSection {
+  sectionTitle: string;
+  sectionSubtitle: string;
+  categories: Category[];
+}
+export interface PriceGroup {
+  Per_m2: number;
+  Price: number;
+}
+
+export interface CategoryInfo {
+  name: string;
+  slug: string;
+  categoryDiscount: number;
+}
+
+export interface BestSellerProduct {
+  name: string;
+  slug: string;
+  productDiscount: number;
+  image: {
+    url: string;
+    alt: string;
+  } | null;
+  priceAfterDiscount: PriceGroup;
+  priceBeforeDiscount: PriceGroup | null;
+  category: CategoryInfo | null;
+}
+
+export interface BestSellerSection {
+  sectionTitle: string;
+  sectionSubtitle: string;
+  products: BestSellerProduct[];
+}
+type Review = {
+  name: string;
+  stars: number;
+  review: string;
+};
+export interface CustomerReviewsSection {
+  sectionTitle: string;
+  sectionSubtitle: string;
+  reviews: Review[];
+}
+
+export interface Blog {
+  id: number;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  author: string;
+  createdOn: string;
+  image: ImageAttributes;
+}
+
+export type HomepageData = {
+  banner: Banner[];
+  featuredCategory: FeaturedCategoriesSection;
+  bestSeller: BestSellerSection;
+  reviews: CustomerReviewsSection;
+  blogs: Blog[];
+};
+
+export type WishlistItem = number;

@@ -1,3 +1,5 @@
+// File: src/app/checkout/page.tsx
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -27,7 +29,10 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [useSavedAddress, setUseSavedAddress] = useState<boolean>(true);
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
-  const [selectedAddressIndex, setSelectedAddressIndex] = useState<number | null>(null);
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState<
+    number | null
+  >(null);
+  const [paymentMethod, setPaymentMethod] = useState<"bank" | "stripe">("bank");
 
   // Form state
   const [contactEmail, setContactEmail] = useState("");
@@ -61,8 +66,11 @@ export default function CheckoutPage() {
 
     const parsedData = JSON.parse(data);
     setCheckoutData(parsedData);
-     if (parsedData.shipping?.pincode) {
-      setShippingAddress((prev) => ({ ...prev, pincode: parsedData.shipping.pincode }));
+    if (parsedData.shipping?.pincode) {
+      setShippingAddress((prev) => ({
+        ...prev,
+        pincode: parsedData.shipping.pincode,
+      }));
     }
 
     async function fetchUser() {
@@ -103,7 +111,9 @@ export default function CheckoutPage() {
     setRecalculated(false);
 
     try {
-      const res = await fetch(`/api/delivery/${encodeURIComponent(pincodeValue)}`);
+      const res = await fetch(
+        `/api/delivery/${encodeURIComponent(pincodeValue)}`
+      );
       if (!res.ok) throw new Error("Delivery check failed");
       const data = (await res.json()) as DeliveryResponse;
       setDelivery(data);
@@ -117,7 +127,10 @@ export default function CheckoutPage() {
   }
 
   // --- Totals ---
-  const cartSubtotal = useMemo(() => checkoutData?.totals?.cartSubtotal ?? 0, [checkoutData]);
+  const cartSubtotal = useMemo(
+    () => checkoutData?.totals?.cartSubtotal ?? 0,
+    [checkoutData]
+  );
 
   const shippingCost = useMemo(() => {
     if (!delivery || !method) return 0;
@@ -131,6 +144,70 @@ export default function CheckoutPage() {
   const total = useMemo(() => {
     return cartSubtotal + shippingCost + (tailLift ? TAIL_LIFT_COST : 0);
   }, [cartSubtotal, shippingCost, tailLift]);
+
+  // --- Stripe Submit Order ---
+
+  const handleStripePayment = async () => {
+    if (!recalculated || !method) {
+      alert("Please check delivery before placing your order.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Same payload as bank transfer
+    const finalOrderPayload = {
+      ...checkoutData,
+      contact: { email: contactEmail, phone: contactPhone },
+      shippingAddress: { ...shippingAddress, method, tailLift },
+      totals: {
+        cartSubtotal,
+        shippingCost,
+        tailLift: tailLift ? TAIL_LIFT_COST : 0,
+        total,
+        itemPrices: checkoutData?.totals?.itemPrices,
+      },
+    };
+
+    try {
+      // 1️⃣ CREATE ORDER FIRST in Strapi
+      const orderRes = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalOrderPayload),
+        credentials: "include",
+      });
+
+      if (!orderRes.ok) throw new Error(await orderRes.text());
+      const createdOrder = await orderRes.json();
+      const orderId = createdOrder.id;
+
+      // 2️⃣ Create Stripe session using orderId
+      const stripeRes = await fetch("/api/stripe/create-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          contact: finalOrderPayload.contact,
+          totals: finalOrderPayload.totals,
+        }),
+      });
+
+      const { url, error } = await stripeRes.json();
+      if (error) {
+        console.error("Payment error:", error);
+        return;
+      }
+
+      // 3️⃣ Redirect to Stripe checkout
+      window.location.href = url;
+    } catch (err) {
+      console.error(err);
+      alert("Checkout failed, please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // --- Submit Order ---
 
@@ -147,7 +224,13 @@ export default function CheckoutPage() {
       ...checkoutData,
       contact: { email: contactEmail, phone: contactPhone },
       shippingAddress: { ...shippingAddress, method, tailLift },
-      totals: { cartSubtotal, shippingCost, tailLift: tailLift ? TAIL_LIFT_COST : 0, total, itemPrices: checkoutData?.totals?.itemPrices},
+      totals: {
+        cartSubtotal,
+        shippingCost,
+        tailLift: tailLift ? TAIL_LIFT_COST : 0,
+        total,
+        itemPrices: checkoutData?.totals?.itemPrices,
+      },
     };
 
     try {
@@ -218,12 +301,17 @@ export default function CheckoutPage() {
                   </label>
                   <div className="space-y-2">
                     {savedAddresses.map((addr, i) => (
-                      <label key={addr.id} className="flex items-start gap-3 cursor-pointer">
+                      <label
+                        key={addr.id}
+                        className="flex items-start gap-3 cursor-pointer"
+                      >
                         <input
                           type="radio"
                           name="savedAddress"
                           value={i}
-                          checked={useSavedAddress && selectedAddressIndex === i}
+                          checked={
+                            useSavedAddress && selectedAddressIndex === i
+                          }
                           onChange={() => {
                             setUseSavedAddress(true);
                             setSelectedAddressIndex(i);
@@ -237,7 +325,9 @@ export default function CheckoutPage() {
                           }}
                         />
                         <div>
-                          <p className="font-semibold">{addr.label || `Address ${i + 1}`}</p>
+                          <p className="font-semibold">
+                            {addr.label || `Address ${i + 1}`}
+                          </p>
                           <p className="text-sm text-gray-600">
                             {addr.address}, {addr.city}, {addr.pincode}
                           </p>
@@ -278,7 +368,10 @@ export default function CheckoutPage() {
                 <input
                   value={shippingAddress.firstName}
                   onChange={(e) =>
-                    setShippingAddress((p) => ({ ...p, firstName: e.target.value }))
+                    setShippingAddress((p) => ({
+                      ...p,
+                      firstName: e.target.value,
+                    }))
                   }
                   placeholder="First name"
                   className="p-2 border rounded"
@@ -287,7 +380,10 @@ export default function CheckoutPage() {
                 <input
                   value={shippingAddress.lastName}
                   onChange={(e) =>
-                    setShippingAddress((p) => ({ ...p, lastName: e.target.value }))
+                    setShippingAddress((p) => ({
+                      ...p,
+                      lastName: e.target.value,
+                    }))
                   }
                   placeholder="Last name"
                   className="p-2 border rounded"
@@ -321,7 +417,10 @@ export default function CheckoutPage() {
                   className="p-2 border rounded"
                   value={shippingAddress.country}
                   onChange={(e) =>
-                    setShippingAddress((p) => ({ ...p, country: e.target.value }))
+                    setShippingAddress((p) => ({
+                      ...p,
+                      country: e.target.value,
+                    }))
                   }
                   disabled={useSavedAddress}
                 >
@@ -330,7 +429,10 @@ export default function CheckoutPage() {
                 <input
                   value={shippingAddress.pincode}
                   onChange={(e) => {
-                    setShippingAddress((p) => ({ ...p, pincode: e.target.value }));
+                    setShippingAddress((p) => ({
+                      ...p,
+                      pincode: e.target.value,
+                    }));
                     setRecalculated(false);
                   }}
                   placeholder="Postcode"
@@ -363,7 +465,8 @@ export default function CheckoutPage() {
                       onChange={() => setMethod("economy")}
                     />
                     <span>
-                      Economy Delivery ({currencyFormat(Number(delivery.economy_price ?? 0))})
+                      Economy Delivery (
+                      {currencyFormat(Number(delivery.economy_price ?? 0))})
                     </span>
                   </label>
                   <label className="flex items-center gap-3 border rounded p-3 hover:bg-gray-100 cursor-pointer">
@@ -373,7 +476,8 @@ export default function CheckoutPage() {
                       onChange={() => setMethod("premium")}
                     />
                     <span>
-                      Premium Delivery ({currencyFormat(Number(delivery.premium_price ?? 0))})
+                      Premium Delivery (
+                      {currencyFormat(Number(delivery.premium_price ?? 0))})
                     </span>
                   </label>
                 </div>
@@ -394,27 +498,59 @@ export default function CheckoutPage() {
             {/* PAYMENT */}
             <section>
               <h2 className="text-lg font-semibold">Payment options</h2>
+
               <div className="mt-2 border rounded">
-                <div className="p-4 border-b">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="radio" checked readOnly /> Direct bank transfer
-                  </label>
-                </div>
-                <p className="p-4 text-sm text-gray-600 bg-gray-50">
-                  Make your payment directly into our bank account. Use your Order ID
-                  as the reference. Order ships once payment clears.
-                </p>
+                <label className="flex items-center gap-3 p-4 border-b cursor-pointer">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="bank"
+                    checked={paymentMethod === "bank"}
+                    onChange={() => setPaymentMethod("bank")}
+                  />
+                  Direct bank transfer
+                </label>
+
+                <label className="flex items-center gap-3 p-4 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="stripe"
+                    checked={paymentMethod === "stripe"}
+                    onChange={() => setPaymentMethod("stripe")}
+                  />
+                  Pay Online with Stripe
+                </label>
               </div>
+
+              {paymentMethod === "bank" && (
+                <p className="p-4 text-sm text-gray-600 bg-gray-50 border">
+                  Make payment directly in the bank. Order ships once payment
+                  clears.
+                </p>
+              )}
             </section>
 
             <div className="mt-6">
-              <button
-                type="submit"
-                disabled={!recalculated || !method || isLoading}
-                className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400"
-              >
-                {isLoading ? "Placing Order..." : "Place Order"}
-              </button>
+              {paymentMethod === "bank" ? (
+                <button
+                  type="submit"
+                  disabled={!recalculated || !method || isLoading}
+                  className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+                >
+                  {isLoading ? "Placing Order..." : "Place Order"}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleStripePayment}
+                  disabled={!recalculated || !method || isLoading}
+                  className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                >
+                  Pay with Stripe
+                </button>
+              )}
+
               {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             </div>
           </form>

@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type { CategoryProduct } from "@/lib/types";
+import type { AppUser, CategoryProduct } from "@/lib/types";
+import WishlistButton from "../WishlistButton";
 
 interface ProductGridProps {
   products: CategoryProduct[];
+  user: AppUser | null;
 }
 
-export default function ProductGrid({ products }: ProductGridProps) {
+export default function ProductGrid({ products, user }: ProductGridProps) {
   if (!products?.length) {
     return (
       <p className="text-center text-gray-400 italic mt-10">
@@ -18,7 +20,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
   }
 
   return (
-    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-8">
+    <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-8">
       {products.map(({ product, variation, priceBeforeDiscount }) => {
         const hasDiscount =
           priceBeforeDiscount &&
@@ -36,7 +38,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
           <Link
             href={`/product/${product.slug}/`}
             key={product.slug}
-            className="relative border border-gray-700 rounded-md p-3 bg-black hover:border-gray-500 transition-colors duration-200"
+            className="relative border border-gray-700 rounded-md p-3 bg-gray-800 hover:border-gray-500 transition-colors duration-200"
           >
             {/* Discount Badge */}
             {hasDiscount && discountPercent > 0 && (
@@ -44,7 +46,9 @@ export default function ProductGrid({ products }: ProductGridProps) {
                 {discountPercent}% OFF
               </div>
             )}
-
+            <div className="absolute rounded-full flex items-center justify-center bg-gray-100/80 hover:bg-white  h-[36px] w-[36px] z-10 top-1 right-1">
+              <WishlistButton productId={product.id} />
+            </div>
             {/* Product Image */}
             <div className="relative aspect-square mb-3 overflow-hidden rounded">
               {product.images?.[0]?.url ? (
@@ -101,12 +105,10 @@ export default function ProductGrid({ products }: ProductGridProps) {
             {variation?.Stock !== undefined && (
               <p
                 className={`text-xs mt-2 ${
-                  variation.Stock > 0
-                    ? "text-green-400"
-                    : "text-red-500"
+                  variation.Stock > 0 ? "text-green-400" : "text-red-500"
                 }`}
               >
-                {variation.Stock > 0 ? "In Stock" : "Out of Stock"}
+                {variation.Stock > 0 ? "In Stock" : "Out of Stock"}
               </p>
             )}
           </Link>
