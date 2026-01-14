@@ -84,8 +84,8 @@ export default function AddressForm({ initialAddresses = [] }: Props) {
     <div className="space-y-6">
       {error && <p className="p-4 bg-red-100 text-red-700 rounded-lg">{error}</p>}
 
-      <h3 className="text-lg font-semibold">Your Saved Addresses</h3>
-      <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-dark">Saved Addresses</h3>
+      <div className="space-y-3">
         {addresses.length > 0 ? (
           addresses.map((addr) => (
             <div key={addr.id} className="p-4 border rounded-lg bg-white">
@@ -137,7 +137,7 @@ export default function AddressForm({ initialAddresses = [] }: Props) {
         {!isAdding && (
           <button 
             onClick={() => setIsAdding(true)}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm font-medium"
+            className="px-4 py-2 bg-gray-200 text-gray-800 cursor-pointer rounded hover:bg-gray-300 text-sm font-medium"
           >
             + Add New Address
           </button>
@@ -146,7 +146,7 @@ export default function AddressForm({ initialAddresses = [] }: Props) {
         <button 
           onClick={handleSaveAll} 
           disabled={saving}
-          className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 disabled:bg-gray-400"
+          className="px-6 py-2 bg-dark text-white font-semibold rounded cursor-pointer disabled:bg-gray-400"
         >
           {saving ? "Saving..." : "Save All Changes"}
         </button>

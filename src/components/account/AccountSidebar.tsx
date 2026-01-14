@@ -22,7 +22,7 @@ export default function AccountSidebar() {
           href={link.href}
           className={`px-4 py-2 rounded text-sm font-medium ${
             pathname === link.href
-              ? "bg-gray-800 text-white"
+              ? "bg-dark "
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >

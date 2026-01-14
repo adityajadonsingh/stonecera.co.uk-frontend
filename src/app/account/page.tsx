@@ -11,7 +11,7 @@ export default async function AccountDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-dark mb-4">Dashboard</h1>
       <p className="text-gray-700">
         Hello, <strong>{user.userDetails?.firstName}</strong>!
       </p>

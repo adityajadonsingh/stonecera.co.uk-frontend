@@ -16,7 +16,7 @@ export default async function OrdersPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">My Orders</h1>
+      <h1 className="text-2xl font-semibold text-dark mb-4">My Orders</h1>
       {orders.length === 0 ? (
         <p>You have not placed any orders yet.</p>
       ) : (

@@ -1,11 +1,11 @@
 import Filters from "@/components/category/Filter";
 import Pagination from "@/components/category/Pagination";
 import ProductGrid from "@/components/product/ProductGrid";
+import PageBanner from "@/components/PageBanner";
 import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelector";
 import { getCategoryBySlug } from "@/lib/api/category";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { getCurrentUser } from "@/lib/auth";
 
 export async function generateMetadata({
   params,
@@ -61,7 +61,6 @@ export default async function CategoryPage({
   });
 
   if (!categoryData.name) return notFound();
-  const user = await getCurrentUser();
   const totalProducts = categoryData.totalProducts || 0;
   const totalPages = Math.ceil(totalProducts / limit);
 
@@ -78,13 +77,12 @@ export default async function CategoryPage({
 
   return (
     <>
-      <h1 className="text-center text-3xl font-bold mt-10 mb-8">
-        {categoryData.name}
-      </h1>
+    <PageBanner pageName={categoryData.name} pageDescription={categoryData.short_description} pageUrl={`/product-category/${categoryData.slug}/`} bgImage={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.bannerImg?.url}`} />
+      
 
       {/* Layout grid */}
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="container px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 pt-16">
           {/* Sidebar Filters */}
           <div className="lg:col-span-1">
             <Filters
@@ -105,7 +103,7 @@ export default async function CategoryPage({
               />
             </div>
 
-            <ProductGrid user={user} products={categoryData.products} />
+            <ProductGrid products={categoryData.products} />
 
             <Pagination
               totalPages={totalPages}

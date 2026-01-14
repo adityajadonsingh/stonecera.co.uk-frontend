@@ -267,7 +267,7 @@ export default function UserDetailsForm({ initialData = null }: Props) {
       {/* top action row */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Profile</h2>
+          <h2 className="text-lg text-dark font-semibold">Profile</h2>
           <p className="text-sm text-gray-600">
             Edit your name, profile image and phone numbers.
           </p>

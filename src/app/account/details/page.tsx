@@ -16,7 +16,7 @@ export default async function AccountDetailsPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold mb-4">Account details</h1>
+      <h1 className="text-2xl text-dark font-semibold mb-4">Account details</h1>
       <p className="mb-6 text-gray-600">
         Update your name, profile image, and phone numbers.
       </p>

@@ -3,12 +3,32 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import type { FilterCounts } from "@/lib/types";
 import { useTransition } from "react";
+import { Check } from "lucide-react";
+import { formatFilterLabel } from "@/lib/formatters";
 
 interface FiltersProps {
   currentFilters: Record<string, string>;
   categorySlug: string;
   filterCounts: FilterCounts;
 }
+
+const COLOR_MAP: Record<string, string> = {
+  Beige: "#ddb87c",
+  Black: "#5b5b5b",
+  Blue: "#208bc9",
+  Bronze: "#CD7F32",
+  Brown: "#bf8539",
+  Cream: "#f2dcab",
+  Golden: "#ccbc6e",
+  Green: "#1b6d04",
+  Grey: "#a8a8a8",
+  Mint: "#d8d39e",
+  Multi: "#ed8c63",
+  Red: "#dd3333",
+  Silver: "#939393",
+  White: "#e2e2e2",
+  Yellow: "#c6c007",
+};
 
 export default function Filters({
   currentFilters,
@@ -53,6 +73,78 @@ export default function Filters({
     router.refresh();
   };
 
+  const renderColorFilter = (
+  fieldName: string,
+  data: Record<string, number>
+) => {
+  const entries = Object.entries(data || {});
+  if (!entries.some(([, count]) => count > 0)) return null;
+
+  return (
+    <div className="mb-4 bg-white py-2">
+      <div className="border-[#cb934f]/40 border-b-2 mb-2 px-4 pb-1 flex justify-between items-center">
+        <span className="font-semibold text-base">Color & Tone</span>
+      </div>
+
+      {entries.map(([name, count]) => {
+        if (count === 0) return null;
+
+        const checked = currentFilters[fieldName] === name;
+        const color = COLOR_MAP[name] || "#ccc";
+
+        return (
+          <label
+            key={name}
+            className="flex items-center gap-3 px-4 py-2 text-sm cursor-pointer"
+          >
+            {/* Hidden native checkbox */}
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={() => handleChange(fieldName, name)}
+              className="absolute opacity-0 pointer-events-none"
+            />
+
+            {/* Color swatch */}
+            <span
+              className="h-5 w-5 rounded-full border border-gray-300 flex-shrink-0"
+              style={{ backgroundColor: color }}
+            />
+
+            {/* Custom checkbox */}
+            <span
+              className={`
+                flex h-4 w-4 items-center justify-center
+                rounded border transition
+                ${checked
+                  ? "bg-[#cb934f] border-[#cb934f]"
+                  : "bg-white border-gray-300"}
+              `}
+            >
+              {checked && (
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-3 w-3 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+            </span>
+
+            {/* Label */}
+            <span className="flex-1 capitalize">
+              {name} <span className="text-gray-500">({count})</span>
+            </span>
+          </label>
+        );
+      })}
+    </div>
+  );
+};
+
   // Renders a UI section for any filter list
   const renderFilter = (
     title: string,
@@ -63,44 +155,62 @@ export default function Filters({
     if (entries.length === 0) return null;
 
     return (
-      <section className="mb-4">
-        <h3 className="font-semibold text-base mb-2">{title}:</h3>
+      <div className="mb-4 bg-white py-2">
+        <div className="border-[#cb934f]/40 border-b-2 mb-2 px-4 pb-1">
+          <span className="font-semibold text-base mb-2">{title}:</span>
+        </div>
         {entries.map(([name, count]) => {
+          if (count === 0) return null;
           const checked = currentFilters[fieldName] === name;
 
           return (
             <label
               key={name}
-              className={`flex items-center space-x-2 text-sm ${
-                count === 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
+              className={`flex items-start gap-3 px-4 py-2 text-sm cursor-pointer
+                
+                `}
             >
+              {/* Native checkbox (hidden but functional) */}
               <input
                 type="checkbox"
-                disabled={isPending || count === 0}
                 checked={checked}
                 onChange={() => handleChange(fieldName, name)}
-                className="accent-black cursor-pointer"
+                className="absolute opacity-0 pointer-events-none"
               />
-              <span>
+
+              {/* Custom checkbox */}
+              <span
+                className={`
+      mt-0.5 flex h-5 w-5 items-center justify-center
+      rounded-md border-2 transition-all duration-200
+      ${checked ? "bg-[#cb934f] border-[#cb934f]" : "bg-white border-gray-300"}
+    `}
+              >
+                {checked && (
+                  <Check size={14} strokeWidth={3} className="text-white" />
+                )}
+              </span>
+
+              {/* Label text */}
+              <span className="leading-relaxed">
                 {title === "Price" && name.includes("-")
-                  ? `£${name.replace("-", " - £")}`
-                  : name}{" "}
-                ({count})
+  ? `£${name.replace("-", " - £")}`
+  : formatFilterLabel(fieldName, name)}{" "}
+                <span className="text-gray-500">({count})</span>
               </span>
             </label>
           );
         })}
-      </section>
+      </div>
     );
   };
 
   return (
-    <aside className="mb-8 bg-gray-100 py-4 px-5">
+    <aside className="mb-8 bg-skin rounded-sm py-4 px-5">
       <h2 className="font-bold text-lg mb-4">Filters</h2>
 
       {renderFilter("Price", "price", filterCounts.price)}
-      {renderFilter("Color & Tone", "colorTone", filterCounts.colorTone)}
+      {renderColorFilter("colorTone", filterCounts.colorTone)}
       {renderFilter("Finish", "finish", filterCounts.finish)}
       {renderFilter("Thickness", "thickness", filterCounts.thickness)}
       {renderFilter("Size", "size", filterCounts.size)}

@@ -18,7 +18,7 @@ export default async function AddressesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">My Addresses</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-dark">My Addresses</h1>
       <p className="text-gray-600 mb-6">
         Manage your saved shipping and billing addresses.
       </p>

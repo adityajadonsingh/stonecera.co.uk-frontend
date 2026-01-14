@@ -50,9 +50,7 @@ textarea {
 }
 
 .container {
-  padding: 0 16px;
   margin: 0 auto;
-  max-width: 1320px;
 }
 .text-dark {
   color: var(--color-dark);
@@ -171,4 +169,17 @@ textarea {
   100% {
     background-position: 200% 50%;
   }
+}
+
+@keyframes pulseBg {
+  0%, 100% {
+    background-color: #4d4431;
+  }
+  50% {
+    background-color: #cd9450;
+  }
+}
+
+.animate-pulse-bg {
+  animation: pulseBg 1s linear infinite;
 }

@@ -46,7 +46,7 @@ export default function LogoutButton() {
       <button
         onClick={handleLogout}
         disabled={loading}
-        className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 disabled:opacity-60"
+        className="px-4 py-2  rounded button-1 disabled:opacity-60"
         aria-busy={loading}
       >
         {loading ? "Logging out…" : "Logout"}

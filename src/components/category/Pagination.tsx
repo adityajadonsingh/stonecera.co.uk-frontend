@@ -42,8 +42,8 @@ export default function Pagination({
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
         <button
           key={p}
-          className={`px-3 py-1 border ${
-            p === currentPage ? "bg-black text-white" : ""
+          className={`px-3 py-1 rounded-sm text-lg font-medium w-[40px] cursor-pointer  ${
+            p === currentPage ? "bg-[#4c4331] text-white" : "bg-[#f7f3eb] text-[#4a3a2a] hover:bg-[#4c4331] hover:text-white"
           }`}
           onClick={() => handleNavigation(p)}
         >

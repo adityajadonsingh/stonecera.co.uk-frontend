@@ -1,6 +1,7 @@
 // @/lib/types/index.ts
 
 export interface ImageAttributes {
+  id: number;
   url: string;
   alt: string;
 }
@@ -22,6 +23,7 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
+  bannerImg: ImageAttributes;
   categoryDiscount: number;
   short_description: string;
   images: ImageAttributes[];
@@ -32,7 +34,8 @@ export interface Category {
 }
 
 export interface CategoryProduct {
-  variation: ProductVariation;
+  variations: ProductVariation[]; 
+  selectedVariation: ProductVariation;
   product: Product;
   priceBeforeDiscount?: {
     Per_m2: number;

@@ -89,7 +89,8 @@ export default async function Header({
           </div>
         </div>
         <div className="bg-dark py-2">
-          <ul className="flex mx-auto justify-evenly w-10/12 gap-x-3">
+          <div className="container">
+            <ul className="flex mx-auto justify-between gap-x-3">
             {categories.map((category) => (
               <li key={category.slug}>
                 <Link
@@ -101,6 +102,7 @@ export default async function Header({
               </li>
             ))}
           </ul>
+          </div>
         </div>
       </header>
     </>
