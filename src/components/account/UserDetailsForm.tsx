@@ -22,10 +22,7 @@ interface Props {
 const absoluteUrl = (url?: string | null) => {
   if (!url) return null;
   if (url.startsWith("http")) return url;
-  const base = (process.env.NEXT_PUBLIC_MEDIA_URL ?? "").replace(
-    /\/+$/,
-    ""
-  );
+  const base = (process.env.NEXT_PUBLIC_MEDIA_URL ?? "").replace(/\/+$/, "");
   return base ? `${base}${url.startsWith("/") ? url : `/${url}`}` : url;
 };
 
@@ -36,36 +33,59 @@ function extractFileInfo(json: unknown): {
   id: number | null;
   url: string | null;
 } {
-  if (!json) return { id: null, url: null };
-  // common shapes: { id, url }, { data: { id, attributes: { url } } }, array[0], etc.
-  const asAny = json as any;
-  const candidates: any[] = [];
-
-  if (Array.isArray(asAny) && asAny.length) candidates.push(asAny[0]);
-  if (asAny?.data) candidates.push(asAny.data);
-  if (asAny?.data?.attributes) candidates.push(asAny.data.attributes);
-  if (asAny?.attributes) candidates.push(asAny.attributes);
-  candidates.push(asAny);
-
-  let id: number | null = null;
-  let url: string | null = null;
-
-  for (const c of candidates) {
-    if (!c) continue;
-    if (id === null && (typeof c.id === "number" || typeof c.id === "string")) {
-      const n = Number(c.id);
-      if (!Number.isNaN(n)) id = n;
-    }
-    if (!url) {
-      if (typeof c.url === "string") url = c.url;
-      if (c?.formats?.small?.url && !url) url = c.formats.small.url;
-      if (c?.attributes?.url && !url) url = c.attributes.url;
-    }
-    if (id !== null && url) break;
+  if (!json || typeof json !== "object") {
+    return { id: null, url: null };
   }
 
-  return { id, url };
+  const candidates: unknown[] = [];
+
+  // array case
+  if (Array.isArray(json) && json.length > 0) {
+    candidates.push(json[0]);
+  }
+
+  // object cases
+  candidates.push(json);
+
+  const data = (json as { data?: unknown }).data;
+  if (data) candidates.push(data);
+
+  const attributes = (data as { attributes?: unknown })?.attributes;
+  if (attributes) candidates.push(attributes);
+
+  for (const c of candidates) {
+    if (!c || typeof c !== "object") continue;
+
+    const obj = c as Record<string, unknown>;
+
+    let id: number | null = null;
+    let url: string | null = null;
+
+    if (typeof obj.id === "number") id = obj.id;
+    if (typeof obj.id === "string" && !Number.isNaN(Number(obj.id))) {
+      id = Number(obj.id);
+    }
+
+    if (typeof obj.url === "string") url = obj.url;
+
+    const formats = obj.formats as { small?: { url?: unknown } } | undefined;
+    if (!url && typeof formats?.small?.url === "string") {
+      url = formats.small.url;
+    }
+
+    const nestedAttrs = obj.attributes as { url?: unknown } | undefined;
+    if (!url && typeof nestedAttrs?.url === "string") {
+      url = nestedAttrs.url;
+    }
+
+    if (id !== null || url !== null) {
+      return { id, url };
+    }
+  }
+
+  return { id: null, url: null };
 }
+
 
 /** Component */
 export default function UserDetailsForm({ initialData = null }: Props) {

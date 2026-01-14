@@ -45,7 +45,7 @@ export default function Footer({
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faqs/">FAQ's</Link>
+                  <Link href="/faqs/">FAQ&apos;s</Link>
                 </li>
               </ul>
               <ul className="social flex gap-4">
