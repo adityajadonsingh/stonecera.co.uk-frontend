@@ -28,7 +28,7 @@ export default function WhyChooseUs() {
                                 className="mb-5"
                             />
                             <h4 className="text-xl font-semibold text-white mb-3">Extensive Material Range</h4>
-                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s</p>
                         </div>
                         <div>
                             <Image
@@ -39,7 +39,7 @@ export default function WhyChooseUs() {
                                 className="mb-5"
                             />
                             <h4 className="text-xl font-semibold text-white mb-3">Unique Designs</h4>
-                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s</p>
                         </div>
                         <div>
                             <Image
@@ -50,7 +50,7 @@ export default function WhyChooseUs() {
                                 className="mb-5"
                             />
                             <h4 className="text-xl font-semibold text-white mb-3">Expert Guidance</h4>
-                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s</p>
                         </div>
                         <div>
                             <Image
@@ -61,7 +61,7 @@ export default function WhyChooseUs() {
                                 className="mb-5"
                             />
                             <h4 className="text-xl font-semibold text-white mb-3">Sustainable Sourcing</h4>
-                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s</p>
                         </div>
                         <div>
                             <Image
@@ -72,7 +72,7 @@ export default function WhyChooseUs() {
                                 className="mb-5"
                             />
                             <h4 className="text-xl font-semibold text-white mb-3">Unmatched Quality</h4>
-                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s</p>
                         </div>
                         <div>
                             <Image
@@ -83,7 +83,7 @@ export default function WhyChooseUs() {
                                 className="mb-5"
                             />
                             <h4 className="text-xl font-semibold text-white mb-3">Customization Options</h4>
-                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                            <p className="text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s</p>
                         </div>
                     </div>
                 </div>

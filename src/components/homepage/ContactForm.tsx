@@ -8,7 +8,7 @@ export default function ContactForm() {
                     <div className="grid bg-skin rounded-md grid-cols-2">
                         <div className="p-10">
                             <h2 className="heading mb-3 text-3xl font-bold">Get In Touch</h2>
-                            <p className="mb-5">We'd love to hear from you! Please fill out the form below and we'll get back to you as soon as possible.</p>
+                            <p className="mb-5">We&apos;d love to hear from you! Please fill out the form below and we&apos;ll get back to you as soon as possible.</p>
                             <form action="">
                                 <div className="w-full">
                                     <input type="text" name="name" placeholder="Your Name" className="w-full p-3 bg-white rounded-md mb-4" />

@@ -52,8 +52,12 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (err: any) {
-    console.error("STRIPE SESSION ERROR:", err.message);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    console.error("STRIPE SESSION ERROR:", err);
+
+    const message =
+      err instanceof Error ? err.message : "Stripe session creation failed";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

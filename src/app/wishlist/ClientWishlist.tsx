@@ -1,11 +1,12 @@
 "use client";
 
+import { Product } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "wishlist";
 
 export default function ClientWishlist() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const local = localStorage.getItem(STORAGE_KEY);
@@ -31,11 +32,13 @@ export default function ClientWishlist() {
             href={`/product/${p.slug}`}
             className="border rounded-md p-3"
           >
-            <img
-              src={process.env.NEXT_PUBLIC_MEDIA_URL + p.image.url}
-              alt={p.image.alt || p.name}
-              className="aspect-square object-cover rounded mb-2"
-            />
+            {p.image && (
+              <img
+                src={process.env.NEXT_PUBLIC_MEDIA_URL + p.image.url}
+                alt={p.image.alt || p.name}
+                className="aspect-square object-cover rounded mb-2"
+              />
+            )}
             <p className="text-sm">{p.name}</p>
           </a>
         ))}

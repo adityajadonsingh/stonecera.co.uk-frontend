@@ -15,6 +15,15 @@ function currencyFormat(value: number) {
 
 const TAIL_LIFT_COST = 5;
 
+interface SavedAddress {
+  id: number;
+  label?: string;
+  address?: string;
+  city?: string;
+  pincode?: string;
+}
+
+
 type DeliveryResponse = {
   postcode?: string;
   economy_price?: string;
@@ -28,7 +37,7 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [useSavedAddress, setUseSavedAddress] = useState<boolean>(true);
-  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<
     number | null
   >(null);
@@ -55,7 +64,7 @@ export default function CheckoutPage() {
   const [recalculated, setRecalculated] = useState(false);
 
   // --- Load checkout + user ---
-
+console.log(savedAddresses);
   useEffect(() => {
     const data = sessionStorage.getItem("checkoutData");
     if (!data) {

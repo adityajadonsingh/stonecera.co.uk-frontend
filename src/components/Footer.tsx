@@ -193,8 +193,8 @@ export default function Footer({
                 Subscribe to our Newsletter
               </h2>
               <p className="text-right">
-                Stay ahead of the curve with our insights on stones. We’re your
-                gateway to understanding what’s next.
+                Stay ahead of the curve with our insights on stones. We&apos;re your
+                gateway to understanding what&apos;s next.
               </p>
               <div className="flex mt-4">
                 <input
