@@ -1,13 +1,11 @@
+import { BreadcrumType } from "@/lib/types";
 import { Home } from "lucide-react"
 import Link from "next/link"
 import React from "react";
 
-interface Breadcrum{
-    pageName: string;
-    pageUrl: string;
-}
 
-export default function Breadcrum({ breadcrum }: { breadcrum: Breadcrum[] }) {
+
+export default function Breadcrum({ breadcrum }: { breadcrum: BreadcrumType[] }) {
     return (
         <>
             <ul className="flex gap-2">

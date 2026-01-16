@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    dangerouslyAllowLocalIP: process.env.DANGEROUSLY_ALLOW_LOCAL_IP === "true",
+    dangerouslyAllowSVG: process.env.DANGEROUSLY_ALLOW_LOCAL_IP === "true",
+    unoptimized: process.env.DANGEROUSLY_ALLOW_LOCAL_IP !== "true",
     remotePatterns: [
       // --- Production domains ---
       {
@@ -19,7 +22,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "1337", // only needed for local Strapi
+        port: "1337", 
         pathname: "/uploads/**",
       },
     ],

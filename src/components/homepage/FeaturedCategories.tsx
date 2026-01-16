@@ -23,7 +23,7 @@ export default function FeaturedCategories({
             </div>
             <div className="flex justify-end">
               <Link href={"/product-category/"}>
-                <button className="button-1 py-3 px-4">
+                <button className="button-1 cursor-pointer py-3 px-4">
                   View All Categories
                 </button>
               </Link>
@@ -60,7 +60,7 @@ export default function FeaturedCategories({
                       </span>
                     </div>
                     <div className="shop-btn lg:block hidden">
-                        <button className="button-1 p-3 !rounded-full group-hover:!bg-[#4A3A2A]"><MoveRight className="-rotate-45 group-hover:rotate-0" /></button>
+                        <button className="button-1 p-3 !rounded-full group-hover:!bg-[#4A3A2A] cursor-pointer"><MoveRight className="-rotate-45 group-hover:rotate-0" /></button>
                     </div>
                   </div>
                 </div>

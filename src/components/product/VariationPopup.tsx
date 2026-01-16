@@ -66,8 +66,8 @@ export default function VariationPopup({
         {/* TABLE */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-dark">
-              <tr>
+            <thead >
+              <tr className="bg-dark">
                 <th className="p-3 text-left">Size</th>
                 <th className="p-3 text-center">Pcs</th>
                 <th className="p-3 text-center">Texture</th>

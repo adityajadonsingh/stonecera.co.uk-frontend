@@ -17,7 +17,7 @@ export async function generateMetadata({
   searchParams?: SearchParamsPromise;
 }): Promise<Metadata> {
   const { slug } = await params;
-  
+
   const product = await getProductBySlug(slug);
 
   return {
@@ -49,9 +49,8 @@ export default async function ProductPage({
       : undefined;
 
   return (
-    <div className="px-4 py-8">
+    <div className="container py-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
         <div className="col-span-1 lg:col-span-5">
           <ImageGallery images={product.images ?? []} />
         </div>
@@ -65,7 +64,7 @@ export default async function ProductPage({
             {product.name}
           </h1>
 
-          <div className="text-lg text-amber-700 font-medium mb-6">
+          <div className="text-lg text-amber-700 font-medium mb-4">
             From: {fromPerM2 ? `£${fromPerM2.toFixed(2)} /m²` : "—"}
           </div>
 
@@ -74,7 +73,6 @@ export default async function ProductPage({
             variations={variations}
             productDiscount={product.productDiscount}
             categoryDiscount={product.category?.categoryDiscount}
-            priceBeforeDiscount={product.priceBeforeDiscount}
           />
         </div>
       </div>

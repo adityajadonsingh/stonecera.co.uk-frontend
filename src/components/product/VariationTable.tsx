@@ -1,177 +1,219 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import type { ProductVariation } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { ChevronDown } from "lucide-react";
 
 interface Props {
-  productId: number | string;
+  productId: number;
   variations: ProductVariation[];
   productDiscount?: number;
   categoryDiscount?: number;
-  priceBeforeDiscount?: { Per_m2: number; Price: number } | null;
 }
 
 export default function VariationTable({
   productId,
-  variations = [],
+  variations,
+  productDiscount,
+  categoryDiscount,
 }: Props) {
   const router = useRouter();
 
-  // Build stable internal keys from numeric id (fallback to index if missing)
-  const keys = useMemo(
-    () => variations.map((v, i) => (v.id !== undefined && v.id !== null ? String(v.id) : `idx-${i}`)),
-    [variations]
-  );
+  const [qty, setQty] = useState<Record<number, number>>({});
+  const [openId, setOpenId] = useState<number | null>(null);
 
-  // initial qty keyed by internalKey (string)
-  const initialQty = useMemo(() => {
-    return keys.reduce((acc, k) => {
-      acc[k] = 1;
-      return acc;
-    }, {} as Record<string, number>);
-  }, [keys]);
+  /* ---------------- DISCOUNT ---------------- */
+  const usedDiscount = useMemo(() => {
+    if (productDiscount && productDiscount > 0) return productDiscount;
+    if (categoryDiscount && categoryDiscount > 0) return categoryDiscount;
+    return 0;
+  }, [productDiscount, categoryDiscount]);
 
-  const [qty, setQty] = useState<Record<string, number>>(initialQty);
-  const [loadingKey, setLoadingKey] = useState<string | null>(null);
-  const [successKey, setSuccessKey] = useState<string | null>(null);
-
-  // Ensure qty has entries for newly added variations while preserving existing values
-  useEffect(() => {
-    setQty((prev) => {
-      const next: Record<string, number> = { ...prev };
-      for (const k of keys) {
-        if (!Object.prototype.hasOwnProperty.call(next, k)) next[k] = 1;
-      }
-      return next;
-    });
-  }, [keys]);
-
-  const onQtyChange = (internalKey: string, value: number) => {
-    setQty((s) => ({ ...s, [internalKey]: Math.max(1, Math.floor(value || 1)) }));
+  const getBeforePrice = (price: number) => {
+    if (!usedDiscount) return null;
+    return Math.floor(price * (1 + usedDiscount / 100));
   };
 
-  const handleAddToCart = async (internalKey: string, variationIdRaw: number | string) => {
-    const variationId = Number(variationIdRaw);
-    if (!variationId) {
-      alert("Invalid variation id");
-      return;
-    }
+  const getYouSave = (price: number) => {
+    const before = getBeforePrice(price);
+    if (!before) return null;
+    const save = before - price;
+    return save > 0 ? save : null;
+  };
 
-    const quantity = qty[internalKey] ?? 1;
-    setLoadingKey(internalKey);
-    setSuccessKey(null);
+  /* ---------------- INIT QTY ---------------- */
+  useEffect(() => {
+    const initial: Record<number, number> = {};
+    variations.forEach((v) => {
+      if (v.Stock > 0) initial[v.id] = 0;
+    });
+    setQty(initial);
+  }, [variations]);
 
-    try {
-      const res = await fetch("/api/cart/add", {
+  /* ---------------- QTY CONTROL ---------------- */
+  const set = (id: number, value: number, stock: number) => {
+    setQty((s) => ({
+      ...s,
+      [id]: Math.max(0, Math.min(value, stock)),
+    }));
+  };
+
+  /* ---------------- TOTALS ---------------- */
+  const selected = variations.filter((v) => qty[v.id] > 0);
+  const totalUnits = selected.reduce((s, v) => s + qty[v.id], 0);
+  const totalPrice = selected.reduce((s, v) => s + qty[v.id] * v.Price, 0);
+
+  /* ---------------- ADD TO CART ---------------- */
+  const addAll = async () => {
+    for (const v of selected) {
+      await fetch("/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product: productId,
-          variation_id: variationId,
-          quantity,
+          variation_id: v.id,
+          quantity: qty[v.id],
         }),
       });
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => "Unknown error");
-        console.error("Add to cart failed:", res.status, text);
-        alert("Add to cart failed: " + text);
-        return;
-      }
-
-      // success
-      setSuccessKey(internalKey);
-      // revalidate server components / refresh cart indicator
-      try {
-        router.refresh();
-      } catch (e) {
-        // ignore
-      }
-
-      // clear success indicator after 2 seconds
-      setTimeout(() => setSuccessKey((k) => (k === internalKey ? null : k)), 2000);
-    } catch (err) {
-      console.error("Add to cart error:", err);
-      alert("Add to cart unexpected error");
-    } finally {
-      setLoadingKey((k) => (k === internalKey ? null : k));
     }
+
+    router.refresh();
+    alert("Added to cart");
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-3 border text-left">Thickness</th>
-            <th className="p-3 border text-left">Size</th>
-            <th className="p-3 border text-left">Finish</th>
-            <th className="p-3 border text-left">Pcs</th>
-            <th className="p-3 border text-left">Pack Size</th>
-            <th className="p-3 border text-left">Per m²</th>
-            <th className="p-3 border text-left">Stock</th>
-            <th className="p-3 border text-left">Qty</th>
-            <th className="p-3 border text-left">Price</th>
-            <th className="p-3 border text-left">Action</th>
-          </tr>
-        </thead>
+    <div className="rounded-md bg-skin shadow-md divid">
+      {variations.map((v) => {
+        const q = qty[v.id] ?? 0;
+        const isLow = v.Stock > 0 && v.Stock <= 5;
+        const isOut = v.Stock <= 0;
+        const before = getBeforePrice(v.Price);
+        const youSave = getYouSave(v.Price);
 
-        <tbody>
-          {variations.map((v, i) => {
-            const internalKey = keys[i];
-            const currentQty = qty[internalKey] ?? 1;
+        return (
+          <div className="border-b border-gray-200" key={v.id}>
+            {/* Mobile header */}
+            <button
+              onClick={() => setOpenId(openId === v.id ? null : v.id)}
+              className="w-full flex justify-between items-center p-3 md:hidden"
+            >
+              <span className="font-medium">
+                {v.Size} • {v.Thickness}
+              </span>
+              <ChevronDown
+                className={`transition ${
+                  openId === v.id ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-            const priceNum = typeof v.Price === "number" ? v.Price : 0;
-            const perM2Num = typeof v.Per_m2 === "number" ? v.Per_m2 : 0;
-            const stockNum = typeof v.Stock === "number" ? v.Stock : undefined;
+            {/* Row */}
+            <div
+              className={`p-3 grid md:grid-cols-[1fr_140px_160px] gap-4 items-center ${
+                openId !== v.id ? "hidden md:grid" : "grid"
+              }`}
+            >
+              {/* Details */}
+              <div>
+                <div className="font-medium">
+                  {v.Size} • {v.Thickness}
+                </div>
+                <div className="text-sm text-gray-500">
+                  <span className="font-medium">Finish : </span>{v.Finish} |{" "}
+                  <span className="font-medium">Pack Size : </span>
+                  {v.PackSize} m² |{" "}
+                  {v.Per_m2 ? `£${v.Per_m2.toFixed(2)} /m²` : "—"}
+                </div>
 
-            return (
-              <tr key={internalKey} className="odd:bg-white even:bg-gray-50">
-                <td className="p-3 border text-center">{v.Thickness ?? "—"}</td>
-                <td className="p-3 border text-center">{v.Size ?? "—"}</td>
-                <td className="p-3 border text-center">{v.Finish ?? "—"}</td>
-                <td className="p-3 border text-center">{v.Pcs ?? "—"}</td>
-                <td className="p-3 border text-center">{v.PackSize ?? "—"}</td>
-                <td className="p-3 border text-center">
-                  {perM2Num ? `${perM2Num.toFixed(2)} /m²` : "—"}
-                </td>
-                <td className="p-3 border text-center">
-                  {typeof stockNum === "number" ? `${stockNum} Stock` : "—"}
-                </td>
+                <div
+                  className={`text-xs font-semibold mt-1 ${
+                    isOut
+                      ? "text-red-500"
+                      : isLow
+                      ? "text-red-500 animate-pulse"
+                      : "text-green-600"
+                  }`}
+                >
+                  {isOut
+                    ? "Out of stock"
+                    : isLow
+                    ? `${v.Stock} packs left`
+                    : "In stock"}
+                </div>
+              </div>
 
-                <td className="p-3 border text-center">
-                  <input
-                    type="number"
-                    min={1}
-                    max={stockNum ?? 9999}
-                    value={currentQty}
-                    onChange={(e) => onQtyChange(internalKey, Number(e.target.value))}
-                    className="w-20 border rounded px-2 py-1 text-sm"
-                  />
-                </td>
+              {/* Price */}
+              <div className="text-right">
+                {usedDiscount > 0 && (
+                  <div className="text-xs text-green-600 font-medium">
+                    {usedDiscount}% OFF
+                  </div>
+                )}
+                {before && (
+                  <div className="text-xs line-through text-gray-400">
+                    £{before.toFixed(2)}
+                  </div>
+                )}
+                <div className="font-semibold text-amber-700">
+                  £{v.Price.toFixed(2)}
+                </div>
+                <div className="text-xs text-gray-600">per pack</div>
+                {youSave && (
+                  <div className="text-xs text-green-700 font-semibold">
+                    You save £{youSave.toFixed(2)}
+                  </div>
+                )}
 
-                <td className="p-3 border text-center">£{priceNum.toFixed(2)}</td>
+                
 
-                <td className="p-3 border text-center">
-                  <button
-                    onClick={() => handleAddToCart(internalKey, v.id)}
-                    disabled={stockNum !== undefined && stockNum <= 0}
-                    className={`px-3 py-1 rounded text-white ${
-                      stockNum !== undefined && stockNum <= 0
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gray-700 hover:bg-gray-800"
-                    }`}
-                    title="Add to cart (not functional yet)"
-                  >
-                    {loadingKey === internalKey ? "Adding..." : successKey === internalKey ? "Added" : "🛒"}
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                
+              </div>
+
+              {/* Quantity */}
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  onClick={() => set(v.id, q - 1, v.Stock)}
+                  disabled={isOut}
+                  className="w-8 h-8 font-medium text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white cursor-pointer rounded disabled:opacity-30"
+                >
+                  −
+                </button>
+                <div className="w-10 text-center text-lg font-semibold">
+                  {q}
+                </div>
+                <button
+                  onClick={() => set(v.id, q + 1, v.Stock)}
+                  disabled={isOut}
+                  className="w-8 h-8 font-medium text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white cursor-pointer rounded disabled:opacity-30"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Footer */}
+      <div className="p-4 bg-gray-50 flex justify-between items-center">
+        <div>
+          <div className="text-sm text-gray-600">
+            Total units: <b>{totalUnits}</b>
+          </div>
+          <div className="text-lg text-dark font-semibold">
+            £{totalPrice.toFixed(2)}
+          </div>
+        </div>
+
+        <button
+          disabled={!selected.length}
+          onClick={addAll}
+          className="button-1 text-white px-6 py-2 rounded disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+        >
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 }

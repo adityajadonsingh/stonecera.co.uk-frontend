@@ -20,7 +20,7 @@ export default function BlogsSection({ blogs }: { blogs: Blog[] }) {
           </div>
           <div className="flex justify-end">
             <Link href={"/blogs/"}>
-              <button className="button-1 py-3 px-4">
+              <button className="button-1 cursor-pointer py-3 px-4">
                 View All Blogs
               </button>
             </Link>

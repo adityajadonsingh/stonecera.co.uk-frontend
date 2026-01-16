@@ -26,7 +26,7 @@ export default function BestSeller({
 
           <div className="flex justify-end">
             <Link href="/product/">
-              <button className="button-1 py-3 px-4">View All Products</button>
+              <button className="button-1 cursor-pointer py-3 px-4">View All Products</button>
             </Link>
           </div>
         </div>

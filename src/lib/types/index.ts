@@ -24,6 +24,7 @@ export interface Category {
   name: string;
   slug: string;
   bannerImg: ImageAttributes;
+  footerContent?: string;
   categoryDiscount: number;
   short_description: string;
   images: ImageAttributes[];
@@ -279,3 +280,8 @@ export type HomepageData = {
 };
 
 export type WishlistItem = number;
+
+export interface BreadcrumType{
+    pageName: string;
+    pageUrl: string;
+}

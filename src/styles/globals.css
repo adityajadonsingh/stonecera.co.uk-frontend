@@ -80,7 +80,7 @@ textarea {
 
   color: white;
   border-radius: 5px;
-  cursor: pointer;
+
   font-weight: 500;
 
   transition: background-position 0.4s ease;
@@ -89,7 +89,6 @@ textarea {
 .button-1:hover {
   background-position: right center;
 }
-
 
 .button-logo-1:hover {
   background-color: var(--color-dark);
@@ -147,13 +146,8 @@ textarea {
   width: 25px;
   border-radius: 50px;
 }
-.heading{
-  background: linear-gradient(
-    90deg,
-    #4C4331,
-    #CE9550,
-    #4C4331
-  );
+.heading {
+  background: linear-gradient(90deg, #4c4331, #ce9550, #4c4331);
   background-size: 200% 100%;
 
   -webkit-background-clip: text;
@@ -172,7 +166,8 @@ textarea {
 }
 
 @keyframes pulseBg {
-  0%, 100% {
+  0%,
+  100% {
     background-color: #4d4431;
   }
   50% {
@@ -182,4 +177,230 @@ textarea {
 
 .animate-pulse-bg {
   animation: pulseBg 1s linear infinite;
+}
+.prose {
+  img {
+    width: 100%;
+    height: 450px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+  h2 {
+    font-size: 16pt;
+  }
+  h3 {
+    font-size: 14pt;
+  }
+  h4 {
+    font-size: 12pt;
+  }
+  h2,
+  h3,
+  h4 {
+    font-weight: 700;
+    margin: 15px 0;
+  }
+  h3,
+  h4 {
+    color: #434343;
+  }
+  p {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    font-size: 12pt;
+  }
+  a span {
+    color: #f36c23 !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+  }
+  a:hover span {
+    color: #ff782f !important;
+  }
+  a {
+    color: #f36c23 !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+  }
+  a:hover {
+    color: #ff782f !important;
+  }
+  ol,
+  ul {
+    margin-left: 20px;
+  }
+  ol,
+  ol li {
+    list-style: decimal !important;
+    /* margin-left: 15px; */
+  }
+  ul,
+  ul li {
+    list-style: disc !important;
+    /* margin-left: 15px; */
+  }
+  table {
+    border: 2px solid black;
+    border-spacing: 10px;
+    width: 100% !important;
+    td,
+    th {
+      border: 1px solid gray;
+      padding: 5px 10px;
+      p {
+        padding: 0px;
+      }
+    }
+  }
+}
+
+.pg-des {
+  margin-bottom: 30px;
+  span {
+    font-family: "Montserrat", "Montserrat Fallback" !important;
+  }
+  a,
+  a span {
+    color: #f36c23 !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+  }
+  a:hover,
+  a:hover span {
+    color: #ff782f !important;
+  }
+  ol,
+  ul {
+    margin-left: 20px;
+  }
+  ol,
+  ol li {
+    list-style: decimal !important;
+    /* margin-left: 15px; */
+  }
+  ul,
+  ul li {
+    list-style: disc !important;
+    /* margin-left: 15px; */
+  }
+  li:not(:last-child) {
+    margin-bottom: 8px;
+  }
+  h2 span,
+  h3 span,
+  h4 span,
+  h5 span,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-weight: 600 !important;
+  }
+  h2,
+  h2 span {
+    font-size: 25px;
+  }
+  h3,
+  h3 span {
+    font-size: 19px;
+  }
+  h4,
+  h4 span {
+    font-size: 18px;
+  }
+  h5,
+  h5 span {
+    font-size: 16px;
+  }
+}
+
+.pg-des .wrapper .inner-wrapper {
+  padding: 15px 40px 24px;
+  border-radius: 15px;
+}
+
+.pg-des .prose.collapsed {
+  max-height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.read-btn {
+  background-color: #f36c23;
+  color: #fff;
+  text-decoration: none;
+  padding: 5px 20px;
+  border-radius: 20px;
+}
+.read-btn:hover {
+  background-color: #fff;
+  color: #f36c23;
+}
+
+.pg-des .fade-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(
+    to bottom,
+    rgba(235, 237, 240, 0) 0%,
+    #ebedf0 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+.bg-background:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: "";
+  background: #4c4331;
+  background: -webkit-linear-gradient(
+    0deg,
+    rgba(76, 67, 49, 0.87) 7%,
+    rgba(206, 149, 80, 0) 23%
+  );
+  background: -moz-linear-gradient(
+    0deg,
+    rgba(76, 67, 49, 0.87) 7%,
+    rgba(206, 149, 80, 0) 23%
+  );
+  background: linear-gradient(
+    0deg,
+    rgba(76, 67, 49, 0.87) 7%,
+    rgba(206, 149, 80, 0) 23%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#4C4331", endColorstr="#CE9550", GradientType=0);
+  z-index: 10;
+  border-radius: 8px;
+}
+.stone-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 150px;
+  gap: 8px;
+}
+
+
+.stone-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  height: 100%;
+}
+
+.stone-item.tall {
+  grid-row: span 3;
+}
+
+.stone-item.medium {
+  grid-row: span 2;
+}
+
+.stone-item.small {
+  grid-row: span 1;
 }

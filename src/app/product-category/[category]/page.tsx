@@ -6,6 +6,7 @@ import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelecto
 import { getCategoryBySlug } from "@/lib/api/category";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
+import PageContentBox from "@/components/PageContentBox";
 
 export async function generateMetadata({
   params,
@@ -77,7 +78,15 @@ export default async function CategoryPage({
 
   return (
     <>
-    <PageBanner pageName={categoryData.name} pageDescription={categoryData.short_description} pageUrl={`/product-category/${categoryData.slug}/`} bgImage={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.bannerImg?.url}`} />
+    <PageBanner pageName={categoryData.name} pageDescription={categoryData.short_description} breadcrum={[{
+                        pageName: "Product Category",
+                        pageUrl: "/product-category/"
+                },
+                    {
+                        pageName: categoryData.name,
+                        pageUrl: `/product-category/${categoryData.slug}/`
+                    }
+                ]} bgImage={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.bannerImg?.url}`} />
       
 
       {/* Layout grid */}
@@ -113,6 +122,16 @@ export default async function CategoryPage({
             />
           </div>
         </div>
+
+        {
+          categoryData.footerContent && (
+            <PageContentBox
+              content={categoryData.footerContent}
+              isFullPage={true}
+            />
+          )
+        }
+
       </div>
     </>
   );
