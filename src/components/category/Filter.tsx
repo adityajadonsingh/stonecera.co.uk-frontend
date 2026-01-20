@@ -74,76 +74,78 @@ export default function Filters({
   };
 
   const renderColorFilter = (
-  fieldName: string,
-  data: Record<string, number>
-) => {
-  const entries = Object.entries(data || {});
-  if (!entries.some(([, count]) => count > 0)) return null;
+    fieldName: string,
+    data: Record<string, number>
+  ) => {
+    const entries = Object.entries(data || {});
+    if (!entries.some(([, count]) => count > 0)) return null;
 
-  return (
-    <div className="mb-4 bg-white py-2">
-      <div className="border-[#cb934f]/40 border-b-2 mb-2 px-4 pb-1 flex justify-between items-center">
-        <span className="font-semibold text-base">Color & Tone</span>
-      </div>
+    return (
+      <div className="mb-4 bg-white py-2">
+        <div className="border-[#cb934f]/40 border-b-2 mb-2 px-4 pb-1 flex justify-between items-center">
+          <span className="font-semibold text-base">Color & Tone</span>
+        </div>
 
-      {entries.map(([name, count]) => {
-        if (count === 0) return null;
+        {entries.map(([name, count]) => {
+          if (count === 0) return null;
 
-        const checked = currentFilters[fieldName] === name;
-        const color = COLOR_MAP[name] || "#ccc";
+          const checked = currentFilters[fieldName] === name;
+          const color = COLOR_MAP[name] || "#ccc";
 
-        return (
-          <label
-            key={name}
-            className="flex items-center gap-3 px-4 py-2 text-sm cursor-pointer"
-          >
-            {/* Hidden native checkbox */}
-            <input
-              type="checkbox"
-              checked={checked}
-              onChange={() => handleChange(fieldName, name)}
-              className="absolute opacity-0 pointer-events-none"
-            />
+          return (
+            <label
+              key={name}
+              className="flex items-center gap-3 px-4 py-2 text-sm cursor-pointer"
+            >
+              {/* Hidden native checkbox */}
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => handleChange(fieldName, name)}
+                className="absolute opacity-0 pointer-events-none"
+              />
 
-            {/* Color swatch */}
-            <span
-              className="h-5 w-5 rounded-full border border-gray-300 flex-shrink-0"
-              style={{ backgroundColor: color }}
-            />
+              {/* Color swatch */}
+              <span
+                className="h-5 w-5 rounded-full border border-gray-300 flex-shrink-0"
+                style={{ backgroundColor: color }}
+              />
 
-            {/* Custom checkbox */}
-            <span
-              className={`
+              {/* Custom checkbox */}
+              <span
+                className={`
                 flex h-4 w-4 items-center justify-center
                 rounded border transition
-                ${checked
-                  ? "bg-[#cb934f] border-[#cb934f]"
-                  : "bg-white border-gray-300"}
+                ${
+                  checked
+                    ? "bg-[#cb934f] border-[#cb934f]"
+                    : "bg-white border-gray-300"
+                }
               `}
-            >
-              {checked && (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-3 w-3 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              )}
-            </span>
+              >
+                {checked && (
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-3 w-3 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
+              </span>
 
-            {/* Label */}
-            <span className="flex-1 capitalize">
-              {name} <span className="text-gray-500">({count})</span>
-            </span>
-          </label>
-        );
-      })}
-    </div>
-  );
-};
+              {/* Label */}
+              <span className="flex-1 capitalize">
+                {name} <span className="text-gray-500">({count})</span>
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    );
+  };
 
   // Renders a UI section for any filter list
   const renderFilter = (
@@ -193,9 +195,11 @@ export default function Filters({
 
               {/* Label text */}
               <span className="leading-relaxed">
-                {title === "Price" && name.includes("-")
-  ? `£${name.replace("-", " - £")}`
-  : formatFilterLabel(fieldName, name)}{" "}
+                <span className="capitalize">
+                  {title === "Price" && name.includes("-")
+                    ? `£${name.replace("-", " - £")}`
+                    : formatFilterLabel(fieldName, name)}{" "}
+                </span>
                 <span className="text-gray-500">({count})</span>
               </span>
             </label>

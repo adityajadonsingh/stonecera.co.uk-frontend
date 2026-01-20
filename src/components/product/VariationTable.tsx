@@ -8,8 +8,8 @@ import { ChevronDown } from "lucide-react";
 interface Props {
   productId: number;
   variations: ProductVariation[];
-  productDiscount?: number;
-  categoryDiscount?: number;
+  productDiscount?: number | null;
+  categoryDiscount?: number | null;
 }
 
 export default function VariationTable({
@@ -120,7 +120,7 @@ export default function VariationTable({
                   {v.Size} • {v.Thickness}
                 </div>
                 <div className="text-sm text-gray-500">
-                  <span className="font-medium">Finish : </span>{v.Finish} |{" "}
+                  <span className="font-medium">Finish : </span><span className="capitalize">{v.Finish}</span> |{" "}
                   <span className="font-medium">Pack Size : </span>
                   {v.PackSize} m² |{" "}
                   {v.Per_m2 ? `£${v.Per_m2.toFixed(2)} /m²` : "—"}

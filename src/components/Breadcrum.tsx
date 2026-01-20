@@ -19,7 +19,7 @@ export default function Breadcrum({ breadcrum }: { breadcrum: BreadcrumType[] })
                         if (idx === breadcrum.length - 1) {
                             return (
                                 <li key={`bread-${idx}`}>
-                                    <span className="font-semibold capitalize">{bread.pageName}</span>
+                                    <span className="font-semibold capitalize text-[#cb934f]">{bread.pageName}</span>
                                 </li>
                             )
                         } else {

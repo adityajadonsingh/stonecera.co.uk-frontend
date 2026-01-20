@@ -25,7 +25,7 @@ export interface Category {
   slug: string;
   bannerImg: ImageAttributes;
   footerContent?: string;
-  categoryDiscount: number;
+  categoryDiscount: number | null;
   short_description: string;
   images: ImageAttributes[];
   products: CategoryProduct[];
@@ -58,8 +58,9 @@ export interface Product {
   id: number;
   name: string;
   slug: string;
-  productDiscount: number;
-  categoryDiscount: number;
+  description: string;
+  productDiscount: number | null;
+  categoryDiscount: number | null;
   images: ImageAttributes[];
   image: {
     url: string;
