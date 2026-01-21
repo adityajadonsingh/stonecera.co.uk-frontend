@@ -8,6 +8,8 @@ import { getAllCategories } from "@/lib/api/category";
 import { getFooterDetail } from "@/lib/api/footer";
 import Footer from "@/components/Footer";
 import { WishlistProvider } from "@/context/WishlistContext";
+import ScrollRestoration from "./ScrollRestoration";
+import ScrollToTop from "./ScrollToTop";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -31,6 +33,8 @@ export default async function RootLayout({
     <html lang="en">
       <WishlistProvider>
         <body className={montserrat.className}>
+          <ScrollRestoration />
+          <ScrollToTop />
           <Header categories={categories} footerDetail={footerDetail} />
           <main>{children}</main>
           <Footer categories={categories} footerDetail={footerDetail} />

@@ -123,6 +123,7 @@ export default function VariationTable({
                   <span className="font-medium">Finish : </span><span className="capitalize">{v.Finish}</span> |{" "}
                   <span className="font-medium">Pack Size : </span>
                   {v.PackSize} m² |{" "}
+                  <span className="font-medium">Pcs : </span>{v.Pcs} pcs |{" "}
                   {v.Per_m2 ? `£${v.Per_m2.toFixed(2)} /m²` : "—"}
                 </div>
 

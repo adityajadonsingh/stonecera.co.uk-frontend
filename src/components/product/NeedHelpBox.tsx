@@ -1,6 +1,7 @@
-import { Mail, MessageCircle, MessageCircleQuestionMark, Phone } from "lucide-react";
+import { Mail, MessageCircleQuestionMark, Phone } from "lucide-react";
 import Link from "next/link";
-
+import Image from "next/image";
+import WhatsAppIcon from "../../../public/media/icons/whatsapp.png";
 export default function NeedHelpBox() {
   return (
     <>
@@ -26,7 +27,7 @@ export default function NeedHelpBox() {
             rel="noopener noreferrer"
           >
             <button className="col cursor-pointer w-[65px] h-[65px] shadow-sm bg-[#f7f3eb] text-[#4c4331] hover:bg-[#4c4331] hover:text-white rounded-sm flex items-center justify-center">
-              <MessageCircle size={30} />
+              <Image src={WhatsAppIcon} alt="WhatsApp" width={35} height={35} />
             </button>
           </Link>
           <button className="col cursor-pointer w-[65px] h-[65px] shadow-sm bg-[#f7f3eb] text-[#4c4331] hover:bg-[#4c4331] hover:text-white rounded-sm flex items-center justify-center">

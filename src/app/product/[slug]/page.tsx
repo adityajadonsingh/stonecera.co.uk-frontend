@@ -4,6 +4,7 @@ import ImageGallery from "@/components/product/ImageGallery";
 import NeedHelpBox from "@/components/product/NeedHelpBox";
 import ProductHighlights from "@/components/product/ProductHighlights";
 import ProductSidebarTrigger from "@/components/product/ProductSidebarTrigger";
+import ShareButton from "@/components/product/ShareButton";
 import VariationTable from "@/components/product/VariationTable";
 import { getProductBySlug } from "@/lib/api/product";
 import type { Product } from "@/lib/types";
@@ -132,6 +133,7 @@ export default async function ProductPage({
           <ProductHighlights />
           <ProductSidebarTrigger description={product.description} />
           <NeedHelpBox />
+          <ShareButton title={product.name} />
         </div>
       </div>
     </div>
