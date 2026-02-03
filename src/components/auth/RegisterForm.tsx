@@ -64,7 +64,7 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 bg-white p-6 rounded shadow-sm">
+    <form onSubmit={onSubmit} className="space-y-4 bg-skin p-6 rounded shadow-sm">
       {error && <div className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</div>}
 
       <label className="block">
@@ -88,7 +88,7 @@ export default function RegisterForm() {
       </label>
 
       <div className="flex items-center justify-between mt-2">
-        <button type="submit" disabled={loading} className="px-4 py-2 bg-amber-600 text-white rounded">
+        <button type="submit" disabled={loading} className="px-4 py-2 button-1 text-white rounded">
           {loading ? "Creating…" : "Create account"}
         </button>
       </div>

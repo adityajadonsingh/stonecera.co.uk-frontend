@@ -72,6 +72,8 @@ export interface Product {
     Per_m2: number;
     Price: number;
   } | null;
+  reviews: CustomerReviewsSection;
+  productReviews: ProductReview[];
 }
 
 export interface UserAttributes {
@@ -267,17 +269,27 @@ export interface Blog {
   title: string;
   slug: string;
   shortDescription: string;
+  content: string;
   author: string;
   createdOn: string;
   image: ImageAttributes;
 }
-
+export interface BlogPage{
+  data: Blog[];
+  meta: {
+    page: number;
+    pageSize: number;
+    total: number;
+    pageCount: number;
+  };
+}
 export type HomepageData = {
   banner: Banner[];
   featuredCategory: FeaturedCategoriesSection;
   bestSeller: BestSellerSection;
   reviews: CustomerReviewsSection;
   blogs: Blog[];
+  seo: StrapiSEO | null;
 };
 
 export type WishlistItem = number;
@@ -285,4 +297,57 @@ export type WishlistItem = number;
 export interface BreadcrumType{
     pageName: string;
     pageUrl: string;
+}
+
+export interface ProductReview {
+  name: string;
+  stars: number;
+  feedback: string;
+  createdAt: string | null;
+}
+
+export interface Catalogue {
+  id: number;
+  name: string;
+  thumbnail: {
+    url: string;
+    alt: string;
+  };
+  file: {
+    url: string;
+    name: string;
+  };
+}
+export interface SitePolicy{
+  pageName: string;
+  pageDescription: string;
+}
+
+export type StrapiSEO = {
+  meta_title?: string;
+  meta_description?: string;
+  meta_keyword?: string;
+  canonical_tag?: string;
+  robots?: string;
+
+  og_title?: string;
+  og_description?: string;
+  og_image?: string | null;
+
+  twitter_title?: string;
+  twitter_description?: string;
+  twitter_image?: string | null;
+  schemas?: Schema | Schema[];
+};
+
+type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
+export interface JSONObject {
+  [key: string]: JSONValue;
+}
+type JSONArray = JSONValue[];
+
+export interface Schema {
+  id: number;
+  name: string;
+  schema_json: JSONObject;
 }

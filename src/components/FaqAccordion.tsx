@@ -24,7 +24,7 @@ export default function FaqAccordion({
       {/* Heading */}
       <h2 className="text-center text-3xl heading font-bold mb-10">
         FAQ&apos;S
-        <span className="block w-20 h-1 bg-[#c98b4c] mx-auto mt-2 rounded-full" />
+        {/* <span className="block w-20 h-1 bg-[#c98b4c] mx-auto mt-2 rounded-full" /> */}
       </h2>
 
       <div className="">

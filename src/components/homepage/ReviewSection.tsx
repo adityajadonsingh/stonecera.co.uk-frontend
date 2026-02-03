@@ -15,27 +15,44 @@ type ReviewSectionProps = {
     sectionSubtitle: string;
     reviews: Review[];
   };
+  isProductPage?: boolean;
 };
 
-export default function ReviewSection({ content }: ReviewSectionProps) {
+export default function ReviewSection({
+  content,
+  isProductPage,
+}: ReviewSectionProps) {
   if (!content?.reviews?.length) return null;
 
   return (
     <section className="py-16 bg-skin">
       <div className="container mx-auto px-4">
-        <div className="flex gap-10 items-center">
+        <div className={isProductPage ? "block" : "flex gap-10 items-center"}>
           {/* LEFT CONTENT */}
-          <div className="w-4/12">
-            <h2 className="text-3xl font-bold heading mb-4">
-              {content.sectionTitle}
-            </h2>
-            <p className="text-gray-600 leading-relaxed">
-              {content.sectionSubtitle}
-            </p>
+          <div className={isProductPage ? "w-full" : "w-4/12"}>
+            {!isProductPage ? (
+              <>
+                <h2 className="text-3xl font-bold heading mb-4">
+                  {content.sectionTitle}
+                </h2>
+                <p className="text-gray-600 leading-relaxed">
+                  {content.sectionSubtitle}
+                </p>{" "}
+              </>
+            ) : (
+              <>
+                <h2 className="text-3xl text-center font-bold heading mb-4">
+                  Testimonials
+                </h2>
+                <p className="text-gray-600 text-center leading-relaxed">
+                  {content.sectionSubtitle}
+                </p>{" "}
+              </>
+            )}
           </div>
 
           {/* RIGHT SLIDER */}
-          <div className="relative w-8/12">
+          <div className={isProductPage ? "w-full relative mt-8" : "relative w-8/12"}>
             {/* Navigation buttons */}
             <button className="review-prev cursor-pointer absolute -left-6 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
               <ChevronLeft size={20} />
