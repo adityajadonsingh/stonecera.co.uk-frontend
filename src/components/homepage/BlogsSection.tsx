@@ -6,27 +6,27 @@ import { Clock, User } from "lucide-react";
 export default function BlogsSection({ blogs }: { blogs: Blog[] }) {
   console.log(blogs);
   return (
-    <section className="homeBlogs py-16">
+    <section className="homeBlogs md:py-16 py-8">
       <div className="container">
-        <div className="grid grid-cols-[2fr_1fr] items-center gap-2 mb-10">
-          <div className="col">
-            <h2 className="text-3xl heading font-bold  mb-2">
+        <div className="grid md:grid-cols-[2fr_1fr] grid-cols-1 items-center md:gap-2 gap-4 md:mb-10 mb-5">
+          <div className="col md:text-start text-center">
+            <h2 className="sm:text-3xl text-2xl heading font-bold  mb-2">
               Our Latest Blogs
             </h2>
-            <p className="text-lg text-dark opacity-95 ">
+            <p className="md:text-lg text-sm text-dark opacity-95 ">
               Read our latest blogs and get relevant information about natural
               stone paving slabs and engineered stones.
             </p>
           </div>
-          <div className="flex justify-end">
+          <div className="flex md:justify-end justify-center">
             <Link href={"/blogs/"}>
-              <button className="button-1 cursor-pointer py-3 px-4">
+              <button className="button-1 cursor-pointer md:py-3 py-2 md:text-base text-sm md:px-4 px-3 ">
                 View All Blogs
               </button>
             </Link>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-3 grid-cols-1 gap-5">
           {blogs.map((blog, i) => (
             <Link
               className="group"

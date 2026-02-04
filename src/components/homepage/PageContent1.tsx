@@ -13,13 +13,13 @@ export default function PageContent1() {
        className="z-0"
        /> 
       <div className="container z-10 relative">
-        <div className="grid grid-cols-2 gap-5 items-center">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-5 items-center">
           <div className="h-fit">
-            <h2 className="text-5xl pb-4 mb-4 border-b-2 font-bold">We Provide Reliable Flooring Services</h2>
-            <p className="text-lg">Our vision is to provide innovative, independent flooring solutions that problems for homes, industries, and workspaces, as well as flooring we would like in our own residences, work spaces.</p>
-            <div className="flex justify-between gap-4 mt-8">
+            <h2 className="lg:text-5xl text-3xl md:text-start text-center pb-4 mb-4 border-b-2 font-bold">We Provide Reliable Flooring Services</h2>
+            <p className="lg:text-lg text-base md:text-start text-center">Our vision is to provide innovative, independent flooring solutions that problems for homes, industries, and workspaces, as well as flooring we would like in our own residences, work spaces.</p>
+            <div className="flex md:justify-between justify-center gap-4 mt-8">
               <div className="flex items-center gap-3">
-                <div className="w-[70px] h-[70px] rounded-full bg-skin flex items-center justify-center">
+                <div className="lg:w-[70px] w-[70px] lg:h-[70px] h-[70px] rounded-full bg-skin flex items-center justify-center">
                   <Image src={HappyIcon} alt="Happy Clients" width={50} height={50} />
                 </div>
                 <div className="text">
@@ -39,7 +39,7 @@ export default function PageContent1() {
               </div>
             </div>
           </div>
-          <div className="images mx-auto ">
+          <div className="images mx-auto md:block hidden">
             <Image className="rounded-md" src={Img1} width={500} height={500} alt=""/>
           </div>
         </div>

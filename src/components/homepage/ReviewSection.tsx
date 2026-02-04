@@ -25,20 +25,20 @@ export default function ReviewSection({
   if (!content?.reviews?.length) return null;
 
   return (
-    <section className="py-16 bg-skin">
+    <section className="md:py-16 py-8 bg-skin">
       <div className="container mx-auto px-4">
-        <div className={isProductPage ? "block" : "flex gap-10 items-center"}>
+        <div className={isProductPage ? "block" : "flex md:flex-nowrap flex-wrap gap-10 items-center"}>
           {/* LEFT CONTENT */}
-          <div className={isProductPage ? "w-full" : "w-4/12"}>
+          <div className={isProductPage ? "w-full" : "md:w-4/12 w-full" }>
             {!isProductPage ? (
-              <>
-                <h2 className="text-3xl font-bold heading mb-4">
+              <div className="md:text-start text-center">
+                <h2 className="sm:text-3xl text-2xl heading font-bold  mb-2">
                   {content.sectionTitle}
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
                   {content.sectionSubtitle}
                 </p>{" "}
-              </>
+              </div>
             ) : (
               <>
                 <h2 className="text-3xl text-center font-bold heading mb-4">
@@ -52,12 +52,12 @@ export default function ReviewSection({
           </div>
 
           {/* RIGHT SLIDER */}
-          <div className={isProductPage ? "w-full relative mt-8" : "relative w-8/12"}>
+          <div className={isProductPage ? "w-full relative mt-8" : "relative md:w-8/12 w-full"}>
             {/* Navigation buttons */}
-            <button className="review-prev cursor-pointer absolute -left-6 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
+            <button className="review-prev cursor-pointer absolute -left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
               <ChevronLeft size={20} />
             </button>
-            <button className="review-next cursor-pointer absolute -right-6 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
+            <button className="review-next cursor-pointer absolute -right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
               <ChevronRight size={20} />
             </button>
 

@@ -1,6 +1,22 @@
-@media (max-width: 780px) {
-    .container {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
+@media (max-width: 1600px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+@media (max-width: 1300px) {
+  .cat-header li a {
+    font-size: 12px;
+  }
+}
+@media (max-width: 1025px) {
+  .container {
+    max-width: 100%;
+  }
+  main {
+    padding-top: 64px;
+  }
+}
+@media (max-width: 790px) {
+
 }

@@ -53,7 +53,7 @@ export default function ContactForm({ page }: Props) {
     <section className="contact-form py-16">
       <div className="container">
         <div className="grid bg-skin rounded-md grid-cols-1 lg:grid-cols-2">
-          <div className="p-10">
+          <div className="sm:p-10 p-5">
             <h2 className="heading mb-3 text-3xl font-bold">Get In Touch</h2>
             <p className="mb-5">
               We&apos;d love to hear from you! Fill the form below.

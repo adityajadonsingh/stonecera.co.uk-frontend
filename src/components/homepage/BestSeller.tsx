@@ -11,28 +11,28 @@ export default function BestSeller({
   if (!content?.products?.length) return null;
 
   return (
-    <section className="best-seller py-16">
+    <section className="best-seller md:py-16 py-8">
       <div className="container">
         {/* Header */}
-        <div className="grid grid-cols-[2fr_1fr] items-center gap-2 mb-10">
-          <div>
-            <h2 className="text-3xl heading font-bold mb-2">
+        <div className="grid md:grid-cols-[2fr_1fr] grid-cols-1 items-center md:gap-2 gap-4 md:mb-10 mb-5">
+          <div className="md:text-start text-center">
+            <h2 className="sm:text-3xl text-2xl heading font-bold  mb-2">
               {content.sectionTitle}
             </h2>
-            <p className="text-lg text-dark opacity-90">
+            <p className="md:text-lg text-sm text-dark opacity-95 ">
               {content.sectionSubtitle}
             </p>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex md:justify-end justify-center">
             <Link href="/product/">
-              <button className="button-1 cursor-pointer py-3 px-4">View All Products</button>
+              <button className="button-1 cursor-pointer md:py-3 py-2 md:text-base text-sm md:px-4 px-3">View All Products</button>
             </Link>
           </div>
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {content.products.map((p, i) => {
             const price = p.priceAfterDiscount;
             const oldPrice = p.priceBeforeDiscount;
@@ -65,7 +65,7 @@ export default function BestSeller({
                 )}
 
                 {/* Image */}
-                <div className="relative aspect-square mb-3 overflow-hidden rounded">
+                <div className="relative w-full xl:h-96 lg:h-52 sm:h-44 h-64 mb-3 overflow-hidden rounded">
                   {p.image ? (
                     <Image
                       src={process.env.NEXT_PUBLIC_MEDIA_URL + p.image.url}

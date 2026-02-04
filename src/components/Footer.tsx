@@ -25,14 +25,14 @@ export default function Footer({
 }) {
   return (
     <>
-      <footer className="py-16 bg-dark">
+      <footer className="md:py-16 py-8 bg-dark">
         <div className="container">
-          <div className="grid grid-cols-4 mb-5">
+          <div className="grid 2xl:grid-cols-4 xl:grid-cols-[1fr_0.9fr_1fr_1.1fr] lg:grid-cols-[1fr_0.7fr_0.9fr_1.2fr] md:grid-cols-[1.4fr_0.7fr_0.9fr] sm:grid-cols-2 sm:gap-y-8 gap-y-4 mb-5">
             <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold mb-4">
+              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
                 Customer Service
               </h4>
-              <ul className="flex flex-col mb-5 gap-1">
+              <ul className="flex flex-col mb-5 gap-1 sm:text-base text-sm">
                 <li>
                   <Link href="/contact-us/">Contact Us</Link>
                 </li>
@@ -83,10 +83,10 @@ export default function Footer({
               </ul>
             </div>
             <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold mb-4">
+              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
                 Stonecera
               </h4>
-              <ul className="flex flex-col gap-1">
+              <ul className="flex flex-col gap-1 sm:text-base text-sm">
                 <li>
                   <Link href="/product-category/">Product Category</Link>
                 </li>
@@ -102,10 +102,10 @@ export default function Footer({
               </ul>
             </div>
             <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold mb-4">
+              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
                 Categories
               </h4>
-              <ul className="flex flex-col gap-1">
+              <ul className="flex flex-col gap-1 sm:text-base text-sm">
                 {categories.map((category, i) => (
                   <li key={`footer-category-${i}`}>
                     <Link href={`/product-category/${category.slug}/`}>
@@ -116,10 +116,10 @@ export default function Footer({
               </ul>
             </div>
             <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold mb-4">
+              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
                 Contact Us
               </h4>
-              <ul className="flex flex-col gap-1">
+              <ul className="flex flex-col gap-1 sm:text-base text-sm">
                 <li className="flex items-center gap-x-2">
                   <span className="w-8 h-8 bg-gray-50/30 rounded-full flex items-center justify-center">
                     <Phone size={14} />
@@ -149,21 +149,21 @@ export default function Footer({
               </ul>
             </div>
           </div>
-          <div className="grid grid-cols-[1fr_0.5fr]">
-            <div>
-              <ul className="flex gap-6 mb-5">
-                <li className="">© 2026 Stonecera. All Rights Reserved.</li>
+          <div className="grid xl:grid-cols-[1fr_0.5fr] lg:grid-cols-[1fr_0.7fr] grid-cols-1 gap-8 items-center">
+            <div className="lg:order-1 order-2 grid grid-cols-1">
+              <ul className="flex lg:flex-nowrap flex-wrap lg:justify-start justify-center lg:gap-6 gap-x-6 lg:mb-5 lg:mt-0 mt-5 lg:order-1 order-2">
+                <li className="lg:text-wrap text-nowrap">© 2026 Stonecera. All Rights Reserved.</li>
                 <li>
-                  <Link href="/privacy-policy/">Privacy Policy</Link>
+                  <Link className="lg:text-wrap text-nowrap" href="/privacy-policy/">Privacy Policy</Link>
                 </li>
                 <li>
-                  <Link href="/terms-and-conditions/">Terms of use</Link>
+                  <Link className="lg:text-wrap text-nowrap" href="/terms-and-conditions/">Terms of use</Link>
                 </li>
                 <li>
-                  <Link href="/cookie-policy/">Cookie Policy</Link>
+                  <Link className="lg:text-wrap text-nowrap" href="/cookie-policy/">Cookie Policy</Link>
                 </li>
               </ul>
-              <div className="flex w-fit gap-x-4 py-1 px-4 bg-white/10">
+              <div className="flex w-fit gap-x-4 py-1 px-4 bg-white/10 lg:order-2 order-1">
                 <Image src={Visa} alt="Visa" width={44} height={44} />
                 <Image
                   src={Mastercard}
@@ -188,15 +188,15 @@ export default function Footer({
                 />
               </div>
             </div>
-            <div className="newsletter">
-              <h2 className="text-xl text-right font-semibold mb-3">
+            <div className="newsletter lg:order-2 order-1">
+              <h2 className="text-xl lg:text-right font-semibold mb-3">
                 Subscribe to our Newsletter
               </h2>
-              <p className="text-right">
-                Stay ahead of the curve with our insights on stones. We&apos;re your
-                gateway to understanding what&apos;s next.
+              <p className="lg:text-right md:text-base text-sm">
+                Stay ahead of the curve with our insights on stones. We&apos;re
+                your gateway to understanding what&apos;s next.
               </p>
-              <div className="flex mt-4">
+              <div className="flex mt-4 lg:w-full md:w-6/12">
                 <input
                   type="email"
                   placeholder="Enter your email"
