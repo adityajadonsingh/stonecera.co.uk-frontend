@@ -68,7 +68,7 @@ export default function ProductReviewForm({ productId }: Props) {
   return (
     <section className="mt-8 mb-12">
       <div className="container">
-        <div className="w-6/12 mx-auto">
+        <div className="md:w-6/12 w-full mx-auto">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Leave a Review
           </h3>

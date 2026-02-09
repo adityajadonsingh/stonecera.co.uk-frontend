@@ -18,7 +18,7 @@ export default async function BlogDetailPage({
 
   return (
     <>
-      <section className="py-16">
+      <section className="md:py-16 py-8">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
             {/* LEFT CONTENT */}

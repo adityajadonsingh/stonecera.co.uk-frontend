@@ -8,15 +8,37 @@
   .cat-header li a {
     font-size: 12px;
   }
+  .cat-container {
+    min-width: 100%;
+  }
 }
-@media (max-width: 1025px) {
+@media (max-width: 1024px) {
   .container {
     max-width: 100%;
   }
   main {
     padding-top: 64px;
   }
+  .pg-des .wrapper .inner-wrapper {
+    padding: 10px 25px 18px;
+  }
 }
-@media (max-width: 790px) {
+@media (max-width: 965px) {
+  .stone-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 140px;
+  }
+  .stone-item.tall {
+    grid-row: span 2;
+  }
 
+  .stone-item.medium {
+    grid-row: span 2;
+  }
+
+  .stone-item.small {
+    grid-row: span 1;
+  }
+}
+@media (max-width: 965px) {
 }

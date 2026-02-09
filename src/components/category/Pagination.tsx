@@ -24,7 +24,6 @@ export default function Pagination({
 
     const qs = params.toString();
 
-    // ✅  build proper URL based on page number
     let targetUrl = "";
     if (page === 1) {
       targetUrl = `/product-category/${category}${qs ? `?${qs}` : ""}`;
@@ -38,7 +37,7 @@ export default function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <nav className="flex justify-center mt-8 gap-2">
+    <nav className="flex justify-center my-8 gap-2">
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
         <button
           key={p}

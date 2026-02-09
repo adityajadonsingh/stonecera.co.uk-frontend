@@ -21,7 +21,7 @@ export default function PageContentBox({
   return (
     <section className="pg-des">
       <div className="wrapper">
-        <div className="inner-wrapper bg-skin py-4 px-8 rounded-xs">
+        <div className="inner-wrapper bg-skin  rounded-xs">
           {isFullPage ? (
             <>
               <div className="relative">

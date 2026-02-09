@@ -27,7 +27,7 @@ export default async function ProductsPage({
   return (
     <>
       <PageBanner
-        pageName="Product Category"
+        pageName="Products"
         pageDescription={null}
         breadcrum={[
           {

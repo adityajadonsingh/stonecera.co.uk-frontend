@@ -8,7 +8,7 @@ import React from "react";
 export default function Breadcrum({ breadcrum }: { breadcrum: BreadcrumType[] }) {
     return (
         <>
-            <ul className="flex gap-2">
+            <ul className="flex flex-wrap gap-2 lg:text-base sm:text-sm text-xs">
                 <li>
                     <Link href={"/"} className="flex items-center gap-x-1 hover:text-[#cb934f]"><Home size={18} /> <span className="font-semibold">Home</span></Link>
                 </li>

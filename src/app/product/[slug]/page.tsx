@@ -10,30 +10,14 @@ import ProductReviews from "@/components/product/ProductReviews";
 import ProductSidebarTrigger from "@/components/product/ProductSidebarTrigger";
 import ShareButton from "@/components/product/ShareButton";
 import VariationTable from "@/components/product/VariationTable";
+import SchemaInjector from "@/components/SchemaInjector";
 import { getProductBySlug } from "@/lib/api/product";
-import type { Product } from "@/lib/types";
+import { buildMetadata } from "@/lib/seo";
+import type { JSONObject, Product, Schema } from "@/lib/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type ParamsPromise = Promise<{ slug: string }>;
-type SearchParamsPromise = Promise<Record<string, string>>;
-
-export async function generateMetadata({
-  params,
-  searchParams,
-}: {
-  params: ParamsPromise;
-  searchParams?: SearchParamsPromise;
-}): Promise<Metadata> {
-  const { slug } = await params;
-
-  const product = await getProductBySlug(slug);
-
-  return {
-    title: product?.name ?? "Product",
-    description: product?.name ?? undefined,
-  };
-}
 
 const faqData = [
   {
@@ -58,12 +42,28 @@ const faqData = [
   },
 ];
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+
+  const data = await getProductBySlug(slug);
+  if (!data) return {};
+
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
+
 export default async function ProductPage({
   params,
 }: {
   params: ParamsPromise;
 }) {
-  // MUST await params/searchParams before using
+  
   const { slug } = await params;
 
   const product: Product = await getProductBySlug(slug);
@@ -90,6 +90,73 @@ export default async function ProductPage({
     usedDiscount > 0 && product.priceBeforeDiscount?.Per_m2
       ? product.priceBeforeDiscount.Per_m2
       : null;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org/",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://stonecera.co.uk/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Product Category",
+        item: "https://stonecera.co.uk/product-category/",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.category?.name ?? "Category",
+        item: `https://stonecera.co.uk/product-category/${product.category?.slug}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: product.name,
+        item: `https://stonecera.co.uk/product-category/${product.category?.slug}/${product.slug}/`,
+      },
+    ],
+  };
+  const reviewsSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name: product.name,
+    image: `${process.env.NEXT_PUBLIC_MEDIA_URL}${product.image?.url}`,
+    description: product.seo?.meta_description ?? product.description,
+    brand: {
+      "@type": "Brand",
+      name: "Stonecera",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5",
+      ratingCount: "15",
+    },
+  };
+
+  const normalizeSchema = (schema: Schema | JSONObject): Schema =>
+    "schema_json" in schema
+      ? (schema as Schema)
+      : { id: 0, name: "", schema_json: schema };
+
+  const rawSchemas: (Schema | JSONObject)[] = [
+    breadcrumbSchema,
+    reviewsSchema,
+    ...(Array.isArray(product.seo?.schemas) ? product.seo?.schemas : []),
+  ];
+
+  const safeSchemas: Schema[] = Array.from(
+    new Map(
+      rawSchemas.map((schema) => {
+        const normalized = normalizeSchema(schema);
+        return [JSON.stringify(normalized.schema_json), normalized];
+      }),
+    ).values(),
+  );
   return (
     <>
       <div className="container py-8">
@@ -98,11 +165,12 @@ export default async function ProductPage({
             <ImageGallery
               images={product.images ?? []}
               productId={product.id}
+              product={product}
             />
           </div>
 
           <div className="col-span-1 lg:col-span-7">
-            <nav className="text-sm text-gray-500 mb-3">
+            <nav className="text-sm text-gray-500 mb-3 lg:block hidden">
               {/* Home / {product.category?.name ?? "Category"} / {product.name} */}
               <Breadcrum
                 breadcrum={[
@@ -122,11 +190,11 @@ export default async function ProductPage({
               />
             </nav>
 
-            <h1 className="text-3xl font-semibold mb-2 text-gray-800">
+            <h1 className="md:text-3xl text-xl font-semibold mb-2 text-gray-800">
               {product.name}
             </h1>
 
-            <div className="text-lg font-medium mb-4 flex gap-2">
+            <div className="md:text-lg text-base font-medium mb-4 flex gap-2">
               <span className="text-[#4c4331] font-semibold">From :</span>
               {fromPerM2 ? (
                 <div className="flex items-center gap-2">
@@ -167,9 +235,24 @@ export default async function ProductPage({
       <ProductReviewForm productId={product.id} />
       <ProductReviews reviews={product.productReviews} />
       <ReviewSection content={product.reviews} isProductPage={true} />
-      <div className="container py-16">
+      <div className="container md:py-16 py-8">
         <FaqAccordion items={faqData} />
       </div>
+      <SchemaInjector schemas={safeSchemas} />
     </>
   );
+}
+
+export async function generateStaticParams() {
+  const res = await fetch(`${process.env.API_URL}/products/slugs`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) return [];
+
+  const slugs: { slug: string }[] = await res.json();
+
+  return slugs.map((item) => ({
+    slug: item.slug,
+  }));
 }

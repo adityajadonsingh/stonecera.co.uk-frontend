@@ -7,7 +7,7 @@ import Pagination from "@/components/category/Pagination";
 import { getBlogs } from "@/lib/api/blog";
 
 export default async function BlogsPage() {
-  const { data: blogs, meta } = await getBlogs({ page: 1, limit: 12 });
+  const { data: blogs, meta } = await getBlogs({ page: 1, limit: 20 });
 
   return (
     <>

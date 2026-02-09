@@ -32,6 +32,8 @@ export interface Category {
   totalProducts: number;
   filterCounts?: FilterCounts;
   startingFrom?: number;
+  seo: StrapiSEO | null;
+  updatedAt: string;
 }
 
 export interface CategoryProduct {
@@ -74,6 +76,8 @@ export interface Product {
   } | null;
   reviews: CustomerReviewsSection;
   productReviews: ProductReview[];
+  seo: StrapiSEO | null;
+  updatedAt: string;
 }
 
 export interface UserAttributes {

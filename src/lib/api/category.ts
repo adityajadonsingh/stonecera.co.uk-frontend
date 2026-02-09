@@ -65,3 +65,27 @@ export const getCategoryBySlug = cache(
     }
   }
 );
+export const getCategoryBySlugForMeta = cache(
+  async (
+    slug: string,
+  ): Promise<Category> => {
+    try {
+      
+      const url = `${process.env.API_URL!}/category/${slug}`;
+
+      const res = await fetch(url, {
+        next: { revalidate: REVALIDATE_TIME },
+      });
+
+      if (!res.ok) {
+        console.error("Error fetching category data:", res.status, res.statusText);
+        return {} as Category;
+      }
+
+      return res.json();
+    } catch (error) {
+      console.error("Failed to fetch category data:", error);
+      return {} as Category;
+    }
+  }
+);

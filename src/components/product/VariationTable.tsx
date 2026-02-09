@@ -83,7 +83,13 @@ export default function VariationTable({
   };
 
   return (
-    <div className="rounded-md bg-skin shadow-md divid">
+    <div
+      className="rounded-md bg-skin shadow-md divid relative mt-12 rounded-tl-none
+"
+    >
+      <span className="block absolute w-fit py-1 px-3 bg-skin text-sm shadow-xl -z-10 rounded-tl-md rounded-tr-md font-semibold left-0 -top-7">
+        Available Options
+      </span>
       {variations.map((v) => {
         const q = qty[v.id] ?? 0;
         const isLow = v.Stock > 0 && v.Stock <= 5;
@@ -92,39 +98,40 @@ export default function VariationTable({
         const youSave = getYouSave(v.Price);
 
         return (
-          <div className="border-b border-gray-200" key={v.id}>
+          <div className="border-b border-gray-200 relative z-0" key={v.id}>
             {/* Mobile header */}
             <button
               onClick={() => setOpenId(openId === v.id ? null : v.id)}
               className="w-full flex justify-between items-center p-3 md:hidden"
             >
-              <span className="font-medium">
+              <span className="font-medium text-sm">
                 {v.Size} • {v.Thickness}
               </span>
               <ChevronDown
-                className={`transition ${
-                  openId === v.id ? "rotate-180" : ""
-                }`}
+                className={`transition ${openId === v.id ? "rotate-180" : ""}`}
               />
             </button>
 
             {/* Row */}
             <div
-              className={`p-3 grid md:grid-cols-[1fr_140px_160px] gap-4 items-center ${
-                openId !== v.id ? "hidden md:grid" : "grid"
-              }`}
+              className={`md:p-3 px-3 pb-3 grid md:gap-4 items-center
+    grid-cols-2 grid-rows-2
+    md:grid-cols-[1fr_140px_160px] md:grid-rows-1
+    ${openId !== v.id ? "hidden md:grid" : "grid"}
+  `}
             >
               {/* Details */}
-              <div>
-                <div className="font-medium">
+              <div className="col-span-2 md:col-span-1">
+                <div className="font-medium hidden md:block">
                   {v.Size} • {v.Thickness}
                 </div>
+
                 <div className="text-sm text-gray-500">
-                  <span className="font-medium">Finish : </span><span className="capitalize">{v.Finish}</span> |{" "}
+                  <span className="font-medium">Finish : </span>
+                  <span className="capitalize">{v.Finish}</span> |{" "}
                   <span className="font-medium">Pack Size : </span>
-                  {v.PackSize} m² |{" "}
-                  <span className="font-medium">Pcs : </span>{v.Pcs} pcs |{" "}
-                  {v.Per_m2 ? `£${v.Per_m2.toFixed(2)} /m²` : "—"}
+                  {v.PackSize} m² | <span className="font-medium">Pcs : </span>
+                  {v.Pcs} pcs | {v.Per_m2 ? `£${v.Per_m2.toFixed(2)} /m²` : "—"}
                 </div>
 
                 <div
@@ -132,61 +139,63 @@ export default function VariationTable({
                     isOut
                       ? "text-red-500"
                       : isLow
-                      ? "text-red-500 animate-pulse"
-                      : "text-green-600"
+                        ? "text-red-500 animate-pulse"
+                        : "text-green-600"
                   }`}
                 >
                   {isOut
                     ? "Out of stock"
                     : isLow
-                    ? `${v.Stock} packs left`
-                    : "In stock"}
+                      ? `${v.Stock} packs left`
+                      : "In stock"}
                 </div>
               </div>
 
               {/* Price */}
-              <div className="text-right">
+              <div className="col-span-1 md:col-span-1 text-left md:text-right">
                 {usedDiscount > 0 && (
                   <div className="text-xs text-green-600 font-medium">
                     {usedDiscount}% OFF
                   </div>
                 )}
+
                 {before && (
                   <div className="text-xs line-through text-gray-400">
                     £{before.toFixed(2)}
                   </div>
                 )}
+
                 <div className="font-semibold text-amber-700">
                   £{v.Price.toFixed(2)}
                 </div>
+
                 <div className="text-xs text-gray-600">per pack</div>
+
                 {youSave && (
                   <div className="text-xs text-green-700 font-semibold">
                     You save £{youSave.toFixed(2)}
                   </div>
                 )}
-
-                
-
-                
               </div>
 
               {/* Quantity */}
-              <div className="flex items-center justify-end gap-2">
+              <div className="col-span-1 md:col-span-1 flex items-center justify-end gap-2">
                 <button
                   onClick={() => set(v.id, q - 1, v.Stock)}
                   disabled={isOut}
-                  className="w-8 h-8 font-medium text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white cursor-pointer rounded disabled:opacity-30"
+                  className="w-8 h-8 text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
                 >
                   −
                 </button>
+
                 <div className="w-10 text-center text-lg font-semibold">
                   {q}
                 </div>
+
                 <button
                   onClick={() => set(v.id, q + 1, v.Stock)}
                   disabled={isOut}
-                  className="w-8 h-8 font-medium text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white cursor-pointer rounded disabled:opacity-30"
+                  className="w-8 h-8 text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
                 >
                   +
                 </button>

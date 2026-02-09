@@ -5,7 +5,6 @@ import {
   Facebook,
   Twitter,
   Mail,
-  Link as LinkIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -15,18 +14,21 @@ interface Props {
 
 export default function ShareButton({ title }: Props) {
   const [canNativeShare, setCanNativeShare] = useState(false);
+  const [url, setUrl] = useState<string | null>(null);
 
-  const url = typeof window !== "undefined" ? window.location.href : "";
-
-  /* ---------- CHECK NATIVE SHARE ---------- */
+  /* ---------- CLIENT ONLY SETUP ---------- */
   useEffect(() => {
-    if (typeof navigator !== "undefined" && "share" in navigator) {
+    setUrl(window.location.href);
+
+    if ("share" in navigator) {
       setCanNativeShare(true);
     }
   }, []);
 
   /* ---------- NATIVE SHARE ---------- */
   const nativeShare = async () => {
+    if (!url) return;
+
     try {
       await navigator.share({
         title,
@@ -37,26 +39,29 @@ export default function ShareButton({ title }: Props) {
     }
   };
 
+  /* ---------- PREVENT HYDRATION MISMATCH ---------- */
+  if (!url) return null;
+
   /* ---------- FALLBACK URLS ---------- */
   const links = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      url,
+      url
     )}`,
     twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-      url,
+      url
     )}&text=${encodeURIComponent(title)}`,
     whatsapp: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
     pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
-      url,
+      url
     )}`,
     mail: `mailto:?subject=${encodeURIComponent(
-      title,
+      title
     )}&body=${encodeURIComponent(url)}`,
   };
 
   /* ---------- UI ---------- */
   return (
-    <div className="flex items-center gap-4 mt-4">
+    <div className="flex items-center lg:justify-start justify-center gap-4 mt-4">
       <span className="text-xs uppercase tracking-wide text-gray-400">
         Share
       </span>

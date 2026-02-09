@@ -25,7 +25,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
 
   return (
     <>
-      <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-8">
+      <section className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-8">
         {products.map(
           ({ product, selectedVariation, priceBeforeDiscount }, index) => {
             const hasDiscount =
@@ -76,7 +76,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
 
                 {/* Pricing */}
                 <div className="mt-1 text-sm flex gap-x-3 ">
-                  <span className="font-medium">From :</span>
+                  <span className="font-medium text-nowrap">From :</span>
                   <div>
                     <div>
                       {hasDiscount && (
@@ -120,7 +120,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
                     {stock > 10
                       ? "In Stock"
                       : stock > 0
-                      ? `Only ${stock} stock${stock > 1 ? "s" : ""} left !`
+                      ? `${stock} stock${stock > 1 ? "s" : ""} left !`
                       : "Out of Stock"}
                   </p>
 

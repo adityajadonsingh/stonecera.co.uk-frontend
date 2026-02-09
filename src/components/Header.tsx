@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Category, FooterDetail } from "@/lib/types";
@@ -10,6 +10,9 @@ import Logo from "../../public/media/logo.png";
 import WishlistIcon from "./WishlistIcon";
 import MobileSidebar from "./header/MobileSidebar";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import { useDebounce } from "@/hooks/useDebounce";
+import SearchDropdown from "./header/SearchDropdown";
+import MobileSearchPopup from "./header/MobileSearchPopup";
 
 export default function Header({
   categories,
@@ -20,6 +23,36 @@ export default function Header({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, loading } = useAuthUser();
+  const [query, setQuery] = useState("");
+  const debounced = useDebounce(query, 300);
+  const [results, setResults] = useState({ categories: [], products: [] });
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+
+  useEffect(() => {
+    if (debounced.length < 2) {
+      setResults({ categories: [], products: [] });
+      return;
+    }
+
+    fetch(`/api/search?q=${debounced}`)
+      .then((r) => r.json())
+      .then(setResults);
+  }, [debounced]);
+
+  useEffect(() => {
+    const close = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", close);
+    window.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      window.removeEventListener("keydown", esc);
+    };
+  }, []);
 
   return (
     <>
@@ -70,20 +103,40 @@ export default function Header({
               </Link>
             </div>
 
-            <div className="w-6/12 items-center gap-4">
-              <div className="w-full justify-center flex">
+            <div className="hidden md:flex md:w-6/12 justify-center items-center gap-4">
+              <div
+                ref={ref}
+                className="relative xl:w-2/3 w-full flex justify-center"
+              >
                 <input
-                  type="text"
-                  placeholder="Search Products..."
-                  className="bg-skin px-3 py-1 rounded-l-sm "
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setOpen(true);
+                  }}
+                  onFocus={() => setOpen(true)}
+                  placeholder="Search products or categories..."
+                  className="bg-skin px-3 py-1 rounded-l-sm w-full"
                 />
                 <button className="px-3 rounded-r-sm button-logo-1">
                   <Search size={18} />
                 </button>
+
+                <SearchDropdown
+                  open={open}
+                  results={results}
+                  onClose={() => setOpen(false)}
+                />
               </div>
             </div>
 
-            <div className="w-3/12 flex justify-end items-center gap-x-4">
+            <div className="md:w-3/12 w-full flex justify-end items-center md:gap-x-4 gap-x-2">
+              <button
+                onClick={() => setMobileSearchOpen(true)}
+                className="md:hidden block cursor-pointer"
+              >
+                <Search size={24} color="#bd7e40" />
+              </button>
               <WishlistIcon />
               <Link href={"/cart/"}>
                 <ShoppingCart size={24} color="#bd7e40" />
@@ -137,6 +190,16 @@ export default function Header({
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           categories={categories}
+        />
+        <MobileSearchPopup
+          open={mobileSearchOpen}
+          query={query}
+          setQuery={setQuery}
+          results={results}
+          onClose={() => {
+            setMobileSearchOpen(false);
+            setQuery("");
+          }}
         />
       </header>
     </>

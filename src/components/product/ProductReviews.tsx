@@ -9,9 +9,9 @@ interface Props {
 
 export default function ProductReviews({ reviews = [] }: Props) {
   return (
-    <section className="my-12">
+    <section className="md:my-12 my-6">
       <div className="container">
-        <div className="w-6/12 mx-auto">
+        <div className="md:w-6/12 w-full mx-auto">
           <h2 className="text-xl font-semibold text-gray-800 mb-6">
             Customer Reviews
           </h2>

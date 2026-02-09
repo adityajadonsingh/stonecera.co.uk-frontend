@@ -56,7 +56,7 @@ export default async function ProductCategoryPage() {
         bgImage={PageBannerImg.src}
       />
       <div className="container py-10">
-        <h2 className="text-center text-3xl heading font-bold mb-10">
+        <h2 className="text-center md:text-3xl text-2xl heading font-bold mb-10">
           Explore Our Diverse Product Categories
           <span className="block w-20 h-1 bg-[#c98b4c] mx-auto mt-2 rounded-full" />
         </h2>
@@ -73,7 +73,7 @@ export default async function ProductCategoryPage() {
                 fill
                 className="object-cover group-hover:scale-105"
               />
-              <div className="absolute bottom-[3%] rounded-md backdrop-blur-[2px] w-[95%] left-[50%] translate-x-[-50%] z-10 text-white bg-[#4c4331]/70 text-center py-2 font-semibold">
+              <div className="absolute bottom-[3%] rounded-md backdrop-blur-[2px] w-[95%] left-[50%] translate-x-[-50%] z-10 text-white bg-[#4c4331]/70 text-center py-2 px-2 font-semibold">
                 {cat.name}
               </div>
             </Link>

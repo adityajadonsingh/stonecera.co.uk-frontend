@@ -1,9 +1,32 @@
 import { notFound, redirect } from "next/navigation";
-import { getCategoryBySlug } from "@/lib/api/category";
+import { getCategoryBySlug, getCategoryBySlugForMeta } from "@/lib/api/category";
 import Filters from "@/components/category/Filter";
 import ProductGrid from "@/components/product/ProductGrid";
 import Pagination from "@/components/category/Pagination";
 import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelector";
+import PageBanner from "@/components/PageBanner";
+import { buildMetadata } from "@/lib/seo";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ category: string }>;
+}): Promise<Metadata> {
+  const { category } = await params;
+  const data = await getCategoryBySlugForMeta(category);
+  if (!data) return {};
+
+  const baseMetadata = buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+
+  return {
+    ...baseMetadata,
+    robots: { index: false, follow: true }
+  };
+}
 
 export default async function CategoryPaginatedPage(props: {
   params: Promise<{ category: string; page: string }>;
@@ -41,16 +64,25 @@ export default async function CategoryPaginatedPage(props: {
 
   return (
     <>
-      <head>
-        <meta name="robots" content="noindex, follow" />
-      </head>
+      <PageBanner
+        pageName={categoryData.name}
+        pageDescription={categoryData.short_description}
+        breadcrum={[
+          {
+            pageName: "Product Category",
+            pageUrl: "/product-category/",
+          },
+          {
+            pageName: categoryData.name,
+            pageUrl: `/product-category/${categoryData.slug}/`,
+          },
+        ]}
+        bgImage={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.bannerImg?.url}`}
+      />
+      <div className="container cat-container px-4">
+        
 
-      <div className="container mx-auto px-4">
-        <h1 className="text-center text-3xl font-bold mt-10 mb-8">
-          {categoryData.name}
-        </h1>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-8 mb:pt-16 pt-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <Filters

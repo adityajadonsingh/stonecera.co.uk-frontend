@@ -21,8 +21,29 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Home | Stonecera",
-  description: "Stonecera UK - Premium Quality Tiles and Stone Solutions",
+  title: "Stonecera",
+  description: "Stonecera",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+  authors: [{ name: "stonecera.co.uk" }],
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+    },
+  },
 };
 
 export default async function RootLayout({
