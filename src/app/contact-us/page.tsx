@@ -1,5 +1,5 @@
 import PageBanner from "@/components/PageBanner";
-import PageBannerImg from "../../../public/media/bg/image.png";
+import PageBannerImg from "../../../public/media/bg/image.webp";
 import ContactForm from "@/components/homepage/ContactForm";
 
 export default function ContactUsPage() {

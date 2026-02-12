@@ -1,5 +1,5 @@
 import Image from "next/image";
-import WhyChooseUsImage from "../../../public/media/bg/why-choose.png";
+import WhyChooseUsImage from "../../../public/media/bg/why-choose.webp";
 import Material from "../../../public/media/icons/material.png";
 import Design from "../../../public/media/icons/design.png";
 import Expert from "../../../public/media/icons/Expert.png";

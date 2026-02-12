@@ -1,6 +1,6 @@
 import PageBanner from "@/components/PageBanner";
 import { getPolicy } from "@/lib/api/policy";
-import PageBannerImg from "../../../public/media/bg/image.png";
+import PageBannerImg from "../../../public/media/bg/image.webp";
 export default async function CancellationsAndRefundsPage() {
   const data = await getPolicy("Cancellations_Refunds");
   if (!data) return null;

@@ -3,7 +3,7 @@ import ProductGrid from "@/components/product/ProductGrid";
 import { getAllProducts } from "@/lib/api/product";
 import PaginationProducts from "@/components/product/PaginationProducts";
 import ProductsPerPageSelectorProducts from "@/components/product/ProductsPerPageSelectorProducts";
-import PageBannerImg from "../../../public/media/bg/image.png";
+import PageBannerImg from "../../../public/media/bg/image.webp";
 export const metadata = {
   title: "Products",
   robots: "index, follow",

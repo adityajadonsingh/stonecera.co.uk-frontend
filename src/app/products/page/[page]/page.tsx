@@ -4,7 +4,7 @@ import ProductsPerPageSelectorProducts from "@/components/product/ProductsPerPag
 import PaginationProducts from "@/components/product/PaginationProducts";
 import { getAllProducts } from "@/lib/api/product";
 import PageBanner from "@/components/PageBanner";
-import PageBannerImg from "../../../../../public/media/bg/image.png";
+import PageBannerImg from "../../../../../public/media/bg/image.webp";
 export const metadata = {
   robots: "noindex, follow",
 };

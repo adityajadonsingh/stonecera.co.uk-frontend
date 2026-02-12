@@ -1,6 +1,6 @@
 import Image from "next/image";
 import PageBanner from "@/components/PageBanner";
-import PageBannerImg from "../../../public/media/bg/image.png";
+import PageBannerImg from "../../../public/media/bg/image.webp";
 import AboutImg1 from "../../../public/media/about-us/about-us-page-1.jpeg";
 import AboutImg2 from "../../../public/media/about-us/about-us-page-2.jpeg";
 import AboutImg3 from "../../../public/media/about-us/about-us-page-3.jpeg";

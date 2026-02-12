@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllCategories } from "@/lib/api/category";
 import PageBanner from "@/components/PageBanner";
-import PageBannerImg from "../../../public/media/bg/image.png";
+import PageBannerImg from "../../../public/media/bg/image.webp";
 import FaqAccordion from "@/components/FaqAccordion";
 
 const sizes = [

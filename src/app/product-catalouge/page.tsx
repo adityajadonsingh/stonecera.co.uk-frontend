@@ -1,6 +1,6 @@
 import PageBanner from "@/components/PageBanner";
 import { getCatalogues } from "@/lib/api/catalogue";
-import PageBannerImg from "../../../public/media/bg/image.png";
+import PageBannerImg from "../../../public/media/bg/image.webp";
 import Image from "next/image";
 export default async function ProductCatalougePage() {
   const catalogues = await getCatalogues();

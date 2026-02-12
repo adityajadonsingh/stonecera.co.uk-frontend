@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getBlogs } from "@/lib/api/blog";
 import Pagination from "@/components/category/Pagination";
 import PageBanner from "@/components/PageBanner";
-import PageBannerImg from "../../../../../public/media/bg/image.png";
+import PageBannerImg from "../../../../../public/media/bg/image.webp";
 import Image from "next/image";
 import Link from "next/link";
 import { Clock, User } from "lucide-react";
