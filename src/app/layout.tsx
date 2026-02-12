@@ -13,6 +13,7 @@ import { WishlistProvider } from "@/context/WishlistContext";
 import ScrollRestoration from "./ScrollRestoration";
 import ScrollToTop from "./ScrollToTop";
 import { ToastProvider } from "@/components/ui/ToastProvider";
+import Script from "next/script";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -22,7 +23,7 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   ),
   title: "Stonecera",
   description: "Stonecera",
@@ -60,6 +61,21 @@ export default async function RootLayout({
   ]);
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-QLTMEYH6XW"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-QLTMEYH6XW');
+    `}
+        </Script>
+      </head>
       <body className={montserrat.className}>
         <ToastProvider>
           <WishlistProvider>
