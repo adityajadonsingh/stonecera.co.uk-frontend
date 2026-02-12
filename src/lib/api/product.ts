@@ -2,12 +2,14 @@
 
 import { Product } from "../types";
 
+const REVALIDATE_TIME = process.env.REVALIDATE_TIME
+  ? parseInt(process.env.REVALIDATE_TIME)
+  : 60;
+
 export async function getProductBySlug(slug: string): Promise<Product> {
   try {
     const url = `${process.env.API_URL!}/product/${encodeURIComponent(slug)}`;
-    const res = await fetch(url, {
-      cache: "no-store", // server component should always fetch fresh product data
-    });
+    const res = await fetch(url, { next: { revalidate: REVALIDATE_TIME } });
     if (!res.ok) {
       console.error("Error fetching product:", res.status, res.statusText);
       return {} as Product;
@@ -30,7 +32,7 @@ export async function getAllProducts(params: {
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/products?${qs.toString()}`,
-    { next: { revalidate: 60 } },
+    { next: { revalidate: REVALIDATE_TIME } },
   );
 
   if (!res.ok) throw new Error("Failed to fetch products");
