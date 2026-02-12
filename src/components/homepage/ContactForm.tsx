@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import ContactImg from "../../../public/media/contactForm.jpg";
+import ContactImg from "../../../public/media/anthracite-grey-2.webp";
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 

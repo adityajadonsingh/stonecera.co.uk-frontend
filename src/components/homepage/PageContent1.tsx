@@ -2,7 +2,7 @@ import Image from "next/image";
 import BgImage from "../../../public/media/bg/home-bg.png";
 import HappyIcon from "../../../public/media/icons/happy-face.png";
 import TrustedIcon from "../../../public/media/icons/cooperation.png";
-import Img1 from "../../../public/media/img-1.jpg";
+import Img1 from "../../../public/media/Cloud-Grey-Wall-Clading.webp";
 export default function PageContent1() {
   return (
     <section className="relative bg-dark py-20">
@@ -13,10 +13,11 @@ export default function PageContent1() {
        className="z-0"
        /> 
       <div className="container z-10 relative">
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-5 items-center">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-10 items-center">
           <div className="h-fit">
-            <h2 className="lg:text-5xl text-3xl md:text-start text-center pb-4 mb-4 border-b-2 font-bold">We Provide Reliable Flooring Services</h2>
-            <p className="lg:text-lg text-base md:text-start text-center">Our vision is to provide innovative, independent flooring solutions that problems for homes, industries, and workspaces, as well as flooring we would like in our own residences, work spaces.</p>
+            <h2 className="lg:text-5xl text-3xl md:text-start text-center pb-4 mb-4 border-b-2 font-bold">Natural Stone Wall Cladding & Exterior Facade Solutions</h2>
+            <p className="lg:text-lg text-base md:text-start text-center mb-2">Explore our premium collection of stone wall cladding designed for exterior walls, garden features, and architectural facades. Available in a range of textures and finishes, our cladding products deliver durability, weather resistance, and timeless style across the UK.</p>
+            <p className="lg:text-lg text-base md:text-start text-center">Our wall cladding range includes natural stone finishes ideal for feature walls, outdoor landscaping, and modern architectural designs. Easy to install and built to last, Stonecera cladding adds depth and character to every surface.</p>
             <div className="flex md:justify-between justify-center gap-4 mt-8">
               <div className="flex items-center gap-3">
                 <div className="lg:w-[70px] w-[70px] lg:h-[70px] h-[70px] rounded-full bg-skin flex items-center justify-center">
@@ -39,9 +40,16 @@ export default function PageContent1() {
               </div>
             </div>
           </div>
-          <div className="images mx-auto md:block hidden">
-            <Image className="rounded-md" src={Img1} width={500} height={500} alt=""/>
-          </div>
+          <div className="aspect-[4/3] relative w-full mx-auto hidden md:block">
+  <Image
+    className="rounded-md object-cover"
+    fill
+    src={Img1}
+    sizes="(max-width: 768px) 90vw, 50vw"
+    alt=""
+  />
+</div>
+
         </div>
       </div>
     </section>

@@ -7,7 +7,7 @@ export default function PageBanner({pageName, pageDescription, breadcrum, bgImag
   return (
     <>
       <section className="page-banner h-[35vh] py-10 relative">
-        <Image src={bgImage} alt="Banner" layout="fill" objectFit="cover" className="z-0" priority />
+        <Image src={bgImage} alt="Banner" layout="fill" objectFit="cover" className="z-0" priority fetchPriority="high" />
         <div className="h-full flex flex-col text-white justify-center container relative z-10">
             <div className="md:mb-4 mb-2">
                 <Breadcrum breadcrum={breadcrum}/>

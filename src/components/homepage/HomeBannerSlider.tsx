@@ -27,9 +27,9 @@ export default function HomeBannerSlider({ banners }: { banners: Banner[] }) {
               {/* Content Overlay */}
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center px-8 md:px-16">
                 <div
-                  className="text-white max-w-4xl text-center"
+                  className="text-white max-w-5xl text-center"
                 >
-                  <h2 className="text-3xl md:text-5xl font-bold mb-3">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-3">
                     {item.heading}
                   </h2>
                   <p className="text-lg md:text-xl opacity-90 mb-5">
