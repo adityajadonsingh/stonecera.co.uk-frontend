@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Clock, User } from "lucide-react";
 
 export default function BlogsSection({ blogs }: { blogs: Blog[] }) {
-  console.log(blogs);
   return (
     <section className="homeBlogs md:py-16 py-8">
       <div className="container">

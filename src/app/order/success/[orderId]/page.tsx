@@ -27,7 +27,6 @@ async function getOrder(orderId: string) {
 export default async function OrderSuccessPage({ params }: { params: Promise<{ orderId: string }> }) {
     const { orderId } = await params; 
     const order = await getOrder(orderId);
-    console.log(order);
     return (
         <main className="max-w-2xl mx-auto p-6 text-center">
             <h1 className="text-3xl font-bold text-green-600 mb-4">Thank you. Your order has been received.</h1>

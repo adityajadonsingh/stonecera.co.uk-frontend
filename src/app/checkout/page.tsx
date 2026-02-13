@@ -64,7 +64,6 @@ export default function CheckoutPage() {
   const [recalculated, setRecalculated] = useState(false);
 
   // --- Load checkout + user ---
-console.log(savedAddresses);
   useEffect(() => {
     const data = sessionStorage.getItem("checkoutData");
     if (!data) {
@@ -265,8 +264,6 @@ console.log(savedAddresses);
   if (!checkoutData) return <p className="p-6">Loading checkout...</p>;
 
   const { items } = checkoutData;
-
-  // console.log(checkoutData.items);
 
   return (
     <main className="max-w-7xl mx-auto p-6">

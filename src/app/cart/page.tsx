@@ -257,7 +257,6 @@ export default function CartPage() {
         total,
       },
     };
-    // console.log(checkoutData);
     sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
     router.push("/checkout");
   }

@@ -8,7 +8,6 @@ export default function FeaturedCategories({
 }: {
   content: FeaturedCategoriesSection;
 }) {
-  console.log(`${process.env.NEXT_PUBLIC_MEDIA_URL}${content.categories[0].images[0].url}`);
   return (
     <>
       <section className="featuredCategory md:py-16 py-8">

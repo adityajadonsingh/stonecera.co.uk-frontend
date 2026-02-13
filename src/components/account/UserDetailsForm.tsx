@@ -229,7 +229,6 @@ export default function UserDetailsForm({ initialData = null }: Props) {
           .filter((p) => typeof p.phone === "string" && p.phone.trim())
           .map((p) => ({ phone: p.phone?.trim() })),
       };
-      console.log(payload);
       const res = await fetch("/api/user-details", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

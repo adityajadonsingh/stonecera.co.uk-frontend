@@ -11,8 +11,7 @@ export async function GET() {
       selectedVariation: ProductVariation;
       product: Product;
     }[];
-  } = await getAllProducts({ limit: 1000, offset: 0 }); // Fetch all products, adjust limit as needed
-  console.log(allProducts);
+  } = await getAllProducts({ limit: 1000, offset: 0 });
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/url-sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

@@ -44,7 +44,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     if (!token) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
-    console.log("aa");
     const body = (await req.json()) as unknown;
     if (!isRecord(body)) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 });

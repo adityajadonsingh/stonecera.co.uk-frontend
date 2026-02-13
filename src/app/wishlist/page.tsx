@@ -5,7 +5,6 @@ import WishlistClient from "@/components/wishlist/WishlistClient";
 
 export default async function WishlistPage() {
   const items: Product[] = await getServerWishlist();
-  console.log(items);
   return (
     <section className="py-12 bg-[#faf7f3] min-h-[60vh]">
       <div className="container">

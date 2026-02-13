@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import PageBanner from "@/components/PageBanner";
-import { getBlogBySlug } from "@/lib/api/blog";
+import { getBlogBySlug, getBlogs } from "@/lib/api/blog";
 import Breadcrum from "@/components/Breadcrum";
+import { buildMetadata } from "@/lib/seo";    
+import { Metadata } from "next";
 
 export default async function BlogDetailPage({
   params,
@@ -77,4 +78,27 @@ export default async function BlogDetailPage({
       </section>
     </>
   );
+}
+
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getBlogBySlug(slug);
+  if (!data) return {};
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
+
+export async function generateStaticParams() {
+  const blogs = await getBlogs();
+
+  return blogs.data.map((blog) => ({
+    slug: blog.slug,
+  }));
 }
