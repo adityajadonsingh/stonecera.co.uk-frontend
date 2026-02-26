@@ -14,6 +14,7 @@ import ScrollRestoration from "./ScrollRestoration";
 import ScrollToTop from "./ScrollToTop";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import Script from "next/script";
+import { CartProvider } from "@/context/CartContext";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -79,11 +80,13 @@ export default async function RootLayout({
       <body className={montserrat.className}>
         <ToastProvider>
           <WishlistProvider>
-            <ScrollRestoration />
-            <ScrollToTop />
-            <Header categories={categories} footerDetail={footerDetail} />
-            <main>{children}</main>
-            <Footer categories={categories} footerDetail={footerDetail} />
+            <CartProvider>
+              <ScrollRestoration />
+              <ScrollToTop />
+              <Header categories={categories} footerDetail={footerDetail} />
+              <main>{children}</main>
+              <Footer categories={categories} footerDetail={footerDetail} />
+            </CartProvider>
           </WishlistProvider>
         </ToastProvider>
       </body>

@@ -13,6 +13,7 @@ import { useAuthUser } from "@/hooks/useAuthUser";
 import { useDebounce } from "@/hooks/useDebounce";
 import SearchDropdown from "./header/SearchDropdown";
 import MobileSearchPopup from "./header/MobileSearchPopup";
+import { useCart } from "@/context/CartContext";
 
 export default function Header({
   categories,
@@ -29,7 +30,8 @@ export default function Header({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-
+const { totalQuantity } = useCart();
+  
   useEffect(() => {
     if (debounced.length < 2) {
       setResults({ categories: [], products: [] });
@@ -138,9 +140,15 @@ export default function Header({
                 <Search size={24} color="#bd7e40" />
               </button>
               <WishlistIcon />
-              <Link href={"/cart/"}>
+              <Link href={"/cart/"} className="relative">
                 <ShoppingCart size={24} color="#bd7e40" />
+                {totalQuantity > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#bd7e40] text-white text-xs px-1.5 rounded-full">
+                    {totalQuantity}
+                  </span>
+                )}
               </Link>
+
               {!loading &&
                 (user ? (
                   <AuthMenu user={user} />

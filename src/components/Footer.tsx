@@ -15,7 +15,7 @@ import Mastercard from "../../public/media/mastercard.png";
 import Amex from "../../public/media/amex.png";
 import ApplePay from "../../public/media/apple-pay.png";
 import Skrill from "../../public/media/skrill.png";
-
+import WhatsAppIcon from "../../public/media/whatsapp.png";
 export default function Footer({
   categories,
   footerDetail,
@@ -25,6 +25,9 @@ export default function Footer({
 }) {
   return (
     <>
+    <div className="fixed bottom-4 right-4 z-50"><a href="https://wa.me/+447467648124" target="_blank">
+      <Image src={WhatsAppIcon} alt="WhatsApp" width={50} height={50} />
+    </a></div>
       <footer className="md:py-16 py-8 bg-dark">
         <div className="container">
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-[1fr_0.9fr_1fr_1.1fr] lg:grid-cols-[1fr_0.7fr_0.9fr_1.2fr] md:grid-cols-[1.4fr_0.7fr_0.9fr] sm:grid-cols-2 sm:gap-y-8 gap-y-4 mb-5">

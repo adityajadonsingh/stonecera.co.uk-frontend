@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ProductVariation } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 interface Props {
   productId: number;
@@ -19,7 +20,7 @@ export default function VariationTable({
   categoryDiscount,
 }: Props) {
   const router = useRouter();
-
+  const { addToCart } = useCart();
   const [qty, setQty] = useState<Record<number, number>>({});
   const [openId, setOpenId] = useState<number | null>(null);
 
@@ -34,7 +35,6 @@ export default function VariationTable({
     if (!usedDiscount) return null;
     return Math.floor(price * (1 + usedDiscount / 100));
   };
-
   const getYouSave = (price: number) => {
     const before = getBeforePrice(price);
     if (!before) return null;
@@ -67,14 +67,10 @@ export default function VariationTable({
   /* ---------------- ADD TO CART ---------------- */
   const addAll = async () => {
     for (const v of selected) {
-      await fetch("/api/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          product: productId,
-          variation_id: v.id,
-          quantity: qty[v.id],
-        }),
+      await addToCart({
+        product: productId,
+        variation_id: v.id,
+        quantity: qty[v.id],
       });
     }
 
