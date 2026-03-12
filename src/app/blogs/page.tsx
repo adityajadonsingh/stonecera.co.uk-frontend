@@ -5,6 +5,25 @@ import PageBanner from "@/components/PageBanner";
 import PageBannerImg from "../../../public/media/bg/image.webp";
 import Pagination from "@/components/category/Pagination";
 import { getBlogs } from "@/lib/api/blog";
+import { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = {
+    seo: {
+      meta_title: "Expert Guides on Natural Stone Tiles | Stonecera Blog",
+      meta_description:
+        "Read the Stonecera blog for insights on natural stone tiles, paving slabs, patio ideas, and expert tips to create stylish indoor and outdoor spaces.",
+      canonical_tag: "https://stonecera.co.uk/blogs", 
+      robots: "index, follow", 
+    },
+  };
+  if (!data) return {};
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
 
 export default async function BlogsPage() {
   const { data: blogs, meta } = await getBlogs({ page: 1, limit: 20 });

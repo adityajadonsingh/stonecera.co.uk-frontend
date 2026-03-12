@@ -9,22 +9,27 @@ import {
 } from "react";
 import { useAuthUser } from "@/hooks/useAuthUser";
 
-interface CartItem {
+type CartItemLocalStorage = {
   product: number;
   variation_id: number;
   quantity: number;
-}
+};
 
-interface BackendCartItem {
+type CartItem = {
   id: number;
   quantity: number;
-}
+  unit_price?: number;
+  product?: any;
+  metadata?: any;
+  variation?: any;
+};
 
 interface CartContextType {
+  items: CartItem[];
   totalQuantity: number;
-  guestItems: CartItem[];
   isGuest: boolean;
-  addToCart: (item: CartItem) => Promise<void>;
+  addToCart: (item: CartItemLocalStorage) => Promise<void>;
+  removeFromCart: (variationId: number) => Promise<void>;
   refreshCart: () => Promise<void>;
 }
 
@@ -33,44 +38,71 @@ const CartContext = createContext<CartContextType | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const { user } = useAuthUser();
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [backendItems, setBackendItems] = useState<BackendCartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>([]);
 
-  /* ---------------- LOAD GUEST CART ---------------- */
-  useEffect(() => {
-    if (!user) {
-      const stored = localStorage.getItem("guest_cart");
-      if (stored) {
-        setCartItems(JSON.parse(stored));
-      }
+  /* ---------------- FETCH GUEST CART DETAILS ---------------- */
+
+  const fetchGuestCart = async () => {
+    const stored = localStorage.getItem("guest_cart");
+    if (!stored) {
+      setItems([]);
+      return;
     }
-  }, [user]);
 
-  /* ---------------- FETCH BACKEND CART ---------------- */
-  const fetchBackendCart = async () => {
-    if (!user) return;
+    const parsed: CartItemLocalStorage[] = JSON.parse(stored);
 
-    const res = await fetch("/api/cart");
+    const res = await fetch("/api/cart/guest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ items: parsed }),
+    });
+
     if (!res.ok) return;
 
     const data = await res.json();
-    setBackendItems(data);
+    setItems(data);
+  };
+
+  /* ---------------- FETCH AUTH CART ---------------- */
+
+  const fetchBackendCart = async () => {
+    if (!user) return;
+
+    const res = await fetch("/api/cart", {
+      credentials: "include",
+    });
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+    setItems(data);
+  };
+
+  /* ---------------- LOAD CART ---------------- */
+
+  const refreshCart = async () => {
+    if (user) {
+      await fetchBackendCart();
+    } else {
+      await fetchGuestCart();
+    }
   };
 
   useEffect(() => {
-    if (user) {
-      fetchBackendCart();
-    }
+    refreshCart();
   }, [user]);
 
-  /* ---------------- MERGE GUEST → BACKEND ---------------- */
+  /* ---------------- MERGE CART AFTER LOGIN ---------------- */
+
   useEffect(() => {
     if (!user) return;
 
     const stored = localStorage.getItem("guest_cart");
     if (!stored) return;
 
-    const guestItems: CartItem[] = JSON.parse(stored);
+    const guestItems: CartItemLocalStorage[] = JSON.parse(stored);
 
     async function merge() {
       for (const item of guestItems) {
@@ -82,15 +114,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
 
       localStorage.removeItem("guest_cart");
-      setCartItems([]);
       fetchBackendCart();
     }
 
     merge();
   }, [user]);
 
-  /* -------- -------- ADD-TO-CART -------- -------- */
-  const addToCart = async (item: CartItem) => {
+  /* ---------------- ADD TO CART ---------------- */
+
+  const addToCart = async (item: CartItemLocalStorage) => {
     if (user) {
       await fetch("/api/cart/add", {
         method: "POST",
@@ -98,39 +130,67 @@ export function CartProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify(item),
       });
 
-      await fetchBackendCart();
+      fetchBackendCart();
     } else {
-      const updated = [...cartItems];
+      const stored: CartItemLocalStorage[] = JSON.parse(
+        localStorage.getItem("guest_cart") || "[]"
+      );
 
-      const existing = updated.find(
+      const existing = stored.find(
         (i) =>
-          i.product === item.product && i.variation_id === item.variation_id,
+          i.product === item.product && i.variation_id === item.variation_id
       );
 
       if (existing) {
         existing.quantity += item.quantity;
       } else {
-        updated.push(item);
+        stored.push(item);
       }
 
-      setCartItems(updated);
-      localStorage.setItem("guest_cart", JSON.stringify(updated));
+      localStorage.setItem("guest_cart", JSON.stringify(stored));
+
+      fetchGuestCart();
     }
   };
 
-  /* -------- -------- COUNTER -------- -------- */
-  const totalQuantity = user
-    ? backendItems.reduce((sum, i) => sum + i.quantity, 0)
-    : cartItems.reduce((sum, i) => sum + i.quantity, 0);
+  /* ---------------- REMOVE ITEM ---------------- */
+
+  const removeFromCart = async (variationId: number) => {
+    if (user) {
+      await fetch(`/api/cart/${variationId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      fetchBackendCart();
+    } else {
+      const stored: CartItemLocalStorage[] = JSON.parse(
+        localStorage.getItem("guest_cart") || "[]"
+      );
+
+      const updated = stored.filter(
+        (i) => i.variation_id !== variationId
+      );
+
+      localStorage.setItem("guest_cart", JSON.stringify(updated));
+
+      fetchGuestCart();
+    }
+  };
+
+  /* ---------------- TOTAL QUANTITY ---------------- */
+
+  const totalQuantity = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
     <CartContext.Provider
       value={{
+        items,
         totalQuantity,
-        guestItems: cartItems,
         isGuest: !user,
         addToCart,
-        refreshCart: fetchBackendCart,
+        removeFromCart,
+        refreshCart,
       }}
     >
       {children}

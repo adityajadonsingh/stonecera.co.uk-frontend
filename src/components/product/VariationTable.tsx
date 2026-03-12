@@ -5,6 +5,7 @@ import type { ProductVariation } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useToast } from "../ui/ToastProvider";
 
 interface Props {
   productId: number;
@@ -23,7 +24,7 @@ export default function VariationTable({
   const { addToCart } = useCart();
   const [qty, setQty] = useState<Record<number, number>>({});
   const [openId, setOpenId] = useState<number | null>(null);
-
+  const { showToast } = useToast();
   /* ---------------- DISCOUNT ---------------- */
   const usedDiscount = useMemo(() => {
     if (productDiscount && productDiscount > 0) return productDiscount;
@@ -66,16 +67,20 @@ export default function VariationTable({
 
   /* ---------------- ADD TO CART ---------------- */
   const addAll = async () => {
-    for (const v of selected) {
-      await addToCart({
-        product: productId,
-        variation_id: v.id,
-        quantity: qty[v.id],
-      });
-    }
+    try {
+      for (const v of selected) {
+        await addToCart({
+          product: productId,
+          variation_id: v.id,
+          quantity: qty[v.id],
+        });
+      }
 
-    router.refresh();
-    alert("Added to cart");
+      router.refresh();
+      showToast("Added to cart", "success");
+    } catch (error) {
+      showToast("Something went wrong", "error");
+    }
   };
 
   return (

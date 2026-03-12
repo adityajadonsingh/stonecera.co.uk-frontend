@@ -4,10 +4,26 @@ import { getAllProducts } from "@/lib/api/product";
 import PaginationProducts from "@/components/product/PaginationProducts";
 import ProductsPerPageSelectorProducts from "@/components/product/ProductsPerPageSelectorProducts";
 import PageBannerImg from "../../../public/media/bg/image.webp";
-export const metadata = {
-  title: "Products",
-  robots: "index, follow",
-};
+import { buildMetadata } from "@/lib/seo";
+import { Metadata } from "next";
+
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = {
+    seo: {
+      meta_title: "Explore Natural Stone Tiles & Outdoor Paving | Stonecera",
+      meta_description:
+        "Find premium natural stone tiles, paving slabs, and flooring at Stonecera. Perfect for patios, landscaping, and beautiful indoor spaces.",
+      canonical_tag: "https://stonecera.co.uk/products",  
+      robots: "index, follow",
+    },
+  };
+  if (!data) return {};
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
 
 export default async function ProductsPage({
   searchParams,

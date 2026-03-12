@@ -5,10 +5,23 @@ import PaginationProducts from "@/components/product/PaginationProducts";
 import { getAllProducts } from "@/lib/api/product";
 import PageBanner from "@/components/PageBanner";
 import PageBannerImg from "../../../../../public/media/bg/image.webp";
-export const metadata = {
-  robots: "noindex, follow",
-};
-
+import { buildMetadata } from "@/lib/seo";
+import { Metadata } from "next";
+export async function generateMetadata(): Promise<Metadata> {
+  const data = {
+    seo: {
+      meta_title: "Explore Natural Stone Tiles & Outdoor Paving | Stonecera",
+      meta_description:
+        "Find premium natural stone tiles, paving slabs, and flooring at Stonecera. Perfect for patios, landscaping, and beautiful indoor spaces.",
+      canonical_tag: "https://stonecera.co.uk/products",  
+    },
+  };
+  if (!data) return {};
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
 export default async function ProductsPaginatedPage({
   params,
   searchParams,

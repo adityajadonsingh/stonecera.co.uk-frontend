@@ -90,7 +90,7 @@ export async function generateMetadata({
   const data = await getBlogBySlug(slug);
   if (!data) return {};
   return buildMetadata({
-    seo: data.seo,
+    seo: data.blog?.seo,
     url: process.env.NEXT_PUBLIC_SITE_URL,
   });
 }

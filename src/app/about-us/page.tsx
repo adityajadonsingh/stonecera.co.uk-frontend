@@ -6,6 +6,24 @@ import AboutImg2 from "../../../public/media/about-us/about-us-page-2.jpeg";
 import AboutImg3 from "../../../public/media/about-us/about-us-page-3.jpeg";
 import AboutImg4 from "../../../public/media/about-us/about-us-page-4.jpeg";
 import ContactForm from "@/components/homepage/ContactForm";
+import { buildMetadata } from "@/lib/seo";
+import { Metadata } from "next";
+export async function generateMetadata(): Promise<Metadata> {
+  const data = {
+    seo: {
+      meta_title: "About Stonecera | Trusted Natural Stone Supplier & Exporter",
+      meta_description:
+        "Get to know Stonecera, specialists in natural stone tiles, paving slabs, and flooring. Dedicated to quality products and elegant design solutions.",
+      canonical_tag: "https://stonecera.co.uk/about-us",  
+      robots: "index, follow",
+    },
+  };
+  if (!data) return {};
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
 export default function AboutUsPage() {
   return (
     <>
@@ -42,7 +60,7 @@ export default function AboutUsPage() {
               </div>
             </div>
             <div className="flex gap-4">
-                <div className="relative lg:h-64 h-48 w-7/12">
+              <div className="relative lg:h-64 h-48 w-7/12">
                 <Image
                   src={AboutImg3}
                   alt="About Us"
@@ -58,11 +76,12 @@ export default function AboutUsPage() {
                   className="w-full rounded-lg h-full object-cover"
                 />
               </div>
-              
             </div>
           </div>
           <div className=" lg:w-1/2 w-full">
-            <h2 className="heading text-3xl font-semibold pb-2 mb-4 border-b border-gray-300">About Us</h2>
+            <h2 className="heading text-3xl font-semibold pb-2 mb-4 border-b border-gray-300">
+              About Us
+            </h2>
             <p className="pb-2 text-gray-700">
               Welcome to Stonecera! A name that has become synonymous with
               quality, trust, and timeless stone solutions. Stonecera is a
@@ -98,7 +117,7 @@ export default function AboutUsPage() {
           </div>
         </div>
       </div>
-      <ContactForm page="about-us"/>
+      <ContactForm page="about-us" />
     </>
   );
 }

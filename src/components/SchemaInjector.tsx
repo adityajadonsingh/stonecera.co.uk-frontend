@@ -14,13 +14,13 @@ export default function SchemaInjector({
       {normalizedSchemas.map((schema, i) => {
         const json = schema.schema_json ?? schema;
         if (!json) return null;
-
+        const uniqueId = crypto.randomUUID();
         return (
           <script
-            key={schema.id ?? i}
+            key={uniqueId}
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify(json),
+              __html: JSON.stringify(json).replace(/</g, "\\u003c"),
             }}
           />
         );

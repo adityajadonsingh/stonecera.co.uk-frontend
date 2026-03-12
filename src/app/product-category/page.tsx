@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getAllCategories } from "@/lib/api/category";
-import PageBanner from "@/components/PageBanner";
-import PageBannerImg from "../../../public/media/bg/image.webp";
 import FaqAccordion from "@/components/FaqAccordion";
+import { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 
 const sizes = [
   "medium", // 1
@@ -39,12 +39,29 @@ const faqData = [
   },
 ];
 
+export async function generateMetadata(): Promise<Metadata> {
+  const data = {
+    seo: {
+      meta_title: "Premium Natural Stone Tiles & Paving Slabs | Stonecera",
+      meta_description:
+        "Find premium natural stone tiles, paving slabs, and flooring in Stonecera product categories. Ideal for patios, gardens, and interior design.",
+      canonical_tag: "https://stonecera.co.uk/product-category", 
+      robots: "index, follow", 
+    },
+  };
+  if (!data) return {};
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
+
 export default async function ProductCategoryPage() {
   const categories = await getAllCategories();
 
   return (
     <>
-      <PageBanner
+      {/* <PageBanner
         pageName="Product Category"
         pageDescription={null}
         breadcrum={[
@@ -54,12 +71,12 @@ export default async function ProductCategoryPage() {
           },
         ]}
         bgImage={PageBannerImg.src}
-      />
+      /> */}
       <div className="container py-10">
-        <h2 className="text-center md:text-3xl text-2xl heading font-bold mb-10">
+        <h1 className="text-center md:text-4xl text-3xl heading font-bold mb-10">
           Explore Our Diverse Product Categories
           <span className="block w-20 h-1 bg-[#c98b4c] mx-auto mt-2 rounded-full" />
-        </h2>
+        </h1>
         <div className="stone-grid mb-10">
           {categories.map((cat, i) => (
             <Link

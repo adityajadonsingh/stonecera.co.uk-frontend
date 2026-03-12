@@ -23,7 +23,6 @@ interface SavedAddress {
   pincode?: string;
 }
 
-
 type DeliveryResponse = {
   postcode?: string;
   economy_price?: string;
@@ -120,7 +119,7 @@ export default function CheckoutPage() {
 
     try {
       const res = await fetch(
-        `/api/delivery/${encodeURIComponent(pincodeValue)}`
+        `/api/delivery/${encodeURIComponent(pincodeValue)}`,
       );
       if (!res.ok) throw new Error("Delivery check failed");
       const data = (await res.json()) as DeliveryResponse;
@@ -137,7 +136,7 @@ export default function CheckoutPage() {
   // --- Totals ---
   const cartSubtotal = useMemo(
     () => checkoutData?.totals?.cartSubtotal ?? 0,
-    [checkoutData]
+    [checkoutData],
   );
 
   const shippingCost = useMemo(() => {
@@ -266,336 +265,348 @@ export default function CheckoutPage() {
   const { items } = checkoutData;
 
   return (
-    <main className="max-w-7xl mx-auto p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* LEFT COLUMN */}
-        <div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handlePlaceOrder();
-            }}
-          >
-            {/* CONTACT INFO */}
-            <section className="mb-8">
-              <h2 className="text-lg font-semibold">Contact information</h2>
-              <input
-                type="email"
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
-                placeholder="Email address"
-                className="w-full mt-2 p-2 border rounded"
-                required
-              />
-              <input
-                type="tel"
-                value={contactPhone}
-                onChange={(e) => setContactPhone(e.target.value)}
-                placeholder="Phone number"
-                className="w-full mt-2 p-2 border rounded"
-                required
-              />
-            </section>
-            {/* SHIPPING */}
-            <section className="mb-8">
-              <h2 className="text-lg font-semibold mb-2">Shipping address</h2>
+    <div className="bg-skin">
+      <div className="container py-16 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* LEFT COLUMN */}
+          <div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handlePlaceOrder();
+              }}
+            >
+              {/* CONTACT INFO */}
+              <section className="mb-8">
+                <h2 className="text-lg font-semibold">Contact information</h2>
+                <input
+                  type="email"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  placeholder="Email address"
+                  className="w-full mt-2 p-2 border rounded"
+                  required
+                />
+                <input
+                  type="tel"
+                  value={contactPhone}
+                  onChange={(e) => setContactPhone(e.target.value)}
+                  placeholder="Phone number"
+                  className="w-full mt-2 p-2 border rounded"
+                  required
+                />
+              </section>
+              {/* SHIPPING */}
+              <section className="mb-8">
+                <h2 className="text-lg font-semibold mb-2">Shipping address</h2>
 
-              {savedAddresses.length > 0 && (
-                <div className="mb-4 border rounded-lg p-3">
-                  <label className="font-medium block mb-2">
-                    Select a saved address:
-                  </label>
-                  <div className="space-y-2">
-                    {savedAddresses.map((addr, i) => (
-                      <label
-                        key={addr.id}
-                        className="flex items-start gap-3 cursor-pointer"
-                      >
+                {savedAddresses.length > 0 && (
+                  <div className="mb-4 border rounded-lg p-3">
+                    <label className="font-medium block mb-2">
+                      Select a saved address:
+                    </label>
+                    <div className="space-y-2">
+                      {savedAddresses.map((addr, i) => (
+                        <label
+                          key={addr.id}
+                          className="flex items-start gap-3 cursor-pointer"
+                        >
+                          <input
+                            type="radio"
+                            name="savedAddress"
+                            value={i}
+                            checked={
+                              useSavedAddress && selectedAddressIndex === i
+                            }
+                            onChange={() => {
+                              setUseSavedAddress(true);
+                              setSelectedAddressIndex(i);
+                              setShippingAddress((prev) => ({
+                                ...prev,
+                                address: addr.address || "",
+                                city: addr.city || "",
+                                pincode: addr.pincode || "",
+                              }));
+                              setRecalculated(false);
+                            }}
+                          />
+                          <div>
+                            <p className="font-semibold">
+                              {addr.label || `Address ${i + 1}`}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {addr.address}, {addr.city}, {addr.pincode}
+                            </p>
+                          </div>
+                        </label>
+                      ))}
+
+                      <label className="flex items-center gap-2 mt-3 cursor-pointer">
                         <input
                           type="radio"
                           name="savedAddress"
-                          value={i}
-                          checked={
-                            useSavedAddress && selectedAddressIndex === i
-                          }
+                          value="new"
+                          checked={!useSavedAddress}
                           onChange={() => {
-                            setUseSavedAddress(true);
-                            setSelectedAddressIndex(i);
+                            setUseSavedAddress(false);
+                            setSelectedAddressIndex(null);
                             setShippingAddress((prev) => ({
                               ...prev,
-                              address: addr.address || "",
-                              city: addr.city || "",
-                              pincode: addr.pincode || "",
+                              address: "",
+                              city: "",
+                              pincode: "",
                             }));
                             setRecalculated(false);
                           }}
                         />
-                        <div>
-                          <p className="font-semibold">
-                            {addr.label || `Address ${i + 1}`}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {addr.address}, {addr.city}, {addr.pincode}
-                          </p>
-                        </div>
+                        <span>Add a new address</span>
                       </label>
-                    ))}
-
-                    <label className="flex items-center gap-2 mt-3 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="savedAddress"
-                        value="new"
-                        checked={!useSavedAddress}
-                        onChange={() => {
-                          setUseSavedAddress(false);
-                          setSelectedAddressIndex(null);
-                          setShippingAddress((prev) => ({
-                            ...prev,
-                            address: "",
-                            city: "",
-                            pincode: "",
-                          }));
-                          setRecalculated(false);
-                        }}
-                      />
-                      <span>Add a new address</span>
-                    </label>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Address Inputs */}
-              <div
-                className={`grid grid-cols-2 gap-4 mt-2 ${
-                  useSavedAddress ? "opacity-60 pointer-events-none" : ""
-                }`}
-              >
-                <input
-                  value={shippingAddress.firstName}
-                  onChange={(e) =>
-                    setShippingAddress((p) => ({
-                      ...p,
-                      firstName: e.target.value,
-                    }))
-                  }
-                  placeholder="First name"
-                  className="p-2 border rounded"
-                  required
-                />
-                <input
-                  value={shippingAddress.lastName}
-                  onChange={(e) =>
-                    setShippingAddress((p) => ({
-                      ...p,
-                      lastName: e.target.value,
-                    }))
-                  }
-                  placeholder="Last name"
-                  className="p-2 border rounded"
-                  required
-                />
-              </div>
-
-              <input
-                value={shippingAddress.address}
-                onChange={(e) =>
-                  setShippingAddress((p) => ({ ...p, address: e.target.value }))
-                }
-                placeholder="Address"
-                className="w-full mt-4 p-2 border rounded"
-                required
-                disabled={useSavedAddress}
-              />
-
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                <input
-                  value={shippingAddress.city}
-                  onChange={(e) =>
-                    setShippingAddress((p) => ({ ...p, city: e.target.value }))
-                  }
-                  placeholder="City"
-                  className="p-2 border rounded"
-                  required
-                  disabled={useSavedAddress}
-                />
-                <select
-                  className="p-2 border rounded"
-                  value={shippingAddress.country}
-                  onChange={(e) =>
-                    setShippingAddress((p) => ({
-                      ...p,
-                      country: e.target.value,
-                    }))
-                  }
-                  disabled={useSavedAddress}
+                {/* Address Inputs */}
+                <div
+                  className={`grid grid-cols-2 gap-4 mt-2 ${
+                    useSavedAddress ? "opacity-60 pointer-events-none" : ""
+                  }`}
                 >
-                  <option>United Kingdom (UK)</option>
-                </select>
+                  <input
+                    value={shippingAddress.firstName}
+                    onChange={(e) =>
+                      setShippingAddress((p) => ({
+                        ...p,
+                        firstName: e.target.value,
+                      }))
+                    }
+                    placeholder="First name"
+                    className="p-2 border rounded"
+                    required
+                  />
+                  <input
+                    value={shippingAddress.lastName}
+                    onChange={(e) =>
+                      setShippingAddress((p) => ({
+                        ...p,
+                        lastName: e.target.value,
+                      }))
+                    }
+                    placeholder="Last name"
+                    className="p-2 border rounded"
+                    required
+                  />
+                </div>
+
                 <input
-                  value={shippingAddress.pincode}
-                  onChange={(e) => {
+                  value={shippingAddress.address}
+                  onChange={(e) =>
                     setShippingAddress((p) => ({
                       ...p,
-                      pincode: e.target.value,
-                    }));
-                    setRecalculated(false);
-                  }}
-                  placeholder="Postcode"
-                  className="p-2 border rounded"
+                      address: e.target.value,
+                    }))
+                  }
+                  placeholder="Address"
+                  className="w-full mt-4 p-2 border rounded"
                   required
                   disabled={useSavedAddress}
                 />
-              </div>
 
-              <button
-                type="button"
-                onClick={() => fetchDelivery(shippingAddress.pincode)}
-                disabled={!shippingAddress.pincode || loadingDelivery}
-                className="mt-3 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 disabled:bg-gray-400"
-              >
-                {loadingDelivery ? "Checking..." : "Check Delivery"}
-              </button>
-
-              {deliveryError && (
-                <p className="text-sm text-red-500 mt-1">{deliveryError}</p>
-              )}
-
-              {/* Delivery Options */}
-              {delivery && (
-                <div className="mt-4 space-y-2">
-                  <label className="flex items-center gap-3 border rounded p-3 hover:bg-gray-100 cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={method === "economy"}
-                      onChange={() => setMethod("economy")}
-                    />
-                    <span>
-                      Economy Delivery (
-                      {currencyFormat(Number(delivery.economy_price ?? 0))})
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-3 border rounded p-3 hover:bg-gray-100 cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={method === "premium"}
-                      onChange={() => setMethod("premium")}
-                    />
-                    <span>
-                      Premium Delivery (
-                      {currencyFormat(Number(delivery.premium_price ?? 0))})
-                    </span>
-                  </label>
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  <input
+                    value={shippingAddress.city}
+                    onChange={(e) =>
+                      setShippingAddress((p) => ({
+                        ...p,
+                        city: e.target.value,
+                      }))
+                    }
+                    placeholder="City"
+                    className="p-2 border rounded"
+                    required
+                    disabled={useSavedAddress}
+                  />
+                  <select
+                    className="p-2 border rounded"
+                    value={shippingAddress.country}
+                    onChange={(e) =>
+                      setShippingAddress((p) => ({
+                        ...p,
+                        country: e.target.value,
+                      }))
+                    }
+                    disabled={useSavedAddress}
+                  >
+                    <option>United Kingdom (UK)</option>
+                  </select>
+                  <input
+                    value={shippingAddress.pincode}
+                    onChange={(e) => {
+                      setShippingAddress((p) => ({
+                        ...p,
+                        pincode: e.target.value,
+                      }));
+                      setRecalculated(false);
+                    }}
+                    placeholder="Postcode"
+                    className="p-2 border rounded"
+                    required
+                    disabled={useSavedAddress}
+                  />
                 </div>
-              )}
 
-              <div className="mt-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={tailLift}
-                    onChange={(e) => setTailLift(e.target.checked)}
-                  />
-                  <span>Add Tail Lift (+{currencyFormat(TAIL_LIFT_COST)})</span>
-                </label>
-              </div>
-            </section>
-
-            {/* PAYMENT */}
-            <section>
-              <h2 className="text-lg font-semibold">Payment options</h2>
-
-              <div className="mt-2 border rounded">
-                <label className="flex items-center gap-3 p-4 border-b cursor-pointer">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="bank"
-                    checked={paymentMethod === "bank"}
-                    onChange={() => setPaymentMethod("bank")}
-                  />
-                  Direct bank transfer
-                </label>
-
-                <label className="flex items-center gap-3 p-4 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="stripe"
-                    checked={paymentMethod === "stripe"}
-                    onChange={() => setPaymentMethod("stripe")}
-                  />
-                  Pay Online with Stripe
-                </label>
-              </div>
-
-              {paymentMethod === "bank" && (
-                <p className="p-4 text-sm text-gray-600 bg-gray-50 border">
-                  Make payment directly in the bank. Order ships once payment
-                  clears.
-                </p>
-              )}
-            </section>
-
-            <div className="mt-6">
-              {paymentMethod === "bank" ? (
-                <button
-                  type="submit"
-                  disabled={!recalculated || !method || isLoading}
-                  className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400"
-                >
-                  {isLoading ? "Placing Order..." : "Place Order"}
-                </button>
-              ) : (
                 <button
                   type="button"
-                  onClick={handleStripePayment}
-                  disabled={!recalculated || !method || isLoading}
-                  className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                  onClick={() => fetchDelivery(shippingAddress.pincode)}
+                  disabled={!shippingAddress.pincode || loadingDelivery}
+                  className="mt-3 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 disabled:bg-gray-400"
                 >
-                  Pay with Stripe
+                  {loadingDelivery ? "Checking..." : "Check Delivery"}
                 </button>
-              )}
 
-              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-            </div>
-          </form>
-        </div>
+                {deliveryError && (
+                  <p className="text-sm text-red-500 mt-1">{deliveryError}</p>
+                )}
 
-        {/* RIGHT COLUMN */}
-        <div className="p-6 rounded-lg h-fit">
-          <h2 className="text-lg font-semibold mb-4">Order summary</h2>
-          <div className="space-y-4">
-            {items.map((item, index) => (
-              <div key={index} className="flex justify-between border-b pb-3">
-                <div>
-                  <p className="font-medium">Product ID: {item.product}</p>
-                  <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                {/* Delivery Options */}
+                {delivery && (
+                  <div className="mt-4 space-y-2">
+                    <label className="flex items-center gap-3 border rounded p-3 hover:bg-gray-100 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={method === "economy"}
+                        onChange={() => setMethod("economy")}
+                      />
+                      <span>
+                        Economy Delivery (
+                        {currencyFormat(Number(delivery.economy_price ?? 0))})
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-3 border rounded p-3 hover:bg-gray-100 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={method === "premium"}
+                        onChange={() => setMethod("premium")}
+                      />
+                      <span>
+                        Premium Delivery (
+                        {currencyFormat(Number(delivery.premium_price ?? 0))})
+                      </span>
+                    </label>
+                  </div>
+                )}
+
+                <div className="mt-4">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={tailLift}
+                      onChange={(e) => setTailLift(e.target.checked)}
+                    />
+                    <span>
+                      Add Tail Lift (+{currencyFormat(TAIL_LIFT_COST)})
+                    </span>
+                  </label>
                 </div>
-                <p>{currencyFormat(item.unit_price * item.quantity)}</p>
+              </section>
+
+              {/* PAYMENT */}
+              <section>
+                <h2 className="text-lg font-semibold">Payment options</h2>
+
+                <div className="mt-2 border rounded">
+                  <label className="flex items-center gap-3 p-4 border-b cursor-pointer">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="bank"
+                      checked={paymentMethod === "bank"}
+                      onChange={() => setPaymentMethod("bank")}
+                    />
+                    Direct bank transfer
+                  </label>
+
+                  <label className="flex items-center gap-3 p-4 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="stripe"
+                      checked={paymentMethod === "stripe"}
+                      onChange={() => setPaymentMethod("stripe")}
+                    />
+                    Pay Online with Stripe
+                  </label>
+                </div>
+
+                {paymentMethod === "bank" && (
+                  <p className="p-4 text-sm text-gray-600 bg-gray-50 border">
+                    Make payment directly in the bank. Order ships once payment
+                    clears.
+                  </p>
+                )}
+              </section>
+
+              <div className="mt-6">
+                {paymentMethod === "bank" ? (
+                  <button
+                    type="submit"
+                    disabled={!recalculated || !method || isLoading}
+                    className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+                  >
+                    {isLoading ? "Placing Order..." : "Place Order"}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleStripePayment}
+                    disabled={!recalculated || !method || isLoading}
+                    className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                  >
+                    Pay with Stripe
+                  </button>
+                )}
+
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               </div>
-            ))}
+            </form>
           </div>
-          <div className="space-y-2 mt-4 pt-4 border-t">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>{currencyFormat(cartSubtotal)}</span>
+
+          {/* RIGHT COLUMN */}
+          <div className="p-6 rounded-lg h-fit">
+            <h2 className="text-lg font-semibold mb-4">Order summary</h2>
+            <div className="space-y-4">
+              {items.map((item, index) => (
+                <div key={index} className="flex justify-between border-b pb-3">
+                  <div>
+                    <p className="font-medium">Product ID: {item.product}</p>
+                    <p className="text-sm text-gray-500">
+                      Qty: {item.quantity}
+                    </p>
+                  </div>
+                  <p>{currencyFormat(item.unit_price * item.quantity)}</p>
+                </div>
+              ))}
             </div>
-            <div className="flex justify-between">
-              <span>Delivery</span>
-              <span>{shippingCost ? currencyFormat(shippingCost) : "—"}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Tail Lift</span>
-              <span>{tailLift ? currencyFormat(TAIL_LIFT_COST) : "—"}</span>
-            </div>
-            <div className="flex justify-between font-bold text-xl mt-2">
-              <span>Total</span>
-              <span>{currencyFormat(total)}</span>
+            <div className="space-y-2 mt-4 pt-4 border-t">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>{currencyFormat(cartSubtotal)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Delivery</span>
+                <span>{shippingCost ? currencyFormat(shippingCost) : "—"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Tail Lift</span>
+                <span>{tailLift ? currencyFormat(TAIL_LIFT_COST) : "—"}</span>
+              </div>
+              <div className="flex justify-between font-bold text-xl mt-2">
+                <span>Total</span>
+                <span>{currencyFormat(total)}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

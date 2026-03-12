@@ -25,9 +25,11 @@ export default function Footer({
 }) {
   return (
     <>
-    <div className="fixed bottom-4 right-4 z-50"><a href="https://wa.me/+447467648124" target="_blank">
-      <Image src={WhatsAppIcon} alt="WhatsApp" width={50} height={50} />
-    </a></div>
+      <div className="fixed bottom-4 right-4 z-50">
+        <a href="https://wa.me/+447467648124" target="_blank">
+          <Image src={WhatsAppIcon} alt="WhatsApp" width={50} height={50} />
+        </a>
+      </div>
       <footer className="md:py-16 py-8 bg-dark">
         <div className="container">
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-[1fr_0.9fr_1fr_1.1fr] lg:grid-cols-[1fr_0.7fr_0.9fr_1.2fr] md:grid-cols-[1.4fr_0.7fr_0.9fr] sm:grid-cols-2 sm:gap-y-8 gap-y-4 mb-5">
@@ -155,15 +157,32 @@ export default function Footer({
           <div className="grid xl:grid-cols-[1fr_0.5fr] lg:grid-cols-[1fr_0.7fr] grid-cols-1 gap-8 items-center">
             <div className="lg:order-1 order-2 grid grid-cols-1">
               <ul className="flex lg:flex-nowrap flex-wrap lg:justify-start justify-center lg:gap-6 gap-x-6 lg:mb-5 lg:mt-0 mt-5 lg:order-1 order-2">
-                <li className="lg:text-wrap text-nowrap">© 2026 Stonecera. All Rights Reserved.</li>
-                <li>
-                  <Link className="lg:text-wrap text-nowrap" href="/privacy-policy/">Privacy Policy</Link>
+                <li className="lg:text-wrap text-nowrap">
+                  © 2026 Stonecera. All Rights Reserved.
                 </li>
                 <li>
-                  <Link className="lg:text-wrap text-nowrap" href="/terms-and-conditions/">Terms of use</Link>
+                  <Link
+                    className="lg:text-wrap text-nowrap"
+                    href="/privacy-policy/"
+                  >
+                    Privacy Policy
+                  </Link>
                 </li>
                 <li>
-                  <Link className="lg:text-wrap text-nowrap" href="/cookie-policy/">Cookie Policy</Link>
+                  <Link
+                    className="lg:text-wrap text-nowrap"
+                    href="/terms-and-conditions/"
+                  >
+                    Terms of use
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="lg:text-wrap text-nowrap"
+                    href="/cookie-policy/"
+                  >
+                    Cookie Policy
+                  </Link>
                 </li>
               </ul>
               <div className="flex w-fit gap-x-4 py-1 px-4 bg-white/10 lg:order-2 order-1">
