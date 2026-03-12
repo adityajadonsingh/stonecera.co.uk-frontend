@@ -92,7 +92,7 @@ export default function CartPage() {
       let data = await res.json();
       if (!res.ok) {
         const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-        // console.log(cart);
+        console.log(cart);
         const res = await fetch("/api/cart/guest", {
           method: "POST",
           headers: {
@@ -158,7 +158,7 @@ const shippingCost = useMemo(() => {
 
   const basePrice = Number(priceStr ?? 0);
 
-  return basePrice * totalQuantity;
+  return basePrice * totalQuantity * 1.05; // 5% surcharge per item
 }, [delivery, method, totalQuantity]);
 
 const tailLiftCost = useMemo(() => {
