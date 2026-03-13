@@ -11,7 +11,7 @@ export async function GET() {
     "/blogs/",
     "/products/",
     "/product-category/",
-    "/product-catalouge/",
+    "/product-catalogue/",
     "/privacy-policy/",
     "/terms-and-conditions/",
     "/shipping-policy/",

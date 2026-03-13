@@ -96,7 +96,7 @@ export default function Footer({
                   <Link href="/product-category/">Product Category</Link>
                 </li>
                 <li>
-                  <Link href="/product-catalouge/">Product Catalouge</Link>
+                  <Link href="/product-catalogue/">Product Catalogue</Link>
                 </li>
                 <li>
                   <Link href="/about-us/">About Us</Link>

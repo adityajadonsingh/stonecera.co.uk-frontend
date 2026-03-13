@@ -30,8 +30,8 @@ export default function Header({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-const { totalQuantity } = useCart();
-  
+  const { totalQuantity } = useCart();
+
   useEffect(() => {
     if (debounced.length < 2) {
       setResults({ categories: [], products: [] });

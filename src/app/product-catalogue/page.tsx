@@ -2,12 +2,32 @@ import PageBanner from "@/components/PageBanner";
 import { getCatalogues } from "@/lib/api/catalogue";
 import PageBannerImg from "../../../public/media/bg/image.webp";
 import Image from "next/image";
-export default async function ProductCatalougePage() {
+import { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = {
+    seo: {
+      meta_title: "Product Catalogue | Stonecera Natural Stone Collection",
+      meta_description:
+        "View the Stonecera product catalogue for a complete range of natural stone tiles, paving slabs, and flooring solutions for residential and outdoor projects.",
+      canonical_tag: "https://stonecera.co.uk/product-catalogue",  
+      robots: "index, follow",
+    },
+  };
+  if (!data) return {};
+  return buildMetadata({
+    seo: data.seo,
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+  });
+}
+
+export default async function ProductCataloguePage() {
   const catalogues = await getCatalogues();
   return (
     <>
       <PageBanner
-        pageName="Product Catalouge"
+        pageName="Product Catalogue"
         pageDescription={null}
         breadcrum={[
           {
