@@ -25,9 +25,9 @@ export default function Footer({
 }) {
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-36 right-6 z-50">
         <a href="https://wa.me/+447467648124" target="_blank">
-          <Image src={WhatsAppIcon} alt="WhatsApp" width={50} height={50} />
+          <Image src={WhatsAppIcon} alt="WhatsApp" width={60} height={60} />
         </a>
       </div>
       <footer className="md:py-16 py-8 bg-dark">

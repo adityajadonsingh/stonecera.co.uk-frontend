@@ -3,7 +3,7 @@ import LoginForm from "@/components/auth/LoginForm";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-
+import Link from "next/link";
 export const metadata: Metadata = {
   title: "Login",
 };
@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 export default async function LoginPage() {
   const user = await getCurrentUser();
   if (user) {
-    // already logged in — go to account
     redirect("/account");
   }
 
@@ -24,7 +23,25 @@ export default async function LoginPage() {
         </p>
         <LoginForm />
       </div>
-      <span className="inline-block mt-5">New Customer? <a href="/register" className="text-blue-600 hover:underline">Register here</a></span>
+      <div className="mt-8 border-t border-gray-400 pt-8">
+        <Link
+          href={`${process.env.NEXT_PUBLIC_MEDIA_URL}/api/connect/google`}
+          className="flex items-center justify-center gap-2 border border-gray-200 shadow-md rounded px-4 py-2 hover:bg-gray-50"
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google"
+            className="w-5 h-5"
+          />
+          Continue with Google
+        </Link>
+      </div>
+      <span className="inline-block mt-5">
+        New Customer?{" "}
+        <Link href="/register" className="text-blue-600 hover:underline">
+          Register here
+        </Link>
+      </span>
     </div>
   );
 }
