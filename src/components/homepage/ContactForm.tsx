@@ -4,6 +4,7 @@ import Image from "next/image";
 import ContactImg from "../../../public/media/anthracite-grey-2.webp";
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
+import { getClientInfo } from "@/utils/getClientInfo";
 
 interface Props {
   page: string; // "homepage" | "contact-us"
@@ -24,11 +25,16 @@ export default function ContactForm({ page }: Props) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+    const clientInfo = await getClientInfo();
     const res = await fetch("/api/enquiry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, page }),
+      body: JSON.stringify({
+        ...form,
+        page,
+        client_ip: clientInfo?.ip,
+        country_code: clientInfo?.country,
+      }),
     });
 
     const json = await res.json();
