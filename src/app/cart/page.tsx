@@ -300,6 +300,7 @@ const total = useMemo(() => {
               items.map((item) => {
                 const stock = item.variation?.stock;
                 const imageUrl = item.product?.image;
+                console.log(imageUrl);
                 return (
                   <div
                     key={item.id}

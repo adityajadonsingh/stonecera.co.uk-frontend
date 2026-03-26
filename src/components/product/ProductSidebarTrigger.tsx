@@ -36,7 +36,10 @@ export default function ProductSidebarTrigger({ description }: Props) {
         >
           <span className="flex items-center gap-2 font-medium text-lg">
             <Truck size={20} />
-            Delivery <span className="text-gray-400 font-normal text-xs">(Check for Free Delivery)</span>
+            Delivery{" "}
+            <span className="text-gray-400 font-normal text-xs">
+              (Check for Free Delivery)
+            </span>
           </span>
           <ChevronRight />
         </button>
@@ -53,11 +56,28 @@ export default function ProductSidebarTrigger({ description }: Props) {
       <ProductSidebar
         open={open === "delivery"}
         title="Delivery"
-        content={`
-          <p><strong>Free delivery</strong> available on all UK mainland orders.</p>
-          <p>Delivery usually takes <strong>3–5 working days</strong>.</p>
-          <p>You will be contacted prior to delivery to arrange a suitable time.</p>
-        `}
+        content={`<div className="space-y-4">
+      <p>
+        Enter your postcode to check delivery availability and pricing.
+      </p>
+
+      <div className="space-y-2">
+        <p className="font-medium">🚚 Delivery Information:</p>
+
+        <ul className="list-disc pl-5 space-y-2">
+          <li>Free delivery is available in many UK mainland areas</li>
+          <li>A small surcharge may apply depending on your location</li>
+          <li>Remote areas may have higher delivery charges</li>
+          <li>Kerbside delivery via pallet network</li>
+          <li>Delivery usually within 2–4 working days</li>
+          <li>Please ensure access for large delivery vehicles</li>
+        </ul>
+      </div>
+
+      <p className="text-gray-500 text-xs">
+        * Delivery charges and times may vary depending on postcode and product type.
+      </p>
+    </div>`}
         onClose={() => setOpen(null)}
       />
     </>

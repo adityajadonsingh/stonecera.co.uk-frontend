@@ -10,7 +10,7 @@ export default function GoogleCallbackClient() {
   useEffect(() => {
     async function handleGoogleLogin() {
       const accessToken = params.get("access_token");
-
+      console.log(accessToken);
       if (!accessToken) {
         router.push("/login");
         return;
