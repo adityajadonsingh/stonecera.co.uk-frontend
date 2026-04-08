@@ -41,5 +41,5 @@ export default function GoogleCallbackPage() {
     handleLogin();
   }, []);
 
-  return <p>Signing in...</p>;
+  return <div className="min-h-[50vh] flex justify-center items-center"><p>Signing in...</p></div>;
 }
