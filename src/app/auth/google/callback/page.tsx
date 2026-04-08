@@ -1,12 +1,45 @@
-import { Suspense } from "react";
-import GoogleCallbackClient from "./GoogleCallbackClient";
+"use client";
 
-export const dynamic = "force-dynamic"; // 🔥 IMPORTANT
+import { useEffect } from "react";
 
-export default function Page() {
-  return (
-    <Suspense fallback={<div>Signing you in...</div>}>
-      <GoogleCallbackClient />
-    </Suspense>
-  );
+export default function GoogleCallbackPage() {
+  useEffect(() => {
+    async function handleLogin() {
+      const params = new URLSearchParams(window.location.search);
+
+      const access_token = params.get("access_token");
+
+      if (!access_token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/google", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ access_token }),
+        });
+
+        if (!res.ok) {
+          window.location.href = "/login";
+          return;
+        }
+
+        setTimeout(() => {
+          window.location.href = "/account";
+        }, 100);
+      } catch (err) {
+        console.error(err);
+        window.location.href = "/login";
+      }
+    }
+
+    handleLogin();
+  }, []);
+
+  return <p>Signing in...</p>;
 }

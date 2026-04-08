@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const STRAPI = process.env.STRAPI_API_URL;
-
-  const { access_token } = await req.json();
-
-  console.log("👉 Incoming access_token:", access_token);
-
   try {
+    const STRAPI = process.env.STRAPI_API_URL;
+
+    const { access_token } = await req.json();
+
+    console.log("FRONTEND ACCESS TOKEN:", access_token);
+
     const res = await fetch(`${STRAPI}/api/google-auth`, {
       method: "POST",
       headers: {
@@ -18,29 +18,30 @@ export async function POST(req: NextRequest) {
 
     const data = await res.json();
 
-    console.log("👉 Strapi response:", data);
+    console.log("STRAPI RESPONSE STATUS:", res.status);
+    console.log("STRAPI RESPONSE DATA:", data);
 
     if (!res.ok) {
-      console.log("❌ Strapi failed");
       return NextResponse.json(data, { status: res.status });
     }
 
-    const token = data.jwt;
-    const maxAge = 60 * 60 * 24 * 7;
-    const secure = process.env.NODE_ENV === "production";
+    const response = NextResponse.json({ success: true });
 
-    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Lax; ${secure ? "Secure;" : ""}`;
-
-    // 🔥 REDIRECT INSTEAD OF JSON
-    return new Response(null, {
-      status: 302,
-      headers: {
-        "Set-Cookie": cookie,
-        Location: "/account", // 🔥 redirect here
-      },
+    response.cookies.set("token", data.jwt, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
     });
+
+    return response;
   } catch (err) {
-    console.error("🔥 API ERROR:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("GOOGLE ROUTE ERROR:", err);
+
+    return NextResponse.json(
+      { error: "Internal Error" },
+      { status: 500 }
+    );
   }
 }

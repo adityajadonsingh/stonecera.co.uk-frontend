@@ -1,3 +1,5 @@
+// File: src/hooks/useAuthUser.ts
+
 "use client";
 
 import { useEffect, useState } from "react";

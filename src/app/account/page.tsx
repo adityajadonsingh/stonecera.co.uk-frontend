@@ -4,11 +4,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function AccountDashboardPage() {
-  const user = await getUserDetails();
-   if (!user) {
-     redirect("/login");
-   }
+  const authUser = await getCurrentUser();
+  if (!authUser) {
+    redirect("/login");
+  }
 
+  const user = await getUserDetails();
+  if (!user) {
+    redirect("/login");
+  }
   return (
     <div>
       <h1 className="text-2xl font-bold text-dark mb-4">Dashboard</h1>
@@ -21,7 +25,10 @@ export default async function AccountDashboardPage() {
           recent orders
         </Link>
         , manage your{" "}
-        <Link href="/account/addresses" className="text-blue-600 hover:underline">
+        <Link
+          href="/account/addresses"
+          className="text-blue-600 hover:underline"
+        >
           shipping and billing addresses
         </Link>
         , and{" "}

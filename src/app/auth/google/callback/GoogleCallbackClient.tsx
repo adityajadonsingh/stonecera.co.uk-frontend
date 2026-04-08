@@ -1,3 +1,5 @@
+// File: src/app/auth/google/callback/GoogleCallbackClient.tsx
+
 "use client";
 
 import { useEffect } from "react";
