@@ -31,6 +31,9 @@ const nextConfig: NextConfig = {
     deviceSizes: [320, 480, 768, 1024, 1200, 1600],
     minimumCacheTTL: 60,
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
 };
 
 export default nextConfig;
