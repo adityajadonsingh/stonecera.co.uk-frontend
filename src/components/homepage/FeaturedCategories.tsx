@@ -60,7 +60,7 @@ export default function FeaturedCategories({
                       </span>
                     </div>
                     <div className="shop-btn lg:block hidden">
-                        <button className="button-1 p-3 !rounded-full group-hover:!bg-[#4A3A2A] cursor-pointer"><MoveRight className="-rotate-45 group-hover:rotate-0" /></button>
+                        <button aria-label="Shop Now" className="button-1 p-3 !rounded-full group-hover:!bg-[#4A3A2A] cursor-pointer"><MoveRight className="-rotate-45 group-hover:rotate-0" /></button>
                     </div>
                   </div>
                 </div>

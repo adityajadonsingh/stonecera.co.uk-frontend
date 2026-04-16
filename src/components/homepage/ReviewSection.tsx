@@ -54,10 +54,10 @@ export default function ReviewSection({
           {/* RIGHT SLIDER */}
           <div className={isProductPage ? "w-full relative mt-8" : "relative md:w-8/12 w-full"}>
             {/* Navigation buttons */}
-            <button className="review-prev cursor-pointer absolute -left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
+            <button aria-label="Previous review" className="review-prev cursor-pointer absolute -left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
               <ChevronLeft size={20} />
             </button>
-            <button className="review-next cursor-pointer absolute -right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
+            <button aria-label="Next review" className="review-next cursor-pointer absolute -right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2">
               <ChevronRight size={20} />
             </button>
 
@@ -80,9 +80,9 @@ export default function ReviewSection({
                   <div className="h-full bg-white border rounded-sm border-gray-200  p-6">
                     {/* Name + stars */}
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-semibold text-gray-800">
+                      <span className="font-semibold text-gray-800">
                         {review.name}
-                      </h4>
+                      </span>
                       <div className="flex gap-1">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star

@@ -56,28 +56,28 @@ export default function Footer({
               <ul className="social flex gap-4">
                 {footerDetail?.facebookLink && (
                   <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link href={footerDetail?.facebookLink}>
+                    <Link aria-label="Facebook" href={footerDetail?.facebookLink}>
                       <Facebook size={16} />
                     </Link>
                   </li>
                 )}
                 {footerDetail?.twitterLink && (
                   <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link href={footerDetail?.twitterLink}>
+                    <Link aria-label="Twitter" href={footerDetail?.twitterLink}>
                       <Twitter size={16} />
                     </Link>
                   </li>
                 )}
                 {footerDetail?.instagramLink && (
                   <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link href={footerDetail?.instagramLink}>
+                    <Link aria-label="Instagram" href={footerDetail?.instagramLink}>
                       <Instagram size={16} />
                     </Link>
                   </li>
                 )}
                 {footerDetail?.linkedinLink && (
                   <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link href={footerDetail?.linkedinLink}>
+                    <Link aria-label="LinkedIn" href={footerDetail?.linkedinLink}>
                       <Linkedin size={16} />
                     </Link>
                   </li>

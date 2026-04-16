@@ -32,7 +32,7 @@ export default function CartSidebar() {
     await addToCart({
       product: item.product.id,
       variation_id: item.variation.id,
-      quantity: newQty - item.quantity, // 🔥 delta update
+      quantity: newQty - item.quantity,
     });
   };
   // console.log(items);

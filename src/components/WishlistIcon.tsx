@@ -8,7 +8,7 @@ export default function WishlistIcon() {
   const { count, loading } = useWishlistContext();
 
   return (
-    <Link href="/wishlist" className="relative mr-1">
+    <Link aria-label="Wishlist" href="/wishlist" className="relative mr-1">
       <Heart size={24} color="#bd7e40" />
 
       {!loading && count > 0 && (

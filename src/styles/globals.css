@@ -150,7 +150,7 @@ textarea {
 .heading {
   background: linear-gradient(90deg, #4c4331, #ce9550, #4c4331);
   background-size: 200% 100%;
-
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
@@ -386,7 +386,6 @@ textarea {
   gap: 8px;
 }
 
-
 .stone-item {
   position: relative;
   overflow: hidden;
@@ -405,7 +404,6 @@ textarea {
 .stone-item.small {
   grid-row: span 1;
 }
-
 
 @keyframes slide-in {
   from {

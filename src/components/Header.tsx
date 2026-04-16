@@ -120,7 +120,7 @@ export default function Header({
                   placeholder="Search products or categories..."
                   className="bg-skin px-3 py-1 rounded-l-sm w-full"
                 />
-                <button className="px-3 rounded-r-sm button-logo-1">
+                <button aria-label="Search" className="px-3 rounded-r-sm button-logo-1">
                   <Search size={18} />
                 </button>
 
@@ -134,13 +134,14 @@ export default function Header({
 
             <div className="md:w-3/12 w-full flex justify-end items-center md:gap-x-4 gap-x-2">
               <button
+                aria-label="Search"
                 onClick={() => setMobileSearchOpen(true)}
                 className="md:hidden block cursor-pointer"
               >
                 <Search size={24} color="#bd7e40" />
               </button>
               <WishlistIcon />
-              <Link href={"/cart/"} className="relative">
+              <Link aria-label="Cart" href={"/cart/"} className="relative">
                 <ShoppingCart size={24} color="#bd7e40" />
                 {totalQuantity > 0 && (
                   <span className="absolute -top-2 -right-2 bg-[#bd7e40] text-white text-xs px-1.5 rounded-full">
