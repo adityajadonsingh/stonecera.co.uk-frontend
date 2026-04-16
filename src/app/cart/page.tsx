@@ -92,7 +92,7 @@ export default function CartPage() {
       let data = await res.json();
       if (!res.ok) {
         const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-        console.log(cart);
+        // console.log(cart);
         const res = await fetch("/api/cart/guest", {
           method: "POST",
           headers: {
@@ -104,7 +104,7 @@ export default function CartPage() {
         });
 
         data = await res.json();
-        console.log(data);
+        // console.log(data);
       }
       const cartJson = data as CartItem[];
       setItems(Array.isArray(cartJson) ? cartJson : []);
@@ -300,7 +300,7 @@ const total = useMemo(() => {
               items.map((item) => {
                 const stock = item.variation?.stock;
                 const imageUrl = item.product?.image;
-                console.log(imageUrl);
+                // console.log(imageUrl);
                 return (
                   <div
                     key={item.id}

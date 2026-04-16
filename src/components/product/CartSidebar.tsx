@@ -35,7 +35,7 @@ export default function CartSidebar() {
       quantity: newQty - item.quantity, // 🔥 delta update
     });
   };
-  console.log(items);
+  // console.log(items);
 
   return (
     <>

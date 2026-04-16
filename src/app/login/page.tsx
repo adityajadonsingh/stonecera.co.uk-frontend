@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default async function LoginPage() {
   const user = await getCurrentUser();
-  console.log("LoginPage - Current User:", user); // Debug log
+  // console.log("LoginPage - Current User:", user); // Debug log
   if (user) {
     redirect("/account"); // server redirect
   }

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   try {
     const body = (await req.json()) as RegisterRequestBody;
-    console.log("[auth/register] endpoint:", endpoint);
+    // console.log("[auth/register] endpoint:", endpoint);
 
     const res = await fetch(endpoint, {
       method: "POST",
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       parsed = await res.text();
     }
 
-    console.log("[auth/register] upstream status:", res.status, "data:", parsed);
+    // console.log("[auth/register] upstream status:", res.status, "data:", parsed);
 
     if (!res.ok) {
       const bodyStr = typeof parsed === "string" ? parsed : JSON.stringify(parsed);

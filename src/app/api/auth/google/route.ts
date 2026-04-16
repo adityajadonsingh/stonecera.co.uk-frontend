@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
 
     const { access_token } = await req.json();
 
-    console.log("FRONTEND ACCESS TOKEN:", access_token);
+    // console.log("FRONTEND ACCESS TOKEN:", access_token);
 
     const res = await fetch(`${STRAPI}/api/google-auth`, {
       method: "POST",
@@ -18,8 +18,8 @@ export async function POST(req: NextRequest) {
 
     const data = await res.json();
 
-    console.log("STRAPI RESPONSE STATUS:", res.status);
-    console.log("STRAPI RESPONSE DATA:", data);
+    // console.log("STRAPI RESPONSE STATUS:", res.status);
+    // console.log("STRAPI RESPONSE DATA:", data);
 
     if (!res.ok) {
       return NextResponse.json(data, { status: res.status });

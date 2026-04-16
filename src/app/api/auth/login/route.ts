@@ -7,8 +7,8 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json(); // { identifier, password }
-    console.log("[auth/login] incoming body:", body);
-    console.log("[auth/login] STRAPI:", STRAPI);
+    // console.log("[auth/login] incoming body:", body);
+    // console.log("[auth/login] STRAPI:", STRAPI);
 
     const res = await fetch(`${STRAPI}/api/auth/local`, {
       method: "POST",
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    console.log("[auth/login] upstream status:", res.status, "statusText:", res.statusText);
+    // console.log("[auth/login] upstream status:", res.status, "statusText:", res.statusText);
 
     const contentType = res.headers.get("content-type") || "";
     let data;
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       data = await res.text(); // read plain text / html for debugging
     }
 
-    console.log("[auth/login] upstream response (parsed):", data);
+    // console.log("[auth/login] upstream response (parsed):", data);
 
     if (!res.ok) {
       // Return upstream body and status to client, and avoid throwing
