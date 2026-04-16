@@ -15,7 +15,7 @@ export default async function LoginPage() {
 
   return (
     <>
-      <ClientRedirect /> {/* 👈 handles client case */}
+      <ClientRedirect /> 
       <div className="max-w-md mx-auto py-12">
         <div className="bg-skin px-6 py-8 rounded-md shadow-md">
           <h1 className="text-2xl font-semibold mb-4">Customer Login</h1>

@@ -31,13 +31,19 @@ interface CartContextType {
   addToCart: (item: CartItemLocalStorage) => Promise<void>;
   removeFromCart: (variationId: number) => Promise<void>;
   refreshCart: () => Promise<void>;
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const { user } = useAuthUser();
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
   const [items, setItems] = useState<CartItem[]>([]);
 
   /* ---------------- FETCH GUEST CART DETAILS ---------------- */
@@ -133,12 +139,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       fetchBackendCart();
     } else {
       const stored: CartItemLocalStorage[] = JSON.parse(
-        localStorage.getItem("guest_cart") || "[]"
+        localStorage.getItem("guest_cart") || "[]",
       );
 
       const existing = stored.find(
         (i) =>
-          i.product === item.product && i.variation_id === item.variation_id
+          i.product === item.product && i.variation_id === item.variation_id,
       );
 
       if (existing) {
@@ -165,12 +171,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       fetchBackendCart();
     } else {
       const stored: CartItemLocalStorage[] = JSON.parse(
-        localStorage.getItem("guest_cart") || "[]"
+        localStorage.getItem("guest_cart") || "[]",
       );
 
-      const updated = stored.filter(
-        (i) => i.variation_id !== variationId
-      );
+      const updated = stored.filter((i) => i.variation_id !== variationId);
 
       localStorage.setItem("guest_cart", JSON.stringify(updated));
 
@@ -191,6 +195,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         refreshCart,
+        isCartOpen,
+        openCart,
+        closeCart,
       }}
     >
       {children}

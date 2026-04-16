@@ -2,6 +2,7 @@
 import Breadcrum from "@/components/Breadcrum";
 import FaqAccordion from "@/components/FaqAccordion";
 import ReviewSection from "@/components/homepage/ReviewSection";
+import CartSidebar from "@/components/product/CartSidebar";
 import ImageGallery from "@/components/product/ImageGallery";
 import NeedHelpBox from "@/components/product/NeedHelpBox";
 import ProductHighlights from "@/components/product/ProductHighlights";
@@ -239,6 +240,7 @@ export default async function ProductPage({
         <FaqAccordion items={faqData} />
       </div>
       <SchemaInjector schemas={safeSchemas} />
+      <CartSidebar />
     </>
   );
 }

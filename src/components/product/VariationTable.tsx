@@ -21,7 +21,7 @@ export default function VariationTable({
   categoryDiscount,
 }: Props) {
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart, openCart } = useCart();
   const [qty, setQty] = useState<Record<number, number>>({});
   const [openId, setOpenId] = useState<number | null>(null);
   const { showToast } = useToast();
@@ -75,6 +75,8 @@ export default function VariationTable({
           quantity: qty[v.id],
         });
       }
+
+      openCart();
 
       router.refresh();
       showToast("Added to cart", "success");
@@ -184,7 +186,7 @@ export default function VariationTable({
                 <button
                   onClick={() => set(v.id, q - 1, v.Stock)}
                   disabled={isOut}
-                  className="w-8 h-8 text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
+                  className="w-8 h-8 text-lg cursor-pointer bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
                 >
                   −
                 </button>
@@ -196,7 +198,7 @@ export default function VariationTable({
                 <button
                   onClick={() => set(v.id, q + 1, v.Stock)}
                   disabled={isOut}
-                  className="w-8 h-8 text-lg bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
+                  className="w-8 h-8 text-lg cursor-pointer bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
                 >
                   +
                 </button>

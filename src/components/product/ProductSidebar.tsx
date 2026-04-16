@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 interface Props {
   open: boolean;
   title: string;
-  content?: string; // CKEditor HTML for description OR static delivery text
+  content?: string;
   onClose: () => void;
 }
 

@@ -11,7 +11,7 @@ export default function ClientRedirect() {
 
     if (token) {
       router.replace("/account");
-      router.refresh(); // 🔥 ensures server sync
+      router.refresh();
     }
   }, [router]);
 

@@ -1,8 +1,10 @@
 "use client";
 
+import { useWishlistContext } from "@/context/WishlistContext";
 import { useEffect } from "react";
 
 export default function GoogleCallbackPage() {
+  const wishlist = useWishlistContext();
   useEffect(() => {
     async function handleLogin() {
       const params = new URLSearchParams(window.location.search);
@@ -28,7 +30,8 @@ export default function GoogleCallbackPage() {
           window.location.href = "/login";
           return;
         }
-
+        await wishlist.merge();
+        await wishlist.refresh();
         setTimeout(() => {
           window.location.href = "/account";
         }, 100);
@@ -41,5 +44,9 @@ export default function GoogleCallbackPage() {
     handleLogin();
   }, []);
 
-  return <div className="min-h-[50vh] flex justify-center items-center"><p>Signing in...</p></div>;
+  return (
+    <div className="min-h-[50vh] flex justify-center items-center">
+      <p>Signing in...</p>
+    </div>
+  );
 }
