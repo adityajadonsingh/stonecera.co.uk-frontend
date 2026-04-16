@@ -76,7 +76,7 @@ export default async function RootLayout({
       gtag('config', 'G-G37HTD2PMN');
     `}
         </Script>
-        {/* <Script
+        <Script
           id="tawk-to"
           strategy="lazyOnload"
           dangerouslySetInnerHTML={{
@@ -93,7 +93,7 @@ export default async function RootLayout({
               })();
             `,
           }}
-        /> */}
+        />
         <meta name="google-site-verification" content="UTYd1bL9z7-nQG3IbEHEbGgRCOBLRDAcUCb3_KbfnvY" />
       </head>
       <body className={montserrat.className}>
