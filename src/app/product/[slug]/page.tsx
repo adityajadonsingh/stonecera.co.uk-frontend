@@ -64,7 +64,6 @@ export default async function ProductPage({
 }: {
   params: ParamsPromise;
 }) {
-  
   const { slug } = await params;
 
   const product: Product = await getProductBySlug(slug);
@@ -228,13 +227,17 @@ export default async function ProductPage({
             />
             <ProductHighlights />
             <ProductSidebarTrigger description={product.description} />
-            <NeedHelpBox />
+            <NeedHelpBox pageName={product.slug} />
             <ShareButton title={product.name} />
           </div>
         </div>
       </div>
-      <ProductReviewForm productId={product.id} />
-      <ProductReviews reviews={product.productReviews} />
+      <section className=" mt-8 mb-12 ">
+        <div className="container grid md:grid-cols-2 gap-5">
+          <ProductReviewForm productId={product.id} />
+          <ProductReviews reviews={product.productReviews} />
+        </div>
+      </section>
       <ReviewSection content={product.reviews} isProductPage={true} />
       <div className="container md:py-16 py-8">
         <FaqAccordion items={faqData} />
