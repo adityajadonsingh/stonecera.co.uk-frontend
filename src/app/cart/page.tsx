@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import Image from "next/image";
 // --- Type Definitions ---
 
 type MinimalImage = { url: string; alt: string | null };
@@ -309,9 +310,12 @@ const total = useMemo(() => {
                     <div className="flex items-start gap-4">
                       <Link href={`/product/${item.product?.slug}/`}>
                         {imageUrl ? (
-                          <img
+                          <Image
                             src={imageUrl}
                             alt={item.product?.name ?? ""}
+                            width={96}
+                            height={96}
+                            sizes="96px"
                             className="w-24 h-24 object-cover rounded"
                           />
                         ) : (

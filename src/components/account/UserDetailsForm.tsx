@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type PhoneItem = { phone?: string };
 
@@ -352,10 +353,12 @@ export default function UserDetailsForm({ initialData = null }: Props) {
         <label className="block text-sm font-medium mb-1">Profile image</label>
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={profileImageUrl ?? "/media/user.png"}
               alt="profile"
+              width={80}
+              height={80}
+              sizes="80px"
               className="w-full h-full object-cover"
             />
           </div>

@@ -5,6 +5,7 @@ import ContactImg from "../../../public/media/anthracite-grey-2.webp";
 import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 import { getClientInfo } from "@/utils/getClientInfo";
+import Turnstile from "react-turnstile";
 
 interface Props {
   page: string; // "homepage" | "contact-us"
@@ -12,6 +13,7 @@ interface Props {
 
 export default function ContactForm({ page }: Props) {
   const { showToast } = useToast();
+  const [token, setToken] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -34,6 +36,7 @@ export default function ContactForm({ page }: Props) {
         page,
         client_ip: clientInfo?.ip,
         country_code: clientInfo?.country,
+        captchaToken: token,
       }),
     });
 
@@ -109,9 +112,15 @@ export default function ContactForm({ page }: Props) {
                 className="w-full p-3 bg-white rounded-md"
                 required
               />
-
+              <Turnstile
+                sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                theme="light"
+                refreshExpired="auto"
+                onVerify={(token) => setToken(token)}
+                onExpire={() => setToken("")}
+              />
               <button
-                disabled={loading}
+                disabled={loading || !token}
                 className="button-logo-1 py-2 px-6 rounded-md disabled:opacity-50"
               >
                 {loading ? "Sending..." : "Send Message"}

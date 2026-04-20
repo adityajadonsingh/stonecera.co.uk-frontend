@@ -7,8 +7,10 @@ import { Mail, MessageCircleQuestionMark, Phone } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import WhatsAppIcon from "../../../public/media/icons/whatsapp.png";
+import { Turnstile } from "react-turnstile";
 export default function NeedHelpBox({ pageName }: { pageName: string }) {
   const { showToast } = useToast();
+  const [token, setToken] = useState("");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -34,6 +36,7 @@ export default function NeedHelpBox({ pageName }: { pageName: string }) {
         page: pageName,
         client_ip: clientInfo?.ip,
         country_code: clientInfo?.country,
+        captchaToken: token
       }),
     });
 
@@ -165,8 +168,14 @@ export default function NeedHelpBox({ pageName }: { pageName: string }) {
                 required
               />
 
+              <Turnstile
+                sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                theme="light"
+                onVerify={(token) => setToken(token)}
+              />
+
               <button
-                disabled={loading}
+                disabled={loading || !token}
                 className="w-full button-1 cursor-pointer text-white py-2 rounded disabled:opacity-50"
               >
                 {loading ? "Sending..." : "Send Message"}

@@ -2,6 +2,8 @@
 
 import { Product } from "@/lib/types";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 const STORAGE_KEY = "wishlist";
 
@@ -25,24 +27,27 @@ export default function ClientWishlist() {
     <section className="container py-16">
       <h1 className="text-2xl font-semibold mb-6">Your Wishlist</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((p) => (
-          <a
-            key={p.id}
-            href={`/product/${p.slug}`}
-            className="border rounded-md p-3"
-          >
-            {p.image && (
-              <img
-                src={process.env.NEXT_PUBLIC_MEDIA_URL + p.image.url}
-                alt={p.image.alt || p.name}
-                className="aspect-square object-cover rounded mb-2"
-              />
-            )}
-            <p className="text-sm">{p.name}</p>
-          </a>
-        ))}
-      </div>
-    </section>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((p) => (
+            <Link
+              key={p.id}
+              href={`/product/${p.slug}`}
+              className="border rounded-md p-3"
+            >
+              {p.image && (
+                <Image
+                  src={process.env.NEXT_PUBLIC_MEDIA_URL + p.image.url}
+                  alt={p.image.alt || p.name}
+                  width={320}
+                  height={320}
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="aspect-square object-cover rounded mb-2"
+                />
+              )}
+              <p className="text-sm">{p.name}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
   );
 }
