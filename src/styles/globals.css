@@ -200,6 +200,7 @@ textarea {
   h4 {
     font-weight: 700;
     margin: 15px 0;
+    font-family: 'Montserrat', sans-serif !important;
   }
   h3,
   h4 {
@@ -209,11 +210,13 @@ textarea {
     margin-top: 16px;
     margin-bottom: 16px;
     font-size: 12pt;
+    font-family: 'Montserrat', sans-serif !important;
   }
   a span {
     color: #f36c23 !important;
     text-decoration: none !important;
     font-weight: 700 !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   a:hover span {
     color: #ff782f !important;
@@ -222,6 +225,7 @@ textarea {
     color: #f36c23 !important;
     text-decoration: none !important;
     font-weight: 700 !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   a:hover {
     color: #ff782f !important;
@@ -419,11 +423,16 @@ textarea {
 .animate-slide-in {
   animation: slide-in 0.35s ease-out;
 }
-.related-post {
+.prose  .related-post {
   border: 1px solid #bd7e40;
   border-left: 0;
   border-right: 0;
   margin: 20px 0;
   padding: 10px 0;
   font-weight: 600;
+  text-align: center;
+  display: block;
+  width: 100%;
+  font-weight: 600;
+  
 }
