@@ -419,3 +419,11 @@ textarea {
 .animate-slide-in {
   animation: slide-in 0.35s ease-out;
 }
+.related-post {
+  border: 1px solid #bd7e40;
+  border-left: 0;
+  border-right: 0;
+  margin: 20px 0;
+  padding: 10px 0;
+  font-weight: 600;
+}
