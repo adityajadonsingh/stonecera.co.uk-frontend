@@ -424,6 +424,7 @@ textarea {
   animation: slide-in 0.35s ease-out;
 }
 .prose  .related-post {
+  font-size: 16px;
   border: 1px solid #bd7e40;
   border-left: 0;
   border-right: 0;
@@ -434,5 +435,11 @@ textarea {
   display: block;
   width: 100%;
   font-weight: 600;
-  
+  span{
+    color: rgb(97, 90, 82);
+    font-weight: 700;
+  }
+  a{
+    text-decoration: underline !important;
+  }
 }
