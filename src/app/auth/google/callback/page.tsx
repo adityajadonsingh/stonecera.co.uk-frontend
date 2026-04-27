@@ -1,3 +1,5 @@
+// File: src/app/auth/google/callback/page.tsx
+
 "use client";
 
 import { useWishlistContext } from "@/context/WishlistContext";

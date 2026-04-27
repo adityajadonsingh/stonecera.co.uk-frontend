@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /account/
+Disallow: /auth/
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /cart
+Disallow: /checkout
+Disallow: /wishlist
+Disallow: /order/
+Disallow: /api/stripe-paid
+Disallow: /*?*
+
+Sitemap: https://stonecera.co.uk/sitemap.xml
