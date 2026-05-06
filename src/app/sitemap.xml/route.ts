@@ -14,6 +14,9 @@ export async function GET() {
   <sitemap>
     <loc>${baseUrl}/product_category-sitemap.xml</loc>
   </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/blogs-sitemap.xml</loc>
+  </sitemap>
 </sitemapindex>`;
 
   return new Response(sitemapIndex, {
