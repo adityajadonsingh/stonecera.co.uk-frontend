@@ -9,15 +9,15 @@ export async function GET() {
 <?xml-stylesheet type="text/xsl" href="/url-sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   ${allBlogs.data
-    .map((category) => {
-      const lastModRaw = category.createdOn;
+    .map((blog) => {
+      const lastModRaw = blog.createdOn;
       const lastMod = lastModRaw
         ? new Date(lastModRaw).toISOString()
         : new Date().toISOString();
 
       return `
     <url>
-      <loc>${baseUrl}/product-category/${category.slug}/</loc>
+      <loc>${baseUrl}/blogs/${blog.slug}/</loc>
       <lastmod>${lastMod}</lastmod>
       <priority>1.00</priority>
     </url>`;
