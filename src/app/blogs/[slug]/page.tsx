@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBlogBySlug, getBlogs } from "@/lib/api/blog";
 import Breadcrum from "@/components/Breadcrum";
-import { buildMetadata } from "@/lib/seo";    
+import { buildMetadata } from "@/lib/seo";
 import { Metadata } from "next";
+import { JSONObject, Schema } from "@/lib/types";
+import SchemaInjector from "@/components/SchemaInjector";
 
 export default async function BlogDetailPage({
   params,
@@ -16,6 +18,76 @@ export default async function BlogDetailPage({
   if (!data?.blog) return notFound();
 
   const { blog, recentBlogs } = data;
+
+  const commonSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://stonecera.co.uk/blogs/${blog.slug}/`,
+    },
+    headline: blog.title,
+    description: blog.meta_description,
+    image: blog.meta_img,
+    author: {
+      "@type": "Person",
+      name: "Jaya Tripathi",
+      url: "https://stonecera.co.uk/author/jaya_tripathi/",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Stonecera",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://stonecera.co.uk/media/logo.svg",
+      },
+    },
+    datePublished: new Date(blog.date_posted).toISOString(),
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org/",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://stonecera.co.uk/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blogs",
+        item: "https://stonecera.co.uk/blogs/",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: blog.title,
+        item: `https://stonecera.co.uk/blogs/${blog.slug}/`,
+      },
+    ],
+  };
+  const normalizeSchema = (schema: Schema | JSONObject): Schema =>
+    "schema_json" in schema
+      ? (schema as Schema)
+      : { id: 0, name: "", schema_json: schema };
+
+  const rawSchemas: (Schema | JSONObject)[] = [
+    breadcrumbSchema,
+    commonSchema,
+    ...(Array.isArray(blog?.schema_markup) ? blog?.schema_markup : []),
+  ];
+
+  const safeSchemas: Schema[] = Array.from(
+    new Map(
+      rawSchemas.map((schema) => {
+        const normalized = normalizeSchema(schema);
+        return [JSON.stringify(normalized.schema_json), normalized];
+      }),
+    ).values(),
+  );
 
   return (
     <>
@@ -76,10 +148,10 @@ export default async function BlogDetailPage({
           </div>
         </div>
       </section>
+      <SchemaInjector schemas={safeSchemas} />
     </>
   );
 }
-
 
 export async function generateMetadata({
   params,
