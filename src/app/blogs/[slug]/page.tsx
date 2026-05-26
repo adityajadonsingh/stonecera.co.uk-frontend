@@ -42,7 +42,7 @@ export default async function BlogDetailPage({
         url: "https://stonecera.co.uk/media/logo.svg",
       },
     },
-    datePublished: new Date(blog.date_posted).toISOString(),
+    datePublished: new Date(blog.createdOn).toISOString(),
   };
 
   const breadcrumbSchema = {
