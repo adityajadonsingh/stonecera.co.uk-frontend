@@ -27,7 +27,7 @@ export default async function BlogDetailPage({
       "@id": `https://stonecera.co.uk/blogs/${blog.slug}/`,
     },
     headline: blog.title,
-    description: blog.meta_description,
+    description: blog.shortDescription,
     image: blog.meta_img,
     author: {
       "@type": "Person",
