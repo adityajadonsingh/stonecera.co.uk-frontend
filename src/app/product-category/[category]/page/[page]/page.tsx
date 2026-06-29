@@ -24,7 +24,7 @@ export async function generateMetadata({
 
   return {
     ...baseMetadata,
-    robots: { index: false, follow: true }
+    robots: { index: true, follow: true }
   };
 }
 

@@ -38,7 +38,7 @@ export async function generateMetadata({
     (key) => !["page", "limit"].includes(key),
   );
 
-  const shouldNoIndex = page > 1 || hasFilters;
+  const shouldNoIndex = hasFilters;
 
   const data = await getCategoryBySlugForMeta(category);
   if (!data) return {};
@@ -51,7 +51,7 @@ export async function generateMetadata({
   return {
     ...baseMetadata,
 
-    // ✅ override robots ONLY when needed
+    // override robots ONLY when needed
     robots: shouldNoIndex
       ? { index: false, follow: true }
       : baseMetadata.robots,
