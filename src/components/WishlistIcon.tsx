@@ -8,11 +8,11 @@ export default function WishlistIcon() {
   const { count, loading } = useWishlistContext();
 
   return (
-    <Link aria-label="Wishlist" href="/wishlist" className="relative mr-1">
-      <Heart size={24} color="#bd7e40" />
-
+    <Link aria-label="Wishlist" href="/wishlist" className="relative flex flex-col items-center mr-1">
+      <Heart size={18} color="#262a18" />
+      <span className="sm:block hidden text-[10px]">Wishlist</span>
       {!loading && count > 0 && (
-        <span className="absolute -top-2 -right-2 bg-[#bd7e40] text-white text-[10px] font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+        <span className="absolute -top-2 -right-0 bg-[#d8c06a] text-white text-[8px] font-semibold rounded-full w-4 h-4 flex items-center justify-center">
           {count}
         </span>
       )}

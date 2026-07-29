@@ -112,13 +112,15 @@ export default function ContactForm({ page }: Props) {
                 className="w-full p-3 bg-white rounded-md"
                 required
               />
-              <Turnstile
-                sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                theme="light"
-                refreshExpired="auto"
-                onVerify={(token) => setToken(token)}
-                onExpire={() => setToken("")}
-              />
+              <div className="origin-left scale-90 sm:scale-100">
+                <Turnstile
+                  sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                  theme="light"
+                  refreshExpired="auto"
+                  onVerify={(token) => setToken(token)}
+                  onExpire={() => setToken("")}
+                />
+              </div>
               <button
                 disabled={loading || !token}
                 className="button-logo-1 py-2 px-6 rounded-md disabled:opacity-50"

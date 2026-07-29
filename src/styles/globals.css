@@ -11,13 +11,39 @@
   --color-logo-1: #bd7e40;
 }
 
+@layer base {
+  * {
+    /* Directly sets the color using your shadcn custom variables */
+    border-color: var(--border); 
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Work Sans', sans-serif;
+  }
+  h1, h2, h3, .serif {
+    font-family: 'Instrument Serif', serif;
+  }
+}
+@theme{
+  --font-serif: "Instrument Serif", serif;
+}
+
+.icon-clr{
+  color: #D8C06A;
+}
+
+.bg-dark-n{
+  background: #262a18;
+}
+
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
 
 main {
-  padding-top: 140px;
+  padding-top: 138px;
 }
 
 input,
@@ -153,7 +179,6 @@ textarea {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
   animation: gradientFlow 3s linear infinite;
 }
 

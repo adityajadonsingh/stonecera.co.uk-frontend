@@ -2,12 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Banner } from "@/lib/types";
 import {
+  ArrowRight,
   Award,
   Headset,
   LockKeyhole,
   Truck,
 } from "lucide-react";
-import BannerImg from "../../../public/media/County-Lgy-Porcelain.webp";
+// import BannerImg from "../../../public/media/County-Lgy-Porcelain.webp";
+import BannerImg from "../../../public/media/banner-n.webp";
 
 export default function HomeBannerSlider({ banners }: { banners: Banner[] }) {
   const item = banners[0];
@@ -16,10 +18,53 @@ export default function HomeBannerSlider({ banners }: { banners: Banner[] }) {
 
   return (
     <>
-      <section className="banner bg-[#fafbfc]">
-        <div className="container">
-          <div className="grid md:grid-cols-2 lg:gap-6 md:gap-3 gap-6 items-center md:py-12 py-6">
-            {/* Content Overlay */}
+      <section className="banner h-[85vh] bg-[#262A18] z-0 relative flex items-center">
+        <div className="absolute top-0 left-0 h-full w-full ">
+          <Image
+            src={BannerImg}
+            alt="Banner"
+            fill
+            className="object-cover opacity-40 z-10 object-center"
+          />
+        </div>
+        <div className="container my-auto relative z-20">
+          <div className="max-w-2xl">
+            <p className="text-[10px] tracking-[0.35em] uppercase mb-6 font-medium" style={{ color: "rgb(216, 192, 106)" }}>
+              Premium Natural Stone
+            </p>
+            <h1
+              className="font-serif text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[0.95] mb-6"
+              style={{ fontFamily: "\"Instrument Serif\", serif", color: "rgb(245, 240, 232)" }}
+            >
+              Stone that<br />
+              <em>lasts</em>
+              <br />
+              generations.
+            </h1>
+            <p
+              className="text-base sm:text-lg leading-relaxed mb-10 max-w-lg"
+              style={{ color: "rgba(245, 240, 232, 0.7)", fontFamily: "\"Work Sans\", sans-serif" }}
+            >
+              Architectural-grade sandstone, limestone, porcelain and granite. Globally sourced, rigorously graded, and delivered nationwide.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                className="inline-flex items-center bg-[#D8C06A] hover:bg-[#262a18] text-[#262A18] hover:text-white gap-2 px-6 py-3.5 text-sm font-medium tracking-wide font-sans"
+                href="/product-category/"
+              >
+                Explore Our Range
+                <ArrowRight strokeWidth={1.8} size={20} />
+              </Link>
+              <Link
+                className="inline-flex border-[0.5px] border-[rgb(245,240,232)]/40 text-[rgb(245,240,232)] hover:bg-[#262a18] hover:text-white items-center gap-2 px-6 py-3.5 text-sm font-medium tracking-wide font-sans"
+                
+                href="/contact-us/"
+              >
+                Get a Quote
+              </Link>
+            </div>
+          </div>
+          {/* <div className="grid md:grid-cols-2 lg:gap-6 md:gap-3 gap-6 items-center md:py-12 py-6">
             <div className="flex items-center">
               <div className="text-start">
                 <h1 className="md:text-3xl sm:text-4xl text-2xl text-[#2b2b2b] leading-tight xl:text-5xl font-bold mb-3">
@@ -46,7 +91,6 @@ export default function HomeBannerSlider({ banners }: { banners: Banner[] }) {
                 </div>
               </div>
             </div>
-            {/* Banner Image */}
             <div className="relative md:shadow-2xl shadow-lg z-0  aspect-[7/5] rounded-2xl overflow-hidden">
               <Image
                 src={BannerImg}
@@ -60,7 +104,7 @@ export default function HomeBannerSlider({ banners }: { banners: Banner[] }) {
                 <span className="text-xs block">Premium Porcelain</span>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
       <section className="advantages py-7 bg-skin ">

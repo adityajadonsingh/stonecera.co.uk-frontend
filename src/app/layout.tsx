@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Work_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/responsive.css";
 import "swiper/css";
@@ -16,9 +16,9 @@ import { ToastProvider } from "@/components/ui/ToastProvider";
 import Script from "next/script";
 import { CartProvider } from "@/context/CartContext";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const workSans = Work_Sans({
+  subsets: ["latin"],                 
+  variable: "--font-work-sans",      
   display: "swap",
 });
 
@@ -85,7 +85,7 @@ export default async function RootLayout({
           content="UTYd1bL9z7-nQG3IbEHEbGgRCOBLRDAcUCb3_KbfnvY"
         />
       </head>
-      <body className={montserrat.className}>
+      <body className={workSans.className}>
         <ToastProvider>
           <WishlistProvider>
             <CartProvider>

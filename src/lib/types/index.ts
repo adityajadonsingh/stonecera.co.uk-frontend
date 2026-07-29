@@ -34,6 +34,8 @@ export interface Category {
   startingFrom?: number;
   seo: StrapiSEO | null;
   updatedAt: string;
+  finishName?: string;
+  productCount?: number;
 }
 
 export interface CategoryProduct {
