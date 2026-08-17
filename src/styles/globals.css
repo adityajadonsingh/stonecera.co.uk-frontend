@@ -2,7 +2,7 @@
 
 :root {
   --scrollbar-color: #4a3a2a;
-  --color-skin: #f7f3eb;
+  --color-skin: #f5f0e8;
   --color-skin-text: #4a3a2a;
   --color-dark: #4a3a2a;
   --color-dark-text: #fff;
@@ -19,18 +19,23 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: 'Work Sans', sans-serif;
+    font-family: var(--font-work);
   }
   h1, h2, h3, .serif {
     font-family: 'Instrument Serif', serif;
   }
 }
-@theme{
-  --font-serif: "Instrument Serif", serif;
+@theme {
+  --font-serif: var(--font-instrument-serif);
+  --font-work: var(--font-work-sans);
 }
 
 .icon-clr{
   color: #D8C06A;
+}
+
+.new-heading{
+  color: #262a18;
 }
 
 .bg-dark-n{
@@ -78,6 +83,11 @@ textarea {
 
 .container {
   margin: 0 auto;
+  max-width: 1400px;
+}
+.section-border{
+  border-top-color: rgba(38, 42, 24, 0.1);
+  border-top-width: 0.5px;
 }
 .text-dark {
   color: var(--color-dark);
@@ -197,12 +207,12 @@ textarea {
     background-color: #4d4431;
   }
   50% {
-    background-color: #cd9450;
+    background-color: #b68446;
   }
 }
 
 .animate-pulse-bg {
-  animation: pulseBg 1s linear infinite;
+  animation: pulseBg 3s linear infinite;
 }
 .prose {
   img {

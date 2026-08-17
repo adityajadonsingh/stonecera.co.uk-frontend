@@ -6,11 +6,11 @@ import BestSeller from "@/components/homepage/BestSeller";
 import PageContent1 from "@/components/homepage/PageContent1";
 import ReviewSection from "@/components/homepage/ReviewSection";
 import BlogsSection from "@/components/homepage/BlogsSection";
-import WhyChooseUs from "@/components/homepage/WhyChooseUs";
-import ContactForm from "@/components/homepage/ContactForm";
 import { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import SchemaInjector from "@/components/SchemaInjector";
+import PageContent2 from "@/components/homepage/PageContent2";
+import ContactSection from "@/components/homepage/ContactSection";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getHomepage();
@@ -28,12 +28,12 @@ export default async function Home() {
     <>
        <HomeBannerSlider banners={homepage.banner} />
        <FeaturedCategories content={homepage.featuredCategory}/>
-       <PageContent1 />
        <BestSeller content={homepage.bestSeller}/>
-       <ReviewSection content={homepage.reviews} isProductPage={false} />
+       <PageContent1 />
        <BlogsSection blogs={homepage.blogs}/>
-       <WhyChooseUs/>
-       <ContactForm page="homepage"/>
+       <ReviewSection content={homepage.reviews} isProductPage={false} />
+       <ContactSection page="homepage"/>
+       <PageContent2/>
        <SchemaInjector schemas={homepage.seo?.schemas} />
     </>
   );

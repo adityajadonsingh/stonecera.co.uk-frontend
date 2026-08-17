@@ -10,12 +10,14 @@ import {
   Twitter,
 } from "lucide-react";
 import Link from "next/link";
+
 import Visa from "../../public/media/visa.png";
 import Mastercard from "../../public/media/mastercard.png";
 import Amex from "../../public/media/amex.png";
 import ApplePay from "../../public/media/apple-pay.png";
 import Skrill from "../../public/media/skrill.png";
 import WhatsAppIcon from "../../public/media/whatsapp.png";
+
 export default function Footer({
   categories,
   footerDetail,
@@ -23,212 +25,385 @@ export default function Footer({
   categories: Category[];
   footerDetail: FooterDetail | null;
 }) {
+  const phone = footerDetail?.companyPhoneNumbers?.[0]?.phone;
+  const email = footerDetail?.companyEmails?.[0]?.email;
+  const address = footerDetail?.companyAddress;
+
   return (
     <>
+      {/* WhatsApp */}
       <div className="fixed bottom-36 right-6 z-50">
-        <a href="https://wa.me/+447467648124" target="_blank">
-          <Image src={WhatsAppIcon} alt="WhatsApp" width={60} height={60} />
+        <a
+          href="https://wa.me/+447467648124"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Contact us on WhatsApp"
+        >
+          <Image
+            src={WhatsAppIcon}
+            alt="WhatsApp"
+            width={60}
+            height={60}
+          />
         </a>
       </div>
-      <footer className="md:py-16 py-8 bg-dark">
-        <div className="container">
-          <div className="grid 2xl:grid-cols-4 xl:grid-cols-[1fr_0.9fr_1fr_1.1fr] lg:grid-cols-[1fr_0.7fr_0.9fr_1.2fr] md:grid-cols-[1.4fr_0.7fr_0.9fr] sm:grid-cols-2 sm:gap-y-8 gap-y-4 mb-5">
-            <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
-                Customer Service
-              </h4>
-              <ul className="flex flex-col mb-5 gap-1 sm:text-base text-sm">
-                <li>
-                  <Link href="/contact-us/">Contact Us</Link>
-                </li>
-                <li>
-                  <Link href="/shipping-policy/">Shipping Policy</Link>
-                </li>
-                <li>
-                  <Link href="/cancellations-and-refunds/">
-                    Cancellations & Refunds
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/faqs/">FAQ&apos;s</Link>
-                </li>
-              </ul>
-              <ul className="social flex gap-4">
-                {footerDetail?.facebookLink && (
-                  <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link aria-label="Facebook" href={footerDetail?.facebookLink}>
-                      <Facebook size={16} />
-                    </Link>
-                  </li>
-                )}
-                {footerDetail?.twitterLink && (
-                  <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link aria-label="Twitter" href={footerDetail?.twitterLink}>
-                      <Twitter size={16} />
-                    </Link>
-                  </li>
-                )}
-                {footerDetail?.instagramLink && (
-                  <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link aria-label="Instagram" href={footerDetail?.instagramLink}>
-                      <Instagram size={16} />
-                    </Link>
-                  </li>
-                )}
-                {footerDetail?.linkedinLink && (
-                  <li className="w-[40px] h-[40px] bg-[#dfdfdf6e] rounded-full flex items-center justify-center">
-                    <Link aria-label="LinkedIn" href={footerDetail?.linkedinLink}>
-                      <Linkedin size={16} />
-                    </Link>
-                  </li>
-                )}
-                {/* {
-                            footerDetail?.pinterestLink && <li className="w-[40px] h-[40px] bg-[#dfdfdfce] rounded-full flex items-center justify-center"><Link href={footerDetail?.pinterestLink}>Pinterest</Link></li>
-                        } */}
-              </ul>
-            </div>
-            <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
-                Stonecera
-              </h4>
-              <ul className="flex flex-col gap-1 sm:text-base text-sm">
-                <li>
-                  <Link href="/product-category/">Product Category</Link>
-                </li>
-                <li>
-                  <Link href="/product-catalogue/">Product Catalogue</Link>
-                </li>
-                <li>
-                  <Link href="/about-us/">About Us</Link>
-                </li>
-                <li>
-                  <Link href="/blogs/">Blogs</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
-                Categories
-              </h4>
-              <ul className="flex flex-col gap-1 sm:text-base text-sm">
-                {categories.map((category, i) => (
-                  <li key={`footer-category-${i}`}>
-                    <Link href={`/product-category/${category.slug}/`}>
-                      {category.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="footer-widget">
-              <h4 className="text-white text-xl font-semibold sm:mb-4 mb-1">
-                Contact Us
-              </h4>
-              <ul className="flex flex-col gap-1 sm:text-base text-sm">
-                <li className="flex items-center gap-x-2">
-                  <span className="w-8 h-8 bg-gray-50/30 rounded-full flex items-center justify-center">
-                    <Phone size={14} />
-                  </span>
-                  <Link href="tel:">
-                    {footerDetail?.companyPhoneNumbers[0].phone}
-                  </Link>
-                </li>
-                <li className="flex items-center gap-x-2">
-                  <span className="w-8 h-8 bg-gray-50/30 rounded-full flex items-center justify-center">
-                    <Mail size={14} />
-                  </span>
-                  <Link href="mailto:">
-                    {footerDetail?.companyEmails[0].email}
-                  </Link>
-                </li>
-                <li className="flex flex-wrap gap-x-2">
-                  <span className="w-8 h-8 bg-gray-50/30 rounded-full flex items-center justify-center">
-                    <MapPin size={14} />
-                  </span>
-                  <span>
-                    {footerDetail?.companyAddress?.address},<br />
-                    {footerDetail?.companyAddress?.city},{" "}
-                    {footerDetail?.companyAddress?.pincode}
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="grid xl:grid-cols-[1fr_0.5fr] lg:grid-cols-[1fr_0.7fr] grid-cols-1 gap-8 items-center">
-            <div className="lg:order-1 order-2 grid grid-cols-1">
-              <ul className="flex lg:flex-nowrap flex-wrap lg:justify-start justify-center lg:gap-6 gap-x-6 lg:mb-5 lg:mt-0 mt-5 lg:order-1 order-2">
-                <li className="lg:text-wrap text-nowrap">
-                  © 2026 Stonecera. All Rights Reserved.
-                </li>
-                <li>
-                  <Link
-                    className="lg:text-wrap text-nowrap"
-                    href="/privacy-policy/"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="lg:text-wrap text-nowrap"
-                    href="/terms-and-conditions/"
-                  >
-                    Terms of use
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="lg:text-wrap text-nowrap"
-                    href="/cookie-policy/"
-                  >
-                    Cookie Policy
-                  </Link>
-                </li>
-              </ul>
-              <div className="flex w-fit gap-x-4 py-1 px-4 bg-white/10 lg:order-2 order-1">
-                <Image src={Visa} alt="Visa" width={44} height={44} />
-                <Image
-                  src={Mastercard}
-                  alt="Mastercard"
-                  width={44}
-                  height={44}
-                />
-                <Image src={Amex} alt="Amex" width={44} height={44} />
-                <Image
-                  src={ApplePay}
-                  alt="Apple Pay"
-                  width={44}
-                  height={44}
-                  className="object-contain"
-                />
-                <Image
-                  src={Skrill}
-                  alt="Skrill"
-                  width={44}
-                  height={40}
-                  className="object-contain"
-                />
+
+      <footer className="bg-[#262a18] font-sans">
+        {/* MAIN FOOTER */}
+        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 border-b border-white/[0.08]">
+          {/* BRAND */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              {/* Replace with your logo image if you have one */}
+              <div>
+                <div className="serif text-2xl text-white leading-none">
+                  Stonecera
+                </div>
+
+                <div className="text-[8px] tracking-[0.2em] uppercase text-[#99a14e] mt-1">
+                  Natural Stone Specialists
+                </div>
               </div>
             </div>
-            <div className="newsletter lg:order-2 order-1">
-              <h2 className="text-xl lg:text-right font-semibold mb-3">
-                Subscribe to our Newsletter
-              </h2>
-              <p className="lg:text-right md:text-base text-sm">
-                Stay ahead of the curve with our insights on stones. We&apos;re
-                your gateway to understanding what&apos;s next.
+
+            <p className="text-sm leading-relaxed mb-6 text-[#f5f0e8]/60">
+              Premium natural stone and porcelain specialists. Sourced
+              globally, delivered across the UK with unmatched technical
+              expertise.
+            </p>
+
+            {/* SOCIAL MEDIA */}
+            <div className="flex items-center gap-3">
+              {footerDetail?.facebookLink && (
+                <Link
+                  href={footerDetail.facebookLink}
+                  aria-label="Facebook"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 border border-white/20 flex items-center justify-center text-[#d8c06a] hover:border-[#d8c06a] transition-colors"
+                >
+                  <Facebook size={14} />
+                </Link>
+              )}
+
+              {footerDetail?.twitterLink && (
+                <Link
+                  href={footerDetail.twitterLink}
+                  aria-label="Twitter"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 border border-white/20 flex items-center justify-center text-[#d8c06a] hover:border-[#d8c06a] transition-colors"
+                >
+                  <Twitter size={14} />
+                </Link>
+              )}
+
+              {footerDetail?.instagramLink && (
+                <Link
+                  href={footerDetail.instagramLink}
+                  aria-label="Instagram"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 border border-white/20 flex items-center justify-center text-[#d8c06a] hover:border-[#d8c06a] transition-colors"
+                >
+                  <Instagram size={14} />
+                </Link>
+              )}
+
+              {footerDetail?.linkedinLink && (
+                <Link
+                  href={footerDetail.linkedinLink}
+                  aria-label="LinkedIn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 border border-white/20 flex items-center justify-center text-[#d8c06a] hover:border-[#d8c06a] transition-colors"
+                >
+                  <Linkedin size={14} />
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* MATERIALS / CATEGORIES */}
+          <div>
+            <p className="text-[10px] tracking-[0.25em] uppercase mb-4 font-medium text-[#99a14e]">
+              Materials
+            </p>
+
+            <div>
+              {categories.map((category, index) => (
+                <Link
+                  key={`footer-category-${index}`}
+                  href={`/product-category/${category.slug}/`}
+                  className="block text-sm py-1.5 border-b border-white/[0.05] text-[#f5f0e8]/65 hover:text-[#d8c06a] transition-colors"
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* INFORMATION */}
+          <div>
+            <p className="text-[10px] tracking-[0.25em] uppercase mb-4 font-medium text-[#99a14e]">
+              Information
+            </p>
+
+            <div>
+              <Link
+                href="/about-us/"
+                className="block text-sm py-1.5 border-b border-white/[0.05] text-[#f5f0e8]/65 hover:text-[#d8c06a] transition-colors"
+              >
+                About Us
+              </Link>
+
+              <Link
+                href="/products/"
+                className="block text-sm py-1.5 border-b border-white/[0.05] text-[#f5f0e8]/65 hover:text-[#d8c06a] transition-colors"
+              >
+               Products
+              </Link>
+              <Link
+                href="/product-category/"
+                className="block text-sm py-1.5 border-b border-white/[0.05] text-[#f5f0e8]/65 hover:text-[#d8c06a] transition-colors"
+              >
+                Product Category
+              </Link>
+
+              <Link
+                href="/product-catalogue/"
+                className="block text-sm py-1.5 border-b border-white/[0.05] text-[#f5f0e8]/65 hover:text-[#d8c06a] transition-colors"
+              >
+                Product Catalogue
+              </Link>
+
+              <Link
+                href="/blogs/"
+                className="block text-sm py-1.5 border-b border-white/[0.05] text-[#f5f0e8]/65 hover:text-[#d8c06a] transition-colors"
+              >
+                Blogs
+              </Link>
+
+              
+            </div>
+          </div>
+
+          {/* CONTACT */}
+          <div>
+            <p className="text-[10px] tracking-[0.25em] uppercase mb-4 font-medium text-[#99a14e]">
+              Contact
+            </p>
+
+            <div className="space-y-4">
+              {/* PHONE */}
+              {phone && (
+                <div className="flex items-start gap-3">
+                  <Phone
+                    size={14}
+                    className="mt-0.5 shrink-0 text-[#d8c06a]"
+                  />
+
+                  <div>
+                    <Link
+                      href={`tel:${phone}`}
+                      className="text-sm text-[#f5f0e8] hover:text-[#d8c06a] transition-colors"
+                    >
+                      {phone}
+                    </Link>
+
+                    <p className="text-xs text-[#f5f0e8]/50">
+                      Mon–Fri 8am–6pm
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* EMAIL */}
+              {email && (
+                <div className="flex items-start gap-3">
+                  <Mail
+                    size={14}
+                    className="mt-0.5 shrink-0 text-[#d8c06a]"
+                  />
+
+                  <div>
+                    <Link
+                      href={`mailto:${email}`}
+                      className="text-sm text-[#f5f0e8] hover:text-[#d8c06a] transition-colors"
+                    >
+                      {email}
+                    </Link>
+
+                    <p className="text-xs text-[#f5f0e8]/50">
+                      Reply within 24 hours
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* ADDRESS */}
+              {address && (
+                <div className="flex items-start gap-3">
+                  <MapPin
+                    size={14}
+                    className="mt-0.5 shrink-0 text-[#d8c06a]"
+                  />
+
+                  <div>
+                    <p className="text-sm text-[#f5f0e8]">
+                      {address.address}
+                    </p>
+
+                    <p className="text-xs text-[#f5f0e8]/50">
+                      {address.city}, {address.pincode}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* NEWSLETTER */}
+            <div className="mt-6 p-3 border border-[#d8c06a]/30 bg-[#d8c06a]/5">
+              <p className="text-xs font-medium mb-2 text-[#d8c06a]">
+                Newsletter
               </p>
-              <div className="flex mt-4 lg:w-full md:w-6/12">
+
+              <div className="flex">
                 <input
                   type="email"
-                  placeholder="Enter your email"
-                  className="p-2 rounded-l-md bg-[#4c433191] w-full"
+                  placeholder="Your email"
+                  className="flex-1 min-w-0 text-xs px-3 py-2 outline-none bg-white/[0.06] text-[#f5f0e8] border border-white/[0.15] placeholder:text-[#f5f0e8]/30"
                 />
-                <button className="bg-[#4c4331] text-white px-4 rounded-r-md cursor-pointer">
-                  Subscribe
+
+                <button
+                  type="button"
+                  className="px-3 py-2 text-xs font-medium shrink-0 bg-[#d8c06a] text-[#262a18] hover:bg-[#e2cf7d] transition-colors"
+                >
+                  Join
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* CUSTOMER SERVICE + PAYMENTS */}
+        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-8 border-b border-white/[0.08]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* CUSTOMER SERVICE LINKS */}
+            <div>
+              <p className="text-[10px] tracking-[0.25em] uppercase mb-4 font-medium text-[#99a14e]">
+                Customer Service
+              </p>
+
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                <Link
+                  href="/contact-us/"
+                  className="text-xs text-[#f5f0e8]/60 hover:text-[#d8c06a] transition-colors"
+                >
+                  Contact Us
+                </Link>
+
+                <Link
+                  href="/shipping-policy/"
+                  className="text-xs text-[#f5f0e8]/60 hover:text-[#d8c06a] transition-colors"
+                >
+                  Shipping Policy
+                </Link>
+
+                <Link
+                  href="/cancellations-and-refunds/"
+                  className="text-xs text-[#f5f0e8]/60 hover:text-[#d8c06a] transition-colors"
+                >
+                  Cancellations & Refunds
+                </Link>
+
+                <Link
+                  href="/faqs/"
+                  className="text-xs text-[#f5f0e8]/60 hover:text-[#d8c06a] transition-colors"
+                >
+                  FAQs
+                </Link>
+              </div>
+            </div>
+
+            {/* PAYMENT METHODS */}
+<div className="lg:text-right">
+  <p className="text-[10px] tracking-[0.25em] uppercase mb-4 font-medium text-[#99a14e]">
+    Secure Payments
+  </p>
+
+  <div className="inline-flex items-center justify-center gap-3 px-4 py-2 bg-white/70">
+    <Image
+      src={Visa}
+      alt="Visa"
+      width={44}
+      height={32}
+      className="object-contain"
+    />
+
+    <Image
+      src={Mastercard}
+      alt="Mastercard"
+      width={44}
+      height={32}
+      className="object-contain"
+    />
+
+    <Image
+      src={Amex}
+      alt="American Express"
+      width={44}
+      height={32}
+      className="object-contain"
+    />
+
+    <Image
+      src={ApplePay}
+      alt="Apple Pay"
+      width={44}
+      height={32}
+      className="object-contain"
+    />
+
+    <Image
+      src={Skrill}
+      alt="Skrill"
+      width={44}
+      height={32}
+      className="object-contain"
+    />
+  </div>
+</div>
+          </div>
+        </div>
+
+        {/* BOTTOM BAR */}
+        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-[#f5f0e8]/35">
+            © 2026 Stonecera. All Rights Reserved.
+          </p>
+
+          <div className="flex flex-wrap justify-center items-center gap-6">
+            <Link
+              href="/privacy-policy/"
+              className="text-xs text-[#f5f0e8]/35 hover:text-[#f5f0e8]/80 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+
+            <Link
+              href="/terms-and-conditions/"
+              className="text-xs text-[#f5f0e8]/35 hover:text-[#f5f0e8]/80 transition-colors"
+            >
+              Terms & Conditions
+            </Link>
+
+            <Link
+              href="/cookie-policy/"
+              className="text-xs text-[#f5f0e8]/35 hover:text-[#f5f0e8]/80 transition-colors"
+            >
+              Cookie Policy
+            </Link>
           </div>
         </div>
       </footer>

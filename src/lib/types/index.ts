@@ -5,19 +5,38 @@ export interface ImageAttributes {
   url: string;
   alt: string;
 }
+
+export interface VariationPricing {
+  isDiscounted: boolean;
+
+  discount: {
+    percentage: number;
+    amount: number;
+  } | null;
+  pack: {
+    original: number;
+    selling: number;
+  };
+  perM2: {
+    original: number;
+    selling: number;
+  };
+  packSize: number;
+}
+
 export interface ProductVariation {
   id: number;
   SKU: string;
+  Stock: number;
   Thickness: string;
   Size: string;
   Finish: string;
-  PackSize: number;
   Pcs: number;
-  Stock: number;
   ColorTone: string;
-  Price: number;
-  Per_m2: number;
+  PackSize: number;
+  pricing: VariationPricing;
 }
+
 
 export interface Category {
   id: number;
@@ -25,7 +44,7 @@ export interface Category {
   slug: string;
   bannerImg: ImageAttributes;
   footerContent?: string;
-  categoryDiscount: number | null;
+  categoryDiscount: number;
   short_description: string;
   images: ImageAttributes[];
   products: CategoryProduct[];
@@ -34,7 +53,7 @@ export interface Category {
   startingFrom?: number;
   seo: StrapiSEO | null;
   updatedAt: string;
-  finishName?: string;
+  sub_heading?: string;
   productCount?: number;
 }
 
@@ -257,7 +276,7 @@ export interface BestSellerProduct {
 export interface BestSellerSection {
   sectionTitle: string;
   sectionSubtitle: string;
-  products: BestSellerProduct[];
+  products: CategoryProduct[];
 }
 type Review = {
   name: string;

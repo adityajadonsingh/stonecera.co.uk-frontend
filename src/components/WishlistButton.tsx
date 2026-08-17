@@ -18,9 +18,9 @@ export default function WishlistButton({ productId }: { productId: number }) {
       title="Add to wishlist"
     >
       <Heart
-        size={24}
+        size={18}
         className={`transition ${
-          active ? "fill-red-500 text-red-500" : "text-gray-100"
+          active ? "fill-red-500 text-red-500" : "text-gray-500 hover:text-white"
         }`}
       />
     </button>

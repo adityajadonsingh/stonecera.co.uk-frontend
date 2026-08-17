@@ -190,7 +190,7 @@ export default function Header({
               <Link href="/" className="flex items-center gap-x-1">
                 <Image src={Logo} alt="Logo" width={75} height={70} priority />
                 <div className=""> 
-                  <span className="block font-serif text-xl text-[rgb(38,42,24)] tracking-tight font-medium">Stonecera</span>
+                  <span className="block serif text-xl text-[rgb(38,42,24)] tracking-tight font-medium">Stonecera</span>
                   <span className="block text-[9px] tracking-[0.2em] uppercase text-[rgb(74,85,48)] font-sans leading-none font-semibold">Natural Stone Specialists</span>
                 </div>
               </Link>
