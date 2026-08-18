@@ -35,7 +35,7 @@ export async function generateMetadata({
   const page = parseInt(resolvedSearchParams.page || "1", 10);
 
   const hasFilters = Object.keys(resolvedSearchParams).some(
-    (key) => !["page", "limit"].includes(key),
+    (key) => !["limit"].includes(key),
   );
 
   const shouldNoIndex = hasFilters;
