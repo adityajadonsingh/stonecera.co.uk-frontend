@@ -26,7 +26,7 @@ export default function ReviewSection({
   if (!content?.reviews?.length) return null;
 
   return (
-    <section className="py-24 lg:py-32 bg-[#262a18]">
+    <section className="md:py-32 py-8 bg-[#262a18]">
       <div className="max-w-[1440px] mx-auto px-4 lg:px-8">
         {/* HEADER */}
         <div className="text-center mb-16">

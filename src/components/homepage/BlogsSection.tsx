@@ -19,7 +19,7 @@ export default function BlogsSection({ blogs }: { blogs: Blog[] }) {
             <p className="text-[10px] text-[rgb(153,161,78)] tracking-[0.25em] uppercase mb-2 font-medium">
               Knowledge Hub
             </p>
-            <h2 className="sm:text-6xl text-2xl font-medium  mb-2 new-heading">
+            <h2 className="sm:text-6xl text-4xl font-medium  mb-2 new-heading">
               The Stonecera Journal
             </h2>
             {/* <p className="md:text-lg text-sm text-dark opacity-95 ">

@@ -17,7 +17,7 @@ export default function FeaturedCategories({
               <p className="text-[10px] text-[rgb(153,161,78)] tracking-[0.25em] uppercase mb-2 font-medium">
                 The Collection
               </p>
-              <h2 className="sm:text-6xl text-2xl font-medium  mb-2 new-heading">
+              <h2 className="sm:text-6xl text-4xl font-medium  mb-2 new-heading">
                 {content.sectionTitle}
               </h2>
               {/* <p className="md:text-base text-sm text-dark opacity-95 ">
@@ -35,14 +35,14 @@ export default function FeaturedCategories({
               </Link>
             </div>
           </div>
-          <div className="grid sm:grid-cols-4 grid-cols-1 md:gap-5 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {content.categories.map((category, i) => (
               <Link
                 className="group"
                 href={`/product-category/${category.slug}/`}
                 key={`featured-category-${i}`}
               >
-                <div className="w-full h-[410px] relative overflow-hidden rounded-[1px]">
+                <div className="w-full aspect-[4/5] relative overflow-hidden rounded-[1px]">
                   {category.categoryDiscount > 0 && (
                     <span className="absolute">
                       {category.categoryDiscount}
@@ -70,7 +70,7 @@ export default function FeaturedCategories({
                       <h3 className="font-medium text-white capitalize text-2xl">
                         {category.name}
                       </h3>
-                      <span className="block   text-sm text-[rgb(245,240,232)]/65">
+                      <span className="block font-sans text-sm text-[rgb(245,240,232)]/65">
                         {category.sub_heading}
                       </span>
                     </div>

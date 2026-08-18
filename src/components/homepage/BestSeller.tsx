@@ -19,7 +19,7 @@ export default function BestSeller({
             <p className="text-[10px] text-[rgb(153,161,78)] tracking-[0.25em] uppercase mb-2 font-medium">
               Stock Favorites
             </p>
-            <h2 className="sm:text-6xl text-2xl font-medium  mb-2 new-heading">
+            <h2 className="sm:text-6xl text-4xl font-medium  mb-2 new-heading">
               {content.sectionTitle}
             </h2>
             {/* <p className="md:text-base text-sm text-dark opacity-95 ">
@@ -39,7 +39,7 @@ export default function BestSeller({
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {content.products.map((product) => (
             <ProductCard key={product.product.id} product={product} />
           ))}

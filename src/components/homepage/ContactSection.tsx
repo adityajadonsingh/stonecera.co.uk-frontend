@@ -78,9 +78,9 @@ export default function ContactSection({ page }: Props) {
   };
 
   return (
-    <section className="py-24 lg:py-24 bg-white">
+    <section className="md:py-32 py-14 bg-white">
       <div className="max-w-[1440px] mx-auto px-4 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-24 gap-8 items-start">
           {/* LEFT CONTENT */}
           <div>
             <p className="text-[10px] tracking-[0.4em] uppercase mb-6 font-sans font-bold text-[#99a14e]">
@@ -133,7 +133,7 @@ export default function ContactSection({ page }: Props) {
 
           {/* FORM */}
           <div className="bg-[#f9f7f3] p-8 lg:p-12 shadow-xl">
-            <form onSubmit={submit} className="space-y-6">
+            <form onSubmit={submit} className="md:space-y-6 space-y-4">
               {/* Honeypot */}
               <input
                 type="text"
@@ -234,7 +234,7 @@ export default function ContactSection({ page }: Props) {
               </div>
 
               {/* CLOUDFLARE TURNSTILE */}
-              <div className="pt-1">
+              <div className="pt-1 origin-top-left scale-[0.8] lg:scale-100">
                 <Turnstile
                   sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
                   theme="light"

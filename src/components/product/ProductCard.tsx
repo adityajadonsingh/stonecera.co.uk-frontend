@@ -59,20 +59,20 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Image */}
-        <div className="relative w-full h-[400px] overflow-hidden">
-  {image ? (
-    <Image
-      src={process.env.NEXT_PUBLIC_MEDIA_URL + image.url}
-      alt={image.alt || product.product.name}
-      fill
-      className="object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
-    />
-  ) : (
-    <div className="bg-gray-100 h-full flex items-center justify-center text-sm text-gray-400">
-      No Image
-    </div>
-  )}
-</div>
+        <div className="relative w-full aspect-[4/5] overflow-hidden">
+          {image ? (
+            <Image
+              src={process.env.NEXT_PUBLIC_MEDIA_URL + image.url}
+              alt={image.alt || product.product.name}
+              fill
+              className="object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
+            />
+          ) : (
+            <div className="bg-gray-100 h-full flex items-center justify-center text-sm text-gray-400">
+              No Image
+            </div>
+          )}
+        </div>
 
         <div className="p-4">
           {/* Name */}
@@ -107,7 +107,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <div className="flex items-baseline gap-2 font-medium text-gray-500">
-              <span className="text-xl font-bold text-[#a67c52]">£{pricing.perM2.selling.toFixed(2)}</span>
+              <span className="text-xl font-bold text-[#a67c52]">
+                £{pricing.perM2.selling.toFixed(2)}
+              </span>
 
               {hasDiscount && (
                 <span className="text-gray-400 line-through text-sm">

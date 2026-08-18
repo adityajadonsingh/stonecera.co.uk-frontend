@@ -2,7 +2,7 @@
 export default function PageContent2() {
   return (
     <>
-      <section className="py-24 bg-[#f9f7f3] section-border">
+      <section className="md:py-32 py-8 bg-[#f9f7f3] section-border">
         <div className="max-w-[1440px] mx-auto px-4 lg:px-8">
           <div className="max-w-full">
             <h2 className="text-4xl mb-10 text-[#262a18]">
@@ -10,7 +10,7 @@ export default function PageContent2() {
               Porcelain
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-stone-600 leading-relaxed text-sm font-sans">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-stone-600 leading-relaxed text-sm font-sans">
               {/* Left Column */}
               <div className="space-y-6 ">
                 <p>

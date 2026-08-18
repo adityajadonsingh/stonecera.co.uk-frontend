@@ -10,7 +10,7 @@ import ProductReviewForm from "@/components/product/ProductReviewForm";
 import ProductReviews from "@/components/product/ProductReviews";
 import ProductSidebarTrigger from "@/components/product/ProductSidebarTrigger";
 import ShareButton from "@/components/product/ShareButton";
-import VariationTable from "@/components/product/VariationTable";
+// import VariationTable from "@/components/product/VariationTable";
 import SchemaInjector from "@/components/SchemaInjector";
 import { getProductBySlug } from "@/lib/api/product";
 import { buildMetadata } from "@/lib/seo";
@@ -81,10 +81,10 @@ export default async function ProductPage({
         ? product.category.categoryDiscount
         : 0;
 
-  const fromPerM2 =
-    variations.length > 0
-      ? Math.min(...variations.map((v) => v.Per_m2 ?? Infinity))
-      : null;
+  // const fromPerM2 =
+  //   variations.length > 0
+  //     ? Math.min(...variations.map((v) => v.Per_m2 ?? Infinity))
+  //     : null;
 
   const beforePerM2 =
     usedDiscount > 0 && product.priceBeforeDiscount?.Per_m2
@@ -194,7 +194,7 @@ export default async function ProductPage({
               {product.name}
             </h1>
 
-            <div className="md:text-lg text-base font-medium mb-4 flex gap-2">
+            {/* <div className="md:text-lg text-base font-medium mb-4 flex gap-2">
               <span className="text-[#4c4331] font-semibold">From :</span>
               {fromPerM2 ? (
                 <div className="flex items-center gap-2">
@@ -217,14 +217,14 @@ export default async function ProductPage({
               ) : (
                 "—"
               )}
-            </div>
+            </div> */}
 
-            <VariationTable
+            {/* <VariationTable
               productId={product.id}
               variations={variations}
               productDiscount={product.productDiscount}
               categoryDiscount={product.category?.categoryDiscount}
-            />
+            /> */}
             <ProductHighlights />
             <ProductSidebarTrigger description={product.description} />
             <NeedHelpBox pageName={product.slug} />

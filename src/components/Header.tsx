@@ -28,8 +28,86 @@ import UserDropdown from "./UserDropdown";
 
 const menu = [
   {
-    name: "Sandstone",
-    slug: "sandstone",
+    name: "Porcelain Planks",
+    slug: "porcelain-planks",
+    items: [
+      {
+        name: "County Anthracite Porcelain",
+        href: "product/county-anthracite-porcelain/",
+      },
+      {
+        name: "County Lgy Porcelain",
+        href: "product/county-lgy-porcelain/",
+      },
+    ],
+  },
+  {
+    name: "Outdoor Porcelain Tiles",
+    slug: "outdoor-porcelain-tiles",
+    aboutTitle: "About OutdoorPorcelain",
+    about:
+      "Modern porcelain paving with exceptional durability and low maintenance.",
+    items: [
+      {
+        name: "Kandla Grey Porcelain",
+        href: "product/kandla-grey-porcelain/",
+      },
+      {
+        name: "County Gris Porcelain",
+        href: "product/county-gris-porcelain/",
+      },
+      {
+        name: "Anthracite Grey Porcelain",
+        href: "product/anthracite-grey-porcelain/",
+      },
+      {
+        name: "Hammerstone Beige Porcelain",
+        href: "product/hammerstone-beige-porcelain/",
+      },
+    ],
+  },
+
+  {
+    name: "Cobblestone Paving",
+    slug: "cobblestone-paving",
+    items: [
+      {
+        name: "Kandla Grey Cobblestone Paving",
+        href: "product/kandla-grey-cobblestone-paving/",
+      },
+      {
+        name: "Raj Green Cobblestone Paving",
+        href: "product/raj-green-cobblestone-paving/",
+      },
+      {
+        name: "Black Limestone Cobblestone Paving",
+        href: "product/black-limestone-cobblestone-paving/",
+      },
+      {
+        name: "Yellow Limestone Cobblestone Paving",
+        href: "product/yellow-limestone-cobblestone-paving/",
+      },
+    ],
+  },
+
+  // {
+  //   name: "Slate Stone",
+  //   slug: "slate-stone",
+  //   items: [
+  //     {
+  //       name: "Brazilian Black Slate Stone",
+  //       href: "product/brazilian-black-slate-stone/",
+  //     },
+  //     {
+  //       name: "Rustic Slate Stone",
+  //       href: "product/rustic-slate-stone/",
+  //     }
+  //   ],
+  // },
+
+  {
+    name: "Sandstone Paving",
+    slug: "sandstone-paving",
     aboutTitle: "About Sandstone",
     about:
       "Natural split texture, ideal for garden paths, patios and landscaping projects.",
@@ -57,56 +135,26 @@ const menu = [
     ],
   },
 
-  {
-    name: "Limestone",
-    slug: "limestone",
-    aboutTitle: "About Limestone",
-    about: "Dense and durable limestone perfect for patios and garden paving.",
-    items: [
-      {
-        name: "Kota Blue",
-        href: "#",
-      },
-      {
-        name: "Black Limestone",
-        href: "#",
-      },
-      {
-        name: "Tandur Yellow",
-        href: "#",
-      },
-    ],
-  },
-
-  {
-    name: "Porcelain",
-    slug: "porcelain",
-    aboutTitle: "About Porcelain",
-    about:
-      "Modern porcelain paving with exceptional durability and low maintenance.",
-    items: [
-      {
-        name: "Outdoor Porcelain",
-        href: "#",
-      },
-      {
-        name: "Indoor Porcelain",
-        href: "#",
-      },
-    ],
-  },
-
-  {
-    name: "Granite",
-    slug: "granite",
-    items: [],
-  },
-
-  {
-    name: "Slate",
-    slug: "slate",
-    items: [],
-  },
+  // {
+  //   name: "Limestone Paving",
+  //   slug: "limestone-paving",
+  //   aboutTitle: "About Limestone",
+  //   about: "Dense and durable limestone perfect for patios and garden paving.",
+  //   items: [
+  //     {
+  //       name: "Kota Blue",
+  //       href: "#",
+  //     },
+  //     {
+  //       name: "Black Limestone",
+  //       href: "#",
+  //     },
+  //     {
+  //       name: "Tandur Yellow",
+  //       href: "#",
+  //     },
+  //   ],
+  // },
 ];
 
 export default function Header({
@@ -152,31 +200,31 @@ export default function Header({
 
   return (
     <>
-      <header className="bg-white fixed w-full z-50 shadow-md">
+      <header className="bg-white fixed w-full z-50 shadow-md font-sans">
         <div className="top-header bg-dark-n py-2 lg:block hidden">
           <div className="container">
             <div className="flex text-xs">
               <div className="lg:w-1/3 w-5/12 gap-x-1.5 flex">
-                <Truck size={16} color="#D8C06A" />
+                <Truck size={14} color="#D8C06A" />
                 <span className="text-white">Free delivery in UK mainland</span>
               </div>
               <div className="lg:w-2/3 w-7/12 gap-x-2 flex justify-end">
                 <Link
-                  className="flex items-center gap-x-1 text-white"
+                  className="flex items-center gap-x-2 text-gray-300 hover:text-white"
                   href={`mailto:${footerDetail?.companyEmails[0].email}`}
                 >
                   <span>
-                    <Mail size={16} />
+                    <Mail size={14} />
                   </span>
                   {footerDetail?.companyEmails[0].email}
                 </Link>
                 <span className="text-white"> | </span>
                 <Link
-                  className="flex items-center gap-x-1 text-white"
+                  className="flex items-center gap-x-2 text-gray-300 hover:text-white"
                   href={`tel:${footerDetail?.companyPhoneNumbers[0].phone}`}
                 >
                   <span>
-                    <Phone size={16} />
+                    <Phone size={14} />
                   </span>
                   {footerDetail?.companyPhoneNumbers[0].phone}
                 </Link>
@@ -186,12 +234,24 @@ export default function Header({
         </div>
         <div className="container">
           <div className="flex py-2 items-center justify-between">
-            <div className="w-3/12 flex items-center">
+            <div className="md:w-3/12 w-6/12 flex items-center">
               <Link href="/" className="flex items-center gap-x-1">
-                <Image src={Logo} alt="Logo" width={75} height={70} priority />
-                <div className=""> 
-                  <span className="block serif text-xl text-[rgb(38,42,24)] tracking-tight font-medium">Stonecera</span>
-                  <span className="block text-[9px] tracking-[0.2em] uppercase text-[rgb(74,85,48)] font-sans leading-none font-semibold">Natural Stone Specialists</span>
+                <div className="relative lg:w-[75px] lg:h-[70px] w-[50px] h-[50px]">
+                  <Image
+                    src={Logo}
+                    alt="Logo"
+                    fill
+                    objectFit="contain"
+                    priority
+                  />
+                </div>
+                <div className="">
+                  <span className="block serif text-xl text-[rgb(38,42,24)] tracking-tight font-medium">
+                    Stonecera
+                  </span>
+                  <span className="block lg:text-[9px] sm:text-[7px] text-[5px] tracking-[0.2em] uppercase text-[rgb(74,85,48)] font-sans leading-none font-semibold">
+                    Natural Stone Specialists
+                  </span>
                 </div>
               </Link>
             </div>
@@ -199,7 +259,7 @@ export default function Header({
             <div className="hidden md:flex md:w-6/12 justify-center items-center gap-4">
               <div
                 ref={ref}
-                className="relative xl:w-2/3 w-full px-3 py-2 gap-x-2 flex justify-center items-center bg-[#f9f7f3] border-[#262A1833] border-[1px]"
+                className="relative xl:w-2/3 md:w-5/6 w-full px-3 py-2 gap-x-2 flex justify-center items-center bg-[#f9f7f3] border-[#262A1833] border-[1px]"
               >
                 <Search size={18} color="#4a5530" />
                 <input
@@ -221,7 +281,7 @@ export default function Header({
               </div>
             </div>
 
-            <div className="md:w-3/12 w-full flex justify-end items-center md:gap-x-4 gap-x-2">
+            <div className="md:w-3/12 w-6/12 flex justify-end items-center md:gap-x-4 gap-x-2">
               <button
                 aria-label="Search"
                 onClick={() => setMobileSearchOpen(true)}
@@ -262,12 +322,12 @@ export default function Header({
         </div>
         <div className="bg-dark-n lg:block hidden">
           <div className="container flex justify-between">
-            <ul className="flex gap-x-6 items-center">
+            <ul className="flex xl:gap-x-4 gap-x-2 items-center">
               {menu.map((category) => (
                 <li key={category.slug} className="relative group">
                   <Link
                     href={`/product-category/${category.slug}`}
-                    className="flex items-center gap-1 py-3 text-sm text-white hover:text-[#c9a74e] transition-colors"
+                    className="flex items-center gap-1 py-3 text-sm text-white hover:text-[#c9a74e] transition-colors h-11 text-stone-cream font-sans font-medium tracking-wide hover:text-ochre"
                   >
                     {category.name}
 
@@ -279,29 +339,9 @@ export default function Header({
                   </Link>
 
                   {category.items.length > 0 && (
-                    <div
-                      className="
-          absolute
-          left-0
-          top-full
-          opacity-0
-          invisible
-          translate-y-2
-          group-hover:opacity-100
-          group-hover:visible
-          group-hover:translate-y-0
-          transition-all
-          duration-300
-          bg-white
-          shadow-xl
-          border-[#262A1833]
-          w-[650px]
-          z-50
-        "
-                    >
+                    <div className="absolute left-0 top-full opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 bg-white shadow-xl border-[#262A1833] w-[650px] z-50">
                       <div className="grid grid-cols-[280px_1fr]">
                         {/* Left */}
-
                         <div className="border-r border-[#262A1833] p-6">
                           <h4 className="mb-3 text-xs uppercase tracking-[3px] font-medium text-[#c9a74e]">
                             MATERIAL TYPES
@@ -316,7 +356,11 @@ export default function Header({
                                 >
                                   {item.name}
                                   <span className="inline-block group-hover:opacity-100 opacity-0 transition-opacity">
-                                    <ChevronRight size={16} strokeWidth={1.6}  color="#c9a74e" />
+                                    <ChevronRight
+                                      size={16}
+                                      strokeWidth={1.6}
+                                      color="#c9a74e"
+                                    />
                                   </span>
                                 </Link>
                               </li>
@@ -347,14 +391,28 @@ export default function Header({
                   )}
                 </li>
               ))}
-
-              
             </ul>
-            <ul className="flex gap-x-4 items-center">
+            <ul className="flex xl:gap-x-5 gap-x-3  items-center text-[rgb(244,240,233)]">
               <li>
                 <Link
-                  href="/journal"
-                  className="block py-3 text-sm text-white hover:text-[#c9a74e]"
+                  href="/product-category/"
+                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
+                >
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/product-category/"
+                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
+                >
+                  All Categories
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blogs/"
+                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
                 >
                   Blogs
                 </Link>
@@ -362,21 +420,20 @@ export default function Header({
 
               <li>
                 <Link
-                  href="/about"
-                  className="block py-3 text-sm text-white hover:text-[#c9a74e]"
+                  href="/about-us/"
+                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
                 >
                   About Us
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href="/contact-us/"
                   className="block py-1 px-3 text-sm text-[#262A18] cursor-pointer bg-[#d8c06a]"
                 >
                   Contact Us
                 </Link>
               </li>
-
             </ul>
           </div>
         </div>
