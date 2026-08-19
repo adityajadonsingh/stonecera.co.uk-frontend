@@ -37,7 +37,6 @@ export interface ProductVariation {
   pricing: VariationPricing;
 }
 
-
 export interface Category {
   id: number;
   name: string;
@@ -58,7 +57,7 @@ export interface Category {
 }
 
 export interface CategoryProduct {
-  variations: ProductVariation[]; 
+  variations: ProductVariation[];
   selectedVariation: ProductVariation;
   product: Product;
   priceBeforeDiscount?: {
@@ -68,7 +67,10 @@ export interface CategoryProduct {
 }
 
 export interface FilterCounts {
-  price: Record<string, number>;
+  price: {
+    min: number;
+    max: number;
+  };
   colorTone: Record<string, number>;
   finish: Record<string, number>;
   thickness: Record<string, number>;
@@ -299,7 +301,7 @@ export interface Blog {
   createdOn: string;
   image: ImageAttributes;
 }
-export interface BlogPage{
+export interface BlogPage {
   data: Blog[];
   meta: {
     page: number;
@@ -319,9 +321,9 @@ export type HomepageData = {
 
 export type WishlistItem = number;
 
-export interface BreadcrumType{
-    pageName: string;
-    pageUrl: string;
+export interface BreadcrumType {
+  pageName: string;
+  pageUrl: string;
 }
 
 export interface ProductReview {
@@ -343,7 +345,7 @@ export interface Catalogue {
     name: string;
   };
 }
-export interface SitePolicy{
+export interface SitePolicy {
   pageName: string;
   pageDescription: string;
 }

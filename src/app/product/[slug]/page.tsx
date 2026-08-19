@@ -240,7 +240,8 @@ export default async function ProductPage({
       </section>
       <ReviewSection content={product.reviews} isProductPage={true} />
       <div className="container md:py-16 py-8">
-        <FaqAccordion items={faqData} />
+        FAQ will here soon
+        {/* <FaqAccordion items={faqData} /> */}
       </div>
       <SchemaInjector schemas={safeSchemas} />
       <CartSidebar />

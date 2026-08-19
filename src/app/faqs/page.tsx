@@ -78,7 +78,7 @@ export default function FaqsPage() {
 
   return (
     <div className="container md:py-16 py-8">
-      <FaqAccordion items={faqData}/>
+      {/* <FaqAccordion mainHeading="FAQs" items={faqData}/> */}
     </div>
   );
 }

@@ -15,10 +15,11 @@ import ScrollToTop from "./ScrollToTop";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import Script from "next/script";
 import { CartProvider } from "@/context/CartContext";
+import SupportWidget from "@/components/SupportWidget";
 
 const workSans = Work_Sans({
-  subsets: ["latin"],                 
-  variable: "--font-work-sans",      
+  subsets: ["latin"],
+  variable: "--font-work-sans",
   display: "swap",
 });
 
@@ -76,10 +77,6 @@ export default async function RootLayout({
       gtag('config', 'G-G37HTD2PMN');
     `}
         </Script>
-        <Script
-          src="https://embed.tawk.to/69ba42b678528f1c35000b38/1jjvp96mr"
-          strategy="lazyOnload"
-        />
         <meta
           name="google-site-verification"
           content="UTYd1bL9z7-nQG3IbEHEbGgRCOBLRDAcUCb3_KbfnvY"
@@ -97,6 +94,7 @@ export default async function RootLayout({
             </CartProvider>
           </WishlistProvider>
         </ToastProvider>
+        <SupportWidget />
       </body>
     </html>
   );

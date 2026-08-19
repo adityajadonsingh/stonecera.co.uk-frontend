@@ -1,5 +1,8 @@
 import { notFound, redirect } from "next/navigation";
-import { getCategoryBySlug, getCategoryBySlugForMeta } from "@/lib/api/category";
+import {
+  getCategoryBySlug,
+  getCategoryBySlugForMeta,
+} from "@/lib/api/category";
 import Filters from "@/components/category/Filter";
 import ProductGrid from "@/components/product/ProductGrid";
 import Pagination from "@/components/category/Pagination";
@@ -9,7 +12,7 @@ import { buildMetadata } from "@/lib/seo";
 import { Metadata } from "next";
 
 export async function generateMetadata({
-  params
+  params,
 }: {
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
@@ -24,7 +27,7 @@ export async function generateMetadata({
 
   return {
     ...baseMetadata,
-    robots: { index: true, follow: true }
+    robots: { index: true, follow: true },
   };
 }
 
@@ -52,8 +55,11 @@ export default async function CategoryPaginatedPage(props: {
   const totalProducts = categoryData.totalProducts || 0;
   const totalPages = Math.ceil(totalProducts / limit);
 
-  const filterCounts = categoryData.filterCounts ?? {
-    price: {},
+  const safeFilterCounts = categoryData.filterCounts ?? {
+    price: {
+      min: 0,
+      max: 0,
+    },
     colorTone: {},
     finish: {},
     thickness: {},
@@ -80,15 +86,13 @@ export default async function CategoryPaginatedPage(props: {
         bgImage={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.bannerImg?.url}`}
       />
       <div className="container cat-container px-4">
-        
-
         <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-8 mb:pt-16 pt-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <Filters
               currentFilters={searchParams}
               categorySlug={category}
-              filterCounts={filterCounts}
+              filterCounts={safeFilterCounts}
             />
           </div>
 

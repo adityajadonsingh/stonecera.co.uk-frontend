@@ -31,23 +31,6 @@ export default function Footer({
 
   return (
     <>
-      {/* WhatsApp */}
-      <div className="fixed bottom-36 right-6 z-50">
-        <a
-          href="https://wa.me/+447467648124"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Contact us on WhatsApp"
-        >
-          <Image
-            src={WhatsAppIcon}
-            alt="WhatsApp"
-            width={60}
-            height={60}
-          />
-        </a>
-      </div>
-
       <footer className="bg-[#262a18] font-sans">
         {/* MAIN FOOTER */}
         <div className="max-w-[1440px] mx-auto px-4 lg:px-8 md:py-16 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 border-b border-white/[0.08]">

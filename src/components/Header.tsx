@@ -30,6 +30,9 @@ const menu = [
   {
     name: "Porcelain Planks",
     slug: "porcelain-planks",
+    aboutTitle: "About Porcelain Planks",
+    about:
+      "Porcelain planks are a versatile and durable flooring option that mimics the look of natural wood or stone.",
     items: [
       {
         name: "County Anthracite Porcelain",
@@ -44,7 +47,7 @@ const menu = [
   {
     name: "Outdoor Porcelain Tiles",
     slug: "outdoor-porcelain-tiles",
-    aboutTitle: "About OutdoorPorcelain",
+    aboutTitle: "About Outdoor Porcelain",
     about:
       "Modern porcelain paving with exceptional durability and low maintenance.",
     items: [
@@ -70,6 +73,9 @@ const menu = [
   {
     name: "Cobblestone Paving",
     slug: "cobblestone-paving",
+    aboutTitle: "About Cobblestone Paving",
+    about:
+      "Durable cobblestone paving ideal for creating beautiful outdoor spaces.",
     items: [
       {
         name: "Kandla Grey Cobblestone Paving",
@@ -395,7 +401,7 @@ export default function Header({
             <ul className="flex xl:gap-x-5 gap-x-3  items-center text-[rgb(244,240,233)]">
               <li>
                 <Link
-                  href="/product-category/"
+                  href="/products/"
                   className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
                 >
                   Products
@@ -406,7 +412,7 @@ export default function Header({
                   href="/product-category/"
                   className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
                 >
-                  All Categories
+                  Categories
                 </Link>
               </li>
               <li>

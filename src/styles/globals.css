@@ -14,15 +14,18 @@
 @layer base {
   * {
     /* Directly sets the color using your shadcn custom variables */
-    border-color: var(--border); 
+    border-color: var(--border);
   }
   body {
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-work);
   }
-  h1, h2, h3, .serif {
-    font-family: 'Instrument Serif', serif;
+  h1,
+  h2,
+  h3,
+  .serif {
+    font-family: "Instrument Serif", serif;
   }
 }
 @theme {
@@ -30,15 +33,15 @@
   --font-work: var(--font-work-sans);
 }
 
-.icon-clr{
-  color: #D8C06A;
+.icon-clr {
+  color: #d8c06a;
 }
 
-.new-heading{
+.new-heading {
   color: #262a18;
 }
 
-.bg-dark-n{
+.bg-dark-n {
   background: #262a18;
 }
 
@@ -48,7 +51,7 @@ html {
 }
 
 main {
-  padding-top: 138px;
+  padding-top: 161px;
 }
 
 input,
@@ -85,7 +88,7 @@ textarea {
   margin: 0 auto;
   max-width: 1400px;
 }
-.section-border{
+.section-border {
   border-top-color: rgba(38, 42, 24, 0.1);
   border-top-width: 0.5px;
 }
@@ -235,7 +238,7 @@ textarea {
   h4 {
     font-weight: 700;
     margin: 15px 0;
-    font-family: 'Montserrat', sans-serif !important;
+    font-family: "Montserrat", sans-serif !important;
   }
   h3,
   h4 {
@@ -245,13 +248,13 @@ textarea {
     margin-top: 16px;
     margin-bottom: 16px;
     font-size: 12pt;
-    font-family: 'Montserrat', sans-serif !important;
+    font-family: "Montserrat", sans-serif !important;
   }
   a span {
     color: #f36c23 !important;
     text-decoration: none !important;
     font-weight: 700 !important;
-    font-family: 'Montserrat', sans-serif !important;
+    font-family: "Montserrat", sans-serif !important;
   }
   a:hover span {
     color: #ff782f !important;
@@ -260,7 +263,7 @@ textarea {
     color: #f36c23 !important;
     text-decoration: none !important;
     font-weight: 700 !important;
-    font-family: 'Montserrat', sans-serif !important;
+    font-family: "Montserrat", sans-serif !important;
   }
   a:hover {
     color: #ff782f !important;
@@ -458,7 +461,7 @@ textarea {
 .animate-slide-in {
   animation: slide-in 0.35s ease-out;
 }
-.prose  .related-post {
+.prose .related-post {
   font-size: 16px;
   border: 1px solid #bd7e40;
   border-left: 0;
@@ -470,11 +473,11 @@ textarea {
   display: block;
   width: 100%;
   font-weight: 600;
-  span{
+  span {
     color: rgb(97, 90, 82);
     font-weight: 700;
   }
-  a{
+  a {
     text-decoration: underline !important;
   }
 }
