@@ -12,9 +12,13 @@ import type { CategoryProduct } from "@/lib/types";
 
 interface ProductCardProps {
   product: CategoryProduct;
+  priority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  priority = false,
+}: ProductCardProps) {
   const [openPopup, setOpenPopup] = useState(false);
 
   const selectedVariation = product.selectedVariation;
@@ -65,6 +69,8 @@ export default function ProductCard({ product }: ProductCardProps) {
               src={process.env.NEXT_PUBLIC_MEDIA_URL + image.url}
               alt={image.alt || product.product.name}
               fill
+              priority={priority}
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
             />
           ) : (

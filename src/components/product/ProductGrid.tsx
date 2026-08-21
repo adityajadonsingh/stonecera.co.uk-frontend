@@ -20,10 +20,11 @@ export default function ProductGrid({
 
   return (
     <section className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-8">
-      {products.map((product) => (
+      {products.map((product, index) => (
         <ProductCard
           key={product.product.id}
           product={product}
+          priority={index < 3}
         />
       ))}
     </section>
