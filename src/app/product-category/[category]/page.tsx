@@ -211,7 +211,7 @@ export default async function CategoryPage({
 
       <section className="border-b border-[#262a18]/10 bg-[#f5f0e8] ">
         <div className="container">
-          <div className="py-10 gap-4 flex justify-between items-baseline-last">
+          <div className="py-10 gap-4 flex flex-wrap justify-between items-baseline-last">
             <div>
               <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.25em] text-[#99a14e]">
                 Natural Stone Collection
@@ -232,7 +232,7 @@ export default async function CategoryPage({
                 target="_blank"
                 rel="noopener noreferrer"
                 href={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.catalogue.file}`}
-                className="flex items-center gap-3 bg-[#262a18] w-fit h-fit px-6 py-3 text-xs font-medium uppercase tracking-wider text-[#d8c06a] transition-all hover:bg-[#30351e]"
+                className="flex items-center gap-2 bg-[#262a18] w-fit h-fit px-6 py-3 text-xs font-medium uppercase tracking-wider text-[#d8c06a] transition-all hover:bg-[#30351e]"
               >
                 <FileText size={18} />
                 View Category Catalogue
@@ -259,7 +259,7 @@ export default async function CategoryPage({
             <div className="lg:col-span-3">
               <div className="mb-6 flex items-center justify-between border-b border-[#262a18]/10 pb-4">
                 {/* Left */}
-                <div className="flex items-center gap-4">
+                <div className="flex sm:w-6/12 w-full items-center gap-4">
                   {/* Mobile Filters */}
                   <button
                     type="button"
@@ -269,7 +269,7 @@ export default async function CategoryPage({
                     Filters
                   </button>
 
-                  <span className="text-xs text-[#99a14e] font-sans">
+                  <span className="text-xs text-[#99a14e] ml-3 block font-sans">
                     {categoryData.totalProducts} products
                   </span>
                 </div>

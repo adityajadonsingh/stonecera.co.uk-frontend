@@ -69,7 +69,6 @@ const menu = [
       },
     ],
   },
-
   {
     name: "Cobblestone Paving",
     slug: "cobblestone-paving",
@@ -95,22 +94,6 @@ const menu = [
       },
     ],
   },
-
-  // {
-  //   name: "Slate Stone",
-  //   slug: "slate-stone",
-  //   items: [
-  //     {
-  //       name: "Brazilian Black Slate Stone",
-  //       href: "product/brazilian-black-slate-stone/",
-  //     },
-  //     {
-  //       name: "Rustic Slate Stone",
-  //       href: "product/rustic-slate-stone/",
-  //     }
-  //   ],
-  // },
-
   {
     name: "Sandstone Paving",
     slug: "sandstone-paving",
@@ -140,27 +123,6 @@ const menu = [
       },
     ],
   },
-
-  // {
-  //   name: "Limestone Paving",
-  //   slug: "limestone-paving",
-  //   aboutTitle: "About Limestone",
-  //   about: "Dense and durable limestone perfect for patios and garden paving.",
-  //   items: [
-  //     {
-  //       name: "Kota Blue",
-  //       href: "#",
-  //     },
-  //     {
-  //       name: "Black Limestone",
-  //       href: "#",
-  //     },
-  //     {
-  //       name: "Tandur Yellow",
-  //       href: "#",
-  //     },
-  //   ],
-  // },
 ];
 
 export default function Header({
@@ -172,13 +134,20 @@ export default function Header({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, loading } = useAuthUser();
+  
   const [query, setQuery] = useState("");
   const debounced = useDebounce(query, 300);
   const [results, setResults] = useState({ categories: [], products: [] });
+
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const { totalQuantity } = useCart();
+  
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const headerRef = useRef<HTMLElement>(null);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     if (debounced.length < 2) {
@@ -190,6 +159,41 @@ export default function Header({
       .then((r) => r.json())
       .then(setResults);
   }, [debounced]);
+
+  useEffect(() => {
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+
+    const headerHeight = headerRef.current?.offsetHeight ?? 0;
+
+    // Always show header when we're near the top
+    if (currentScrollY <= headerHeight) {
+      setHeaderVisible(true);
+      lastScrollY.current = currentScrollY;
+      return;
+    }
+
+    // Scrolling down → hide
+    if (currentScrollY > lastScrollY.current) {
+      setHeaderVisible(false);
+    }
+
+    // Scrolling up → show
+    else if (currentScrollY < lastScrollY.current) {
+      setHeaderVisible(true);
+    }
+
+    lastScrollY.current = currentScrollY;
+  };
+
+  window.addEventListener("scroll", handleScroll, {
+    passive: true,
+  });
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -206,7 +210,12 @@ export default function Header({
 
   return (
     <>
-      <header className="bg-white fixed w-full z-50 shadow-md font-sans">
+      <header
+  ref={headerRef}
+  className={`fixed z-50 w-full bg-white font-sans shadow-sm transition-transform duration-300 ease-in-out ${
+    headerVisible ? "translate-y-0" : "-translate-y-full"
+  }`}
+>
         <div className="top-header bg-dark-n py-2 lg:block hidden">
           <div className="container">
             <div className="flex text-xs">

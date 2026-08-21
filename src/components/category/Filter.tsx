@@ -324,7 +324,7 @@ export default function Filters({
     const selectedValues = getSelectedValues(fieldName);
 
     return (
-      <div className="mb-6 pb-6 border-b border-[#262a18]/10">
+      <div className="mb-6 pb-6 border-b border-[#262a18]/10 ">
         <p className="text-xs tracking-[0.2em] uppercase mb-3 font-semibold text-[#99a14e]">
           {title}
         </p>
@@ -439,7 +439,7 @@ export default function Filters({
       {/* MOBILE FILTER BUTTON */}
       {/* ------------------------------------------------------- */}
 
-      <div className="lg:hidden flex justify-start relative">
+      <div className="lg:hidden flex justify-start relative ">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -468,13 +468,15 @@ export default function Filters({
       <aside
         className={`
           fixed lg:h-fit h-full inset-y-0 right-0 z-90
-          w-[85%] max-w-sm
+          sm:w-[85%] w-full sm:max-w-sm
           transform transition-transform duration-300
           ${open ? "translate-x-0" : "translate-x-full"}
           rounded-none lg:rounded-sm
+          overscroll-contain
           py-6 px-5
           mb-8
           font-sans
+          bg-[#f9f7f3]
           lg:static lg:translate-x-0 lg:w-auto
         `}
       >

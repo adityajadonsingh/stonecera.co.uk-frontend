@@ -42,9 +42,9 @@ export default function PageContentBox({
   const hasMoreContent = contentHeight > 400;
 
   return (
-    <section className=" bg-[#f9f7f3] py-12 lg:py-16">
+    <section className=" bg-[#f9f7f3] py-2 lg:py-6 lg:pt-0">
       <div>
-        <div className="bg-[#f5f0e8] px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
+        <div className="bg-[#f5f0e8] px-5 md:py-8 py-4 sm:px-8 lg:px-12 lg:py-10">
 
           {/* FULL CONTENT */}
           {isFullPage ? (
