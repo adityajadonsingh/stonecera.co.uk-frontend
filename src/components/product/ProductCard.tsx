@@ -44,7 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <>
       <Link
         href={`/product/${product.product.slug}/`}
-        className="relative block hover:shadow-xl group font-sans"
+        className="relative block hover:shadow-xl bg-white group font-sans"
       >
         {/* Discount Badge */}
         {hasDiscount && discountPercentage > 0 && (

@@ -37,6 +37,20 @@ export interface ProductVariation {
   pricing: VariationPricing;
 }
 
+interface FAQItem{
+  question: string;
+  answer: string;
+  sort_order: number;
+}
+
+interface FAQComponent
+{
+    mainHeading: string;
+    subHeading: string;
+    items: FAQItem[];
+}
+
+
 export interface Category {
   id: number;
   name: string;
@@ -54,7 +68,15 @@ export interface Category {
   updatedAt: string;
   sub_heading?: string;
   productCount?: number;
+  catalogue?: {
+    name: string;
+    file: string;
+  } | null;
+  faqs?: FAQComponent | null;
 }
+
+
+
 
 export interface CategoryProduct {
   variations: ProductVariation[];

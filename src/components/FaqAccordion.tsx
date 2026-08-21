@@ -3,15 +3,46 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+
 interface FAQ {
   question: string;
   answer: string;
+  sort_order?: number;
 }
 
 interface FaqsProps {
   mainHeading: string;
   subHeading: string;
   faqs: FAQ[];
+}
+
+/**
+ * Render Strapi CKEditor HTML or normal text.
+ *
+ * Examples:
+ *
+ * "Are porcelain tiles suitable for patios?"
+ *        ↓
+ * renders as normal text
+ *
+ * "<p>Are porcelain tiles suitable for patios?</p>"
+ *        ↓
+ * renders as HTML
+ */
+function RichText({ content }: { content: string }) {
+  if (!content) return null;
+
+  const isHtml = /<\/?[a-z][\s\S]*>/i.test(content);
+
+  if (!isHtml) {
+    return <>{content}</>;
+  }
+
+  return (
+    <div
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
+  );
 }
 
 export default function FaqsAccordion({
@@ -22,8 +53,12 @@ export default function FaqsAccordion({
   const [openIndex, setOpenIndex] = useState(0);
 
   const handleToggle = (index: number) => {
-    setOpenIndex((currentIndex) => (currentIndex === index ? -1 : index));
+    setOpenIndex((currentIndex) =>
+      currentIndex === index ? -1 : index
+    );
   };
+
+  if (!faqs?.length) return null;
 
   return (
     <section
@@ -31,39 +66,34 @@ export default function FaqsAccordion({
       style={{
         borderTopColor: "rgba(38, 42, 24, 0.1)",
         borderTopWidth: "0.5px",
-        fontFamily: '"Work Sans", sans-serif',
       }}
     >
       <div className="mx-auto max-w-[1440px] px-4 lg:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+
           {/* LEFT CONTENT */}
           <div>
             <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.25em] text-[#99a14e]">
               Knowledge Base
             </p>
 
-            <h2
-              className="mb-4 font-serif text-3xl leading-tight text-[#262a18]"
-              style={{
-                fontFamily: '"Instrument Serif", serif',
-              }}
+            <h4
+              className="mb-4 font-sans text-3xl leading-tight text-[#262a18]"
             >
               {mainHeading}
-            </h2>
+            </h4>
 
             <p className="max-w-md text-sm leading-relaxed text-[#4a5530]">
               {subHeading}
             </p>
 
-            <Link
-              href="/contact"
-            >
+            <Link href="/contact-us/">
               <button
-              type="button"
-              className="mt-6 border-b cursor-pointer border-[#d8c06a] pb-0.5 text-xs font-medium text-[#262a18] transition-colors duration-300 hover:text-[#99a14e]"
-            >
-              Ask a Specialist →
-            </button>
+                type="button"
+                className="mt-6 cursor-pointer border-b border-[#d8c06a] pb-0.5 text-xs font-medium text-[#262a18] transition-colors duration-300 hover:text-[#99a14e]"
+              >
+                Ask a Specialist →
+              </button>
             </Link>
           </div>
 
@@ -74,19 +104,20 @@ export default function FaqsAccordion({
 
               return (
                 <div
-                  key={faq.question}
+                  key={`${faq.question}-${index}`}
                   className={`border-b border-[#262a18]/10 transition-colors duration-300 ${
                     isOpen
                       ? "border-l-2 border-l-[#d8c06a] bg-[#f5f1e8]"
                       : "border-l-2 border-l-transparent hover:bg-[#faf8f3]"
                   }`}
                 >
+
                   {/* QUESTION */}
                   <button
                     type="button"
                     onClick={() => handleToggle(index)}
                     aria-expanded={isOpen}
-                    className="group flex w-full cursor-pointer items-center justify-between gap-6 px-5 py-5 text-left"
+                    className="group flex w-full  cursor-pointer items-center justify-between gap-6 px-5 py-5 text-left"
                   >
                     <span
                       className={`pr-4 text-sm font-medium leading-snug transition-colors duration-300 ${
@@ -95,7 +126,7 @@ export default function FaqsAccordion({
                           : "text-[#262a18] group-hover:text-[#99a14e]"
                       }`}
                     >
-                      {faq.question}
+                      <RichText content={faq.question} />
                     </span>
 
                     {/* ROTATING ARROW */}
@@ -103,7 +134,9 @@ export default function FaqsAccordion({
                       size={17}
                       strokeWidth={1.5}
                       className={`shrink-0 text-[#99a14e] transition-transform duration-500 ease-out ${
-                        isOpen ? "rotate-180" : "rotate-0"
+                        isOpen
+                          ? "rotate-180"
+                          : "rotate-0"
                       }`}
                     />
                   </button>
@@ -118,12 +151,15 @@ export default function FaqsAccordion({
                   >
                     <div className="overflow-hidden">
                       <div className="px-5 pb-6">
-                        <p className="max-w-3xl text-sm leading-relaxed text-[#4a5530]">
-                          {faq.answer}
-                        </p>
+                        <div className="max-w-3xl text-sm leading-relaxed text-[#4a5530]">
+
+                          <RichText content={faq.answer} />
+
+                        </div>
                       </div>
                     </div>
                   </div>
+
                 </div>
               );
             })}

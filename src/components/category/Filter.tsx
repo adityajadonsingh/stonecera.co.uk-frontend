@@ -31,7 +31,6 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 export default function Filters({
-  currentFilters,
   categorySlug,
   filterCounts,
 }: FiltersProps) {
@@ -191,7 +190,7 @@ export default function Filters({
 
     return (
       <div className="mb-6 pb-6 border-b border-[#262a18]/10">
-        <p className="text-[10px] tracking-[0.2em] uppercase mb-3 font-medium text-[#99a14e]">
+        <p className="text-sm tracking-[0.2em] uppercase mb-3 font-semibold text-[#99a14e]">
           Colour
         </p>
 
@@ -205,7 +204,7 @@ export default function Filters({
                 key={name}
                 type="button"
                 onClick={() => handleChange(fieldName, name)}
-                className="group flex flex-col items-center gap-1"
+                className="group flex cursor-pointer flex-col items-center gap-1"
               >
                 <span
                   className={`w-8 h-8 border-2 transition-all ${
@@ -219,14 +218,14 @@ export default function Filters({
                 />
 
                 <span
-                  className={`text-[9px] tracking-wide ${
+                  className={`text-xs tracking-wide ${
                     checked ? "font-semibold text-[#262a18]" : "text-[#99a14e]"
                   }`}
                 >
                   {name}
                 </span>
 
-                <span className="text-[8px] text-gray-400">({count})</span>
+                <span className="text-xs text-gray-400">({count})</span>
               </button>
             );
           })}
@@ -259,7 +258,7 @@ export default function Filters({
 
     return (
       <div className="mb-6 pb-6 border-b border-[#262a18]/10">
-        <p className="text-[10px] tracking-[0.2em] uppercase mb-3 font-medium text-[#99a14e]">
+        <p className="text-xs tracking-[0.2em] uppercase mb-3 font-semibold text-[#99a14e]">
           {title}
         </p>
 
@@ -272,7 +271,7 @@ export default function Filters({
                 key={name}
                 type="button"
                 onClick={() => handleChange(fieldName, name)}
-                className="flex items-center gap-2 w-full text-left"
+                className="flex items-center cursor-pointer gap-2 w-full text-left"
               >
                 <span
                   className={`w-3.5 h-3.5 border flex items-center justify-center shrink-0 transition-colors ${
@@ -287,14 +286,14 @@ export default function Filters({
                 </span>
 
                 <span
-                  className={`text-xs ${
+                  className={`text-sm capitalize ${
                     checked ? "font-medium text-[#262a18]" : "text-[#262a18]"
                   }`}
                 >
                   {formatFilterLabel(fieldName, name)}
                 </span>
 
-                <span className="text-[10px] text-gray-500">({count})</span>
+                <span className="text-xs text-gray-500">({count})</span>
               </button>
             );
           })}
@@ -326,7 +325,7 @@ export default function Filters({
 
     return (
       <div className="mb-6 pb-6 border-b border-[#262a18]/10">
-        <p className="text-[10px] tracking-[0.2em] uppercase mb-3 font-medium text-[#99a14e]">
+        <p className="text-xs tracking-[0.2em] uppercase mb-3 font-semibold text-[#99a14e]">
           {title}
         </p>
 
@@ -339,7 +338,7 @@ export default function Filters({
                 key={name}
                 type="button"
                 onClick={() => handleChange(fieldName, name)}
-                className={`px-3 py-1.5 text-xs border transition-colors ${
+                className={`px-3 cursor-pointer py-1.5 text-xs border transition-colors ${
                   checked
                     ? "bg-[#4a5530] border-[#4a5530] text-white"
                     : "bg-transparent border-[#262a18]/20 text-[#262a18] hover:border-[#4a5530]"
@@ -378,7 +377,7 @@ export default function Filters({
 
     return (
       <div className="mb-6 pb-6 border-b border-[#262a18]/10">
-        <p className="text-[10px] tracking-[0.2em] uppercase mb-3 font-medium text-[#99a14e]">
+        <p className="text-xs tracking-[0.2em] uppercase mb-3 font-semibold text-[#99a14e]">
           Max Pack Price
         </p>
 
@@ -393,12 +392,12 @@ export default function Filters({
         />
 
         <div className="flex justify-between mt-1">
-          <span className="text-xs text-[#99a14e]">
+          <span className="text-sm text-[#99a14e]">
             <span className="text-[#d8c06a]">£</span>
             {priceMin.toFixed(0)}
           </span>
 
-          <span className="text-xs font-medium text-[#262a18]">
+          <span className="text-sm font-medium text-[#262a18]">
             <span className="text-[#d8c06a]">£</span>
             {priceValue.toFixed(0)}
           </span>
@@ -425,7 +424,7 @@ export default function Filters({
                 });
               });
             }}
-            className="mt-2 text-[10px] underline text-gray-500 hover:text-[#4a5530]"
+            className="mt-2 cursor-pointer text-[10px] underline text-gray-500 hover:text-[#4a5530]"
           >
             Clear price
           </button>
@@ -472,12 +471,10 @@ export default function Filters({
           w-[85%] max-w-sm
           transform transition-transform duration-300
           ${open ? "translate-x-0" : "translate-x-full"}
-
-          bg-skin
           rounded-none lg:rounded-sm
           py-6 px-5
           mb-8
-
+          font-sans
           lg:static lg:translate-x-0 lg:w-auto
         `}
       >
@@ -489,11 +486,6 @@ export default function Filters({
             <X size={18} className="text-[#262a18]" />
           </button>
         </div>
-
-        {/* Desktop Header */}
-        <h2 className="hidden lg:block font-serif text-lg text-[#262a18] mb-6">
-          Filters
-        </h2>
 
         <div className="overflow-y-auto lg:h-fit h-full lg:pb-0 pb-24">
           {/* PRICE */}
