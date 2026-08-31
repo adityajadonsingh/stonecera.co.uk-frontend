@@ -1,31 +1,104 @@
+// components/product/ShareButton.tsx
 "use client";
 
-import {
-  Share2,
-  Facebook,
-  Twitter,
-  Mail,
-} from "lucide-react";
+import { Mail, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Props {
   title: string;
 }
 
+
+/* =========================================================
+   BRAND ICONS
+========================================================= */
+
+function FacebookIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="19"
+      height="19"
+      aria-hidden="true"
+      fill="currentColor"
+    >
+      <path d="M13.5 21v-7h2.5l.4-3h-2.9V9.1c0-.9.3-1.6 1.6-1.6h1.5V4.8c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.3H8v3h2.4v7h3.1Z" />
+    </svg>
+  );
+}
+
+
+function XIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="19"
+      height="19"
+      aria-hidden="true"
+      fill="currentColor"
+    >
+      <path d="M18.9 2H22l-6.8 7.8L23 22h-6.1l-4.8-6.3L6.6 22H3.5l7.2-8.2L3 2h6.2l4.3 5.7L18.9 2Zm-1.1 17.7h1.7L8.3 4.2H6.5l11.3 15.5Z" />
+    </svg>
+  );
+}
+
+
+function WhatsAppIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      aria-hidden="true"
+      fill="currentColor"
+    >
+      <path d="M12 2.5a9.4 9.4 0 0 0-8.1 14.2L2.5 21.5l5-1.3A9.5 9.5 0 1 0 12 2.5Zm0 17.1c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3a7.7 7.7 0 1 1 7 3.8Zm4.2-5.7c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.1.2-.5.7-.6.8-.1.2-.2.2-.4.1-.2-.1-.8-.3-1.5-1-.5-.5-.8-1-.9-1.2-.1-.2 0-.3.1-.4l.3-.3c.1-.1.2-.2.2-.3.1-.1 0-.3 0-.4l-.6-1.5c-.2-.4-.3-.4-.5-.4h-.4c-.1 0-.4.1-.5.3-.2.2-.7.7-.7 1.7s.7 2  .8 2.1c.1.1 1.4 2.2 3.5 3 .5.2.9.4 1.2.5.5.2 1 .2 1.4.1.4-.1 1.2-.5 1.4-1 .2-.5.2-.9.1-1-.1-.1-.3-.2-.5-.3Z" />
+    </svg>
+  );
+}
+
+
+function PinterestIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="19"
+      height="19"
+      aria-hidden="true"
+      fill="currentColor"
+    >
+      <path d="M12 2.5a9.5 9.5 0 0 0-3.5 18.3c-.1-1.5 0-3.2.4-4.7l1-4.1s-.3-.6-.3-1.5c0-1.4.8-2.5 1.8-2.5.9 0 1.3.7 1.3 1.5 0 .9-.6 2.2-.9 3.4-.3 1 .5 1.8 1.5 1.8 1.8 0 3.1-1.9 3.1-4.6 0-2.4-1.7-4.1-4.2-4.1-2.8 0-4.5 2.1-4.5 4.3 0 .9.3 1.8.8 2.4.1.1.1.2.1.4l-.3 1.1c-.1.4-.3.5-.6.3-1.1-.5-1.7-2.1-1.7-3.4 0-2.8 2-6 6.4-6 3.4 0 6.1 2.4 6.1 5.5 0 3.3-2.1 6-5 6-1 0-1.9-.5-2.2-1.1l-.6 2.3c-.2.9-.8 2-1.2 2.7.9.3 1.9.5 2.9.5a9.5 9.5 0 1 0 0-19Z" />
+    </svg>
+  );
+}
+
+
+/* =========================================================
+   SHARE BUTTON
+========================================================= */
+
 export default function ShareButton({ title }: Props) {
   const [canNativeShare, setCanNativeShare] = useState(false);
   const [url, setUrl] = useState<string | null>(null);
 
-  /* ---------- CLIENT ONLY SETUP ---------- */
+
+  /* =========================================================
+     CLIENT ONLY SETUP
+  ========================================================= */
+
   useEffect(() => {
     setUrl(window.location.href);
 
-    if ("share" in navigator) {
+    if (typeof navigator !== "undefined" && "share" in navigator) {
       setCanNativeShare(true);
     }
   }, []);
 
-  /* ---------- NATIVE SHARE ---------- */
+
+  /* =========================================================
+     NATIVE SHARE
+  ========================================================= */
+
   const nativeShare = async () => {
     if (!url) return;
 
@@ -35,98 +108,181 @@ export default function ShareButton({ title }: Props) {
         url,
       });
     } catch {
-      // user cancelled
+      // User cancelled the share dialog.
     }
   };
 
-  /* ---------- PREVENT HYDRATION MISMATCH ---------- */
+
+  /* =========================================================
+     PREVENT HYDRATION MISMATCH
+  ========================================================= */
+
   if (!url) return null;
 
-  /* ---------- FALLBACK URLS ---------- */
+
+  /* =========================================================
+     SOCIAL LINKS
+  ========================================================= */
+
   const links = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       url
     )}`,
+
     twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       url
     )}&text=${encodeURIComponent(title)}`,
-    whatsapp: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
+
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(
+      `${title} ${url}`
+    )}`,
+
     pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
       url
     )}`,
+
     mail: `mailto:?subject=${encodeURIComponent(
       title
     )}&body=${encodeURIComponent(url)}`,
   };
 
-  /* ---------- UI ---------- */
+
+  /* =========================================================
+     SHARED ICON STYLES
+  ========================================================= */
+
+  const iconClass = `
+    flex
+    h-8
+    w-8
+    items-center
+    justify-center
+    rounded-full
+    text-[#4c4331]
+    transition-all
+    duration-200
+    hover:bg-[#f5f0e8]
+    hover:text-[#99a14e]
+    hover:scale-105
+  `;
+
+
   return (
-    <div className="flex items-center lg:justify-start justify-center gap-4 mt-4">
-      <span className="text-xs uppercase tracking-wide text-gray-400">
+    <div className="mt-5 flex items-center justify-center gap-3 lg:justify-start">
+
+      {/* =====================================================
+          LABEL
+      ===================================================== */}
+
+      <span
+        className="
+          mr-1
+          text-[11px]
+          font-medium
+          uppercase
+          tracking-[0.12em]
+          text-[#8d8d84]
+        "
+      >
         Share
       </span>
 
+
+      {/* =====================================================
+          NATIVE SHARE
+      ===================================================== */}
+
       {canNativeShare ? (
         <button
+          type="button"
           onClick={nativeShare}
-          className="text-gray-600 hover:text-black transition cursor-pointer"
-          aria-label="Share"
+          aria-label="Share this product"
+          title="Share"
+          className={iconClass}
         >
-          <Share2 size={18} />
+          <Share2
+            size={19}
+            strokeWidth={1.6}
+          />
         </button>
       ) : (
-        <div className="flex items-center gap-3 text-gray-600">
+
+        /* ===================================================
+           SOCIAL SHARE LINKS
+        =================================================== */
+
+        <div className="flex items-center gap-1">
+
+          {/* Facebook */}
+
           <a
             href={links.facebook}
             target="_blank"
+            rel="noopener noreferrer"
             aria-label="Share on Facebook"
-            className="hover:text-black transition"
+            title="Share on Facebook"
+            className={iconClass}
           >
-            <Facebook size={18} />
+            <FacebookIcon />
           </a>
+
+
+          {/* X */}
 
           <a
             href={links.twitter}
             target="_blank"
+            rel="noopener noreferrer"
             aria-label="Share on X"
-            className="hover:text-black transition"
+            title="Share on X"
+            className={iconClass}
           >
-            <Twitter size={18} />
+            <XIcon />
           </a>
+
+
+          {/* WhatsApp */}
 
           <a
             href={links.whatsapp}
             target="_blank"
+            rel="noopener noreferrer"
             aria-label="Share on WhatsApp"
-            className="hover:text-black transition"
+            title="Share on WhatsApp"
+            className={iconClass}
           >
-            <svg viewBox="0 0 32 32" className="w-[18px] h-[18px] fill-current">
-              <path d="M19.11 17.2c-.3-.15-1.76-.86-2.03-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.64.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.8-1.67-2.1-.17-.3-.02-.47.13-.62.13-.13.3-.34.45-.5.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.66-1.6-.9-2.2-.24-.57-.48-.5-.66-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.05 1.02-1.05 2.5 0 1.47 1.07 2.9 1.22 3.1.15.2 2.1 3.2 5.1 4.48.7.3 1.25.48 1.68.62.7.22 1.34.2 1.85.12.56-.08 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35z" />
-              <path d="M16.02 2.67c-7.4 0-13.42 6.02-13.42 13.42 0 2.37.62 4.68 1.8 6.72L2.6 29.33l6.73-1.77a13.38 13.38 0 006.7 1.82h.01c7.4 0 13.42-6.02 13.42-13.42 0-3.58-1.4-6.94-3.94-9.48a13.35 13.35 0 00-9.5-3.94zm0 24.4c-2.04 0-4.04-.55-5.78-1.6l-.41-.24-4 1.05 1.07-3.9-.27-.4a11.14 11.14 0 01-1.74-6.02c0-6.16 5.01-11.17 11.18-11.17 2.99 0 5.8 1.17 7.91 3.28a11.1 11.1 0 013.27 7.9c0 6.16-5.01 11.17-11.17 11.17z" />
-            </svg>
+            <WhatsAppIcon />
           </a>
+
+
+          {/* Pinterest */}
 
           <a
             href={links.pinterest}
             target="_blank"
+            rel="noopener noreferrer"
             aria-label="Share on Pinterest"
-            className="hover:text-black transition"
+            title="Share on Pinterest"
+            className={iconClass}
           >
-            <svg
-              viewBox="0 0 384 512"
-              className="w-[18px] h-[18px] fill-current"
-            >
-              <path d="M204 6C103 6 0 109 0 210c0 78 50 121 81 121 13 0 21-37 21-47 0-12-30-37-30-86 0-105 80-179 181-179 88 0 154 46 154 138 0 66-26 191-112 191-31 0-57-23-57-54 0-46 32-91 32-141 0-82-117-67-117 32 0 20 2 42 11 60l-46 194c-14 60-2 134-1 141 0 4 6 6 8 2 3-4 39-48 52-104 4-15 23-88 23-88 11 21 44 40 79 40 104 0 175-95 175-223C384 93 304 6 204 6z" />
-            </svg>
+            <PinterestIcon />
           </a>
+
+
+          {/* Email */}
 
           <a
             href={links.mail}
             aria-label="Share via Email"
-            className="hover:text-black transition"
+            title="Share via Email"
+            className={iconClass}
           >
-            <Mail size={18} />
+            <Mail
+              size={19}
+              strokeWidth={1.6}
+            />
           </a>
+
         </div>
       )}
     </div>

@@ -1,232 +1,513 @@
-// "use client";
+"use client";
 
-// import { useEffect, useMemo, useState } from "react";
-// import type { ProductVariation } from "@/lib/types";
-// import { useRouter } from "next/navigation";
-// import { ChevronDown } from "lucide-react";
-// import { useCart } from "@/context/CartContext";
-// import { useToast } from "../ui/ToastProvider";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { ProductVariation } from "@/lib/types";
+import { useCart } from "@/context/CartContext";
+import { useToast } from "../ui/ToastProvider";
+import {
+  CircleCheck,
+  MapPin,
+  Minus,
+  Plus,
+  ShoppingCart,
+  Truck,
+} from "lucide-react";
+import DeliveryChecker from "./DeliveryChecker";
 
-// interface Props {
-//   productId: number;
-//   variations: ProductVariation[];
-//   productDiscount?: number | null;
-//   categoryDiscount?: number | null;
-// }
+interface Props {
+  productId: number;
+  variations: ProductVariation[];
+}
 
-// export default function VariationTable({
-//   productId,
-//   variations,
-//   productDiscount,
-//   categoryDiscount,
-// }: Props) {
-//   const router = useRouter();
-//   const { addToCart, openCart } = useCart();
-//   const [qty, setQty] = useState<Record<number, number>>({});
-//   const [openId, setOpenId] = useState<number | null>(null);
-//   const { showToast } = useToast();
-//   /* ---------------- DISCOUNT ---------------- */
-//   const usedDiscount = useMemo(() => {
-//     if (productDiscount && productDiscount > 0) return productDiscount;
-//     if (categoryDiscount && categoryDiscount > 0) return categoryDiscount;
-//     return 0;
-//   }, [productDiscount, categoryDiscount]);
+export default function VariationTable({ productId, variations }: Props) {
+  const router = useRouter();
+  const { addToCart, openCart } = useCart();
+  const { showToast } = useToast();
 
-//   const getBeforePrice = (price: number) => {
-//     if (!usedDiscount) return null;
-//     return Math.floor(price * (1 + usedDiscount / 100));
-//   };
-//   const getYouSave = (price: number) => {
-//     const before = getBeforePrice(price);
-//     if (!before) return null;
-//     const save = before - price;
-//     return save > 0 ? save : null;
-//   };
+  const [qty, setQty] = useState<Record<number, number>>({});
 
-//   /* ---------------- INIT QTY ---------------- */
-//   useEffect(() => {
-//     const initial: Record<number, number> = {};
-//     variations.forEach((v) => {
-//       if (v.Stock > 0) initial[v.id] = 0;
-//     });
-//     setQty(initial);
-//   }, [variations]);
+  /* ------------------------------------------------------------
+     INITIAL QUANTITY
+  ------------------------------------------------------------ */
 
-//   /* ---------------- QTY CONTROL ---------------- */
-//   const set = (id: number, value: number, stock: number) => {
-//     setQty((s) => ({
-//       ...s,
-//       [id]: Math.max(0, Math.min(value, stock)),
-//     }));
-//   };
+  useEffect(() => {
+    const initial: Record<number, number> = {};
 
-//   /* ---------------- TOTALS ---------------- */
-//   const selected = variations.filter((v) => qty[v.id] > 0);
-//   const totalUnits = selected.reduce((s, v) => s + qty[v.id], 0);
-//   const totalPrice = selected.reduce((s, v) => s + qty[v.id] * v.pricing.pack?.selling, 0);
+    variations.forEach((variation) => {
+      initial[variation.id] = 0;
+    });
 
-//   /* ---------------- ADD TO CART ---------------- */
-//   const addAll = async () => {
-//     try {
-//       for (const v of selected) {
-//         await addToCart({
-//           product: productId,
-//           variation_id: v.id,
-//           quantity: qty[v.id],
-//         });
-//       }
+    setQty(initial);
+  }, [variations]);
 
-//       openCart();
+  /* ------------------------------------------------------------
+     SORT VARIATIONS
+     
+     Cheapest per-m² first.
+     
+     If two variations have the same per-m² price,
+     fall back to pack price.
+  ------------------------------------------------------------ */
 
-//       router.refresh();
-//       showToast("Added to cart", "success");
-//     } catch (error) {
-//       showToast("Something went wrong", "error");
-//     }
-//   };
+  const sortedVariations = useMemo(() => {
+    return [...variations].sort((a, b) => {
+      const aInStock = Number(a.Stock || 0) > 0;
+      const bInStock = Number(b.Stock || 0) > 0;
 
-//   return (
-//     <div
-//       className="rounded-md bg-skin shadow-md divid relative mt-12 rounded-tl-none
-// "
-//     >
-//       <span className="block absolute w-fit py-1 px-3 bg-skin text-sm shadow-xl -z-10 rounded-tl-md rounded-tr-md font-semibold left-0 -top-7">
-//         Available Options
-//       </span>
-//       {variations.map((v) => {
-//         const q = qty[v.id] ?? 0;
-//         const isLow = v.Stock > 0 && v.Stock <= 5;
-//         const isOut = v.Stock <= 0;
-//         const before = getBeforePrice(v.Price);
-//         const youSave = getYouSave(v.Price);
+      // 1. In-stock variations always come first
+      if (aInStock !== bInStock) {
+        return aInStock ? -1 : 1;
+      }
 
-//         return (
-//           <div className="border-b border-gray-200 relative z-0" key={v.id}>
-//             {/* Mobile header */}
-//             <button
-//               onClick={() => setOpenId(openId === v.id ? null : v.id)}
-//               className="w-full flex justify-between items-center p-3 md:hidden"
-//             >
-//               <span className="font-medium text-sm">
-//                 {v.Size} • {v.Thickness}
-//               </span>
-//               <ChevronDown
-//                 className={`transition ${openId === v.id ? "rotate-180" : ""}`}
-//               />
-//             </button>
+      // 2. Within the same stock group,
+      //    sort by cheapest per-m² price
+      const aPerM2 = Number(a.pricing?.perM2?.selling || 0);
+      const bPerM2 = Number(b.pricing?.perM2?.selling || 0);
 
-//             {/* Row */}
-//             <div
-//               className={`md:p-3 px-3 pb-3 grid md:gap-4 items-center
-//     grid-cols-2 grid-rows-2
-//     md:grid-cols-[1fr_140px_160px] md:grid-rows-1
-//     ${openId !== v.id ? "hidden md:grid" : "grid"}
-//   `}
-//             >
-//               {/* Details */}
-//               <div className="col-span-2 md:col-span-1">
-//                 <div className="font-medium hidden md:block">
-//                   {v.Size} • {v.Thickness}
-//                 </div>
+      if (aPerM2 !== bPerM2) {
+        return aPerM2 - bPerM2;
+      }
 
-//                 <div className="text-sm text-gray-500">
-//                   <span className="font-medium">Finish : </span>
-//                   <span className="capitalize">{v.Finish}</span> |{" "}
-//                   <span className="font-medium">Pack Size : </span>
-//                   {v.PackSize} m² | <span className="font-medium">Pcs : </span>
-//                   {v.Pcs} pcs | {v.Per_m2 ? `£${v.Per_m2.toFixed(2)} /m²` : "—"}
-//                 </div>
+      // 3. If per-m² price is the same,
+      //    sort by pack price
+      const aPack = Number(a.pricing?.pack?.selling || 0);
+      const bPack = Number(b.pricing?.pack?.selling || 0);
 
-//                 <div
-//                   className={`text-xs font-semibold mt-1 ${
-//                     isOut
-//                       ? "text-red-500"
-//                       : isLow
-//                         ? "text-red-500 animate-pulse"
-//                         : "text-green-600"
-//                   }`}
-//                 >
-//                   {isOut
-//                     ? "Out of stock"
-//                     : isLow
-//                       ? `${v.Stock} packs left`
-//                       : "In stock"}
-//                 </div>
-//               </div>
+      return aPack - bPack;
+    });
+  }, [variations]);
 
-//               {/* Price */}
-//               <div className="col-span-1 md:col-span-1 text-left md:text-right">
-//                 {usedDiscount > 0 && (
-//                   <div className="text-xs text-green-600 font-medium">
-//                     {usedDiscount}% OFF
-//                   </div>
-//                 )}
+  /* ------------------------------------------------------------
+     QUANTITY CONTROL
+  ------------------------------------------------------------ */
 
-//                 {before && (
-//                   <div className="text-xs line-through text-gray-400">
-//                     £{before.toFixed(2)}
-//                   </div>
-//                 )}
+  const setQuantity = (id: number, value: number, stock: number) => {
+    setQty((current) => ({
+      ...current,
+      [id]: Math.max(0, Math.min(value, Math.max(0, stock))),
+    }));
+  };
 
-//                 <div className="font-semibold text-amber-700">
-//                   £{v.Price.toFixed(2)}
-//                 </div>
+  /* ------------------------------------------------------------
+     SELECTED VARIATIONS
+  ------------------------------------------------------------ */
 
-//                 <div className="text-xs text-gray-600">per pack</div>
+  const selectedVariations = useMemo(() => {
+    return sortedVariations.filter((variation) => (qty[variation.id] ?? 0) > 0);
+  }, [sortedVariations, qty]);
 
-//                 {youSave && (
-//                   <div className="text-xs text-green-700 font-semibold">
-//                     You save £{youSave.toFixed(2)}
-//                   </div>
-//                 )}
-//               </div>
+  /* ------------------------------------------------------------
+     TOTAL PACKS
+  ------------------------------------------------------------ */
 
-//               {/* Quantity */}
-//               <div className="col-span-1 md:col-span-1 flex items-center justify-end gap-2">
-//                 <button
-//                   onClick={() => set(v.id, q - 1, v.Stock)}
-//                   disabled={isOut}
-//                   className="w-8 h-8 text-lg cursor-pointer bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
-//                 >
-//                   −
-//                 </button>
+  const totalUnits = useMemo(() => {
+    return selectedVariations.reduce((total, variation) => {
+      return total + (qty[variation.id] ?? 0);
+    }, 0);
+  }, [selectedVariations, qty]);
 
-//                 <div className="w-10 text-center text-lg font-semibold">
-//                   {q}
-//                 </div>
+  /* ------------------------------------------------------------
+     TOTAL PRICE
+  ------------------------------------------------------------ */
 
-//                 <button
-//                   onClick={() => set(v.id, q + 1, v.Stock)}
-//                   disabled={isOut}
-//                   className="w-8 h-8 text-lg cursor-pointer bg-[#cc9450] hover:bg-[#4c4331] text-white rounded disabled:opacity-30"
-//                 >
-//                   +
-//                 </button>
-//               </div>
-//             </div>
-//           </div>
-//         );
-//       })}
+  const totalPrice = useMemo(() => {
+    return selectedVariations.reduce((total, variation) => {
+      const quantity = qty[variation.id] ?? 0;
 
-//       {/* Footer */}
-//       <div className="p-4 bg-gray-50 flex justify-between items-center">
-//         <div>
-//           <div className="text-sm text-gray-600">
-//             Total units: <b>{totalUnits}</b>
-//           </div>
-//           <div className="text-lg text-dark font-semibold">
-//             £{totalPrice.toFixed(2)}
-//           </div>
-//         </div>
+      const price = Number(variation.pricing?.pack?.selling || 0);
 
-//         <button
-//           disabled={!selected.length}
-//           onClick={addAll}
-//           className="button-1 text-white px-6 py-2 rounded disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-//         >
-//           Add to Cart
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
+      return total + quantity * price;
+    }, 0);
+  }, [selectedVariations, qty]);
+
+  /* ------------------------------------------------------------
+     ADD TO CART
+  ------------------------------------------------------------ */
+
+  const addAll = async () => {
+    if (!selectedVariations.length) return;
+
+    try {
+      for (const variation of selectedVariations) {
+        const quantity = qty[variation.id] ?? 0;
+
+        if (quantity <= 0) continue;
+
+        await addToCart({
+          product: productId,
+          variation_id: variation.id,
+          quantity,
+        });
+      }
+
+      openCart();
+      router.refresh();
+
+      showToast("Added to cart", "success");
+    } catch (error) {
+      console.error("Failed to add variations to cart:", error);
+
+      showToast("Something went wrong", "error");
+    }
+  };
+
+  /* ------------------------------------------------------------
+     HELPERS
+  ------------------------------------------------------------ */
+
+  const cleanValue = (value: string | null | undefined) => {
+    if (!value) return "";
+
+    return value.replace(/^SIZE\s+/i, "").replace(/^THICKNESS\s+/i, "");
+  };
+
+  const formatMoney = (value: number) => {
+    return `£${Number(value || 0).toFixed(2)}`;
+  };
+
+  if (!sortedVariations.length) {
+    return null;
+  }
+
+  /* ------------------------------------------------------------
+   TOTAL m²
+------------------------------------------------------------ */
+
+  const totalM2 = useMemo(() => {
+    return selectedVariations.reduce((total, variation) => {
+      const quantity = qty[variation.id] ?? 0;
+
+      const packSize = Number(variation.pricing?.packSize || 0);
+
+      return total + quantity * packSize;
+    }, 0);
+  }, [selectedVariations, qty]);
+
+  /* ------------------------------------------------------------
+   TOTAL SAVINGS
+------------------------------------------------------------ */
+
+  const totalSavings = useMemo(() => {
+    return selectedVariations.reduce((total, variation) => {
+      const quantity = qty[variation.id] ?? 0;
+
+      const originalPrice = Number(variation.pricing?.pack?.original || 0);
+
+      const sellingPrice = Number(variation.pricing?.pack?.selling || 0);
+
+      const savingPerPack = Math.max(0, originalPrice - sellingPrice);
+
+      return total + savingPerPack * quantity;
+    }, 0);
+  }, [selectedVariations, qty]);
+
+  return (
+    <div className="space-y-4 font-sans">
+      {/* ========================================================
+          VARIATION CARDS
+      ======================================================== */}
+
+      {sortedVariations.map((variation) => {
+        const quantity = qty[variation.id] ?? 0;
+        const isSelected = quantity > 0;
+
+        const stock = Number(variation.Stock || 0);
+
+        const isOutOfStock = stock <= 0;
+        const isLowStock = stock > 0 && stock <= 5;
+
+        const pricing = variation.pricing;
+
+        const packPrice = Number(pricing?.pack?.selling || 0);
+
+        const originalPackPrice = Number(pricing?.pack?.original || 0);
+
+        const perM2Price = Number(pricing?.perM2?.selling || 0);
+
+        const originalPerM2Price = Number(pricing?.perM2?.original || 0);
+
+        const packSize = Number(pricing?.packSize || variation.PackSize || 0);
+
+        const hasDiscount =
+          pricing?.isDiscounted && originalPackPrice > packPrice;
+
+        return (
+          <div
+            key={variation.id}
+            className={`
+  group relative overflow-hidden rounded-xl border
+  transition-all duration-300
+  ${isSelected
+                ? "border-[#a67c52] bg-[#f5f1e8] shadow-sm"
+                : isOutOfStock
+                  ? "border-gray-200 bg-gray-50"
+                  : "border-gray-200 bg-white hover:border-gray-300"
+              }
+`}
+          >
+            <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
+              {/* ==================================================
+                  LEFT / DETAILS
+              ================================================== */}
+
+              <div className="flex-1 space-y-1">
+                {/* Size + Thickness */}
+
+                <div className="flex items-center justify-between gap-3 sm:justify-start">
+                  <div className="flex items-center gap-2">
+                    <div className="font-bold uppercase tracking-tight text-[#262a18]">
+                      {cleanValue(variation.Size)}
+
+                      <span className="mx-1 text-gray-300">•</span>
+
+                      {cleanValue(variation.Thickness)}
+                    </div>
+
+                    {isSelected && (
+                      <span className="rounded-full bg-[#a67c52]/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#a67c52]">
+                        Selected
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Details */}
+
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-gray-500">
+                  {/* Finish */}
+
+                  {variation.Finish && (
+                    <span className="flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#a67c52]/40" />
+                      Finish:{" "}
+                      <span className="capitalize">{variation.Finish}</span>
+                    </span>
+                  )}
+
+                  {/* Pack size */}
+
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#a67c52]/40" />
+                    {packSize.toFixed(2)} m²/pack
+                  </span>
+
+                  {/* Pcs */}
+
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#a67c52]/40" />
+                    {variation.Pcs} pcs
+                  </span>
+                </div>
+
+                {/* Stock */}
+
+                <div className="mt-2 flex items-center gap-2">
+                  <div
+                    className={`
+                      h-2 w-2 rounded-full
+                      ${isOutOfStock
+                        ? "bg-red-500"
+                        : isLowStock
+                          ? "bg-[#cc9450] animate-pulse"
+                          : "bg-green-500 animate-pulse"
+                      }
+                    `}
+                  />
+
+                  <span
+                    className={`
+                      text-[11px] font-bold
+                      ${isOutOfStock
+                        ? "text-red-500"
+                        : isLowStock
+                          ? "text-[#cc9450]"
+                          : "text-green-600"
+                      }
+                    `}
+                  >
+                    {isOutOfStock
+                      ? "Out of Stock"
+                      : `In Stock: ${stock} ${stock === 1 ? "pack" : "packs"}`}
+                  </span>
+                </div>
+              </div>
+
+              {/* ==================================================
+                  RIGHT / PRICE + QUANTITY
+              ================================================== */}
+
+              <div className="flex shrink-0 items-center justify-between gap-2 sm:flex-col sm:items-end">
+                {/* Price */}
+
+                <div className="text-right">
+                  {hasDiscount && (
+                    <div className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 line-through">
+                      {formatMoney(originalPackPrice)}
+                    </div>
+                  )}
+
+                  <div className="text-xl font-bold text-[#a67c52]">
+                    {formatMoney(packPrice)}
+                  </div>
+
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                    {hasDiscount && originalPerM2Price > perM2Price ? (
+                      <>
+                        <span className="mr-1 line-through">
+                          {formatMoney(originalPerM2Price)}
+                        </span>
+                        {formatMoney(perM2Price)}
+                      </>
+                    ) : (
+                      `${formatMoney(perM2Price)} per m²`
+                    )}
+                  </div>
+                </div>
+
+                {/* Quantity */}
+
+                <div className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 p-1.5">
+                  {/* Minus */}
+
+                  <button
+                    type="button"
+                    aria-label={`Decrease quantity of ${variation.Size}`}
+                    onClick={() =>
+                      setQuantity(variation.id, quantity - 1, stock)
+                    }
+                    disabled={isOutOfStock || quantity <= 0}
+                    className="
+                    cursor-pointer
+                      flex h-7 w-7 items-center justify-center
+                      rounded-md
+                      bg-gray-200
+                      text-gray-400
+                      transition-colors
+                      hover:bg-gray-300
+                      disabled:cursor-not-allowed
+                      disabled:opacity-40
+                    "
+                  >
+                    <Minus size={14} />
+                  </button>
+
+                  {/* Quantity */}
+
+                  <span className="w-6 text-center text-sm font-bold text-[#262a18]">
+                    {quantity}
+                  </span>
+
+                  {/* Plus */}
+
+                  <button
+                    type="button"
+                    aria-label={`Increase quantity of ${variation.Size}`}
+                    onClick={() =>
+                      setQuantity(variation.id, quantity + 1, stock)
+                    }
+                    disabled={isOutOfStock || quantity >= stock}
+                    className="
+                    cursor-pointer
+                      flex h-7 w-7 items-center justify-center
+                      rounded-md
+                      bg-[#a67c52]
+                      text-white
+                      transition-colors
+                      hover:bg-[#262a18]
+                      disabled:cursor-not-allowed
+                      disabled:opacity-40
+                    "
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="mt-6 overflow-hidden rounded-xl bg-[#262a18] text-white">
+        <div className="space-y-4 p-6">
+          {/* Order Summary Header */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-[11px] font-bold uppercase tracking-widest text-gray-400">
+              <span>Order Summary</span>
+
+              <span>
+                {totalUnits} {totalUnits === 1 ? "Pack" : "Packs"} /{" "}
+                {totalM2.toFixed(2)} m²
+              </span>
+            </div>
+
+            <div className="h-px bg-white/10" />
+          </div>
+
+          {/* Total */}
+          <div className="space-y-4">
+            <div className="flex items-end justify-between">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[#a67c52]">
+                  Total Amount{" "}
+                  <span className="text-[9px] font-normal normal-case text-gray-500">
+                    (Incl. VAT)
+                  </span>
+                </div>
+
+                <div className="text-3xl font-extrabold">
+                  {formatMoney(totalPrice)}
+                </div>
+
+                {/* You Save */}
+                {totalSavings > 0 && (
+                  <div className="mt-1 text-[11px] font-bold text-green-400">
+                    You save {formatMoney(totalSavings)}
+                  </div>
+                )}
+              </div>
+
+              <div className="pb-1 text-right">
+                <div className="flex items-center justify-end gap-1.5 text-[11px] font-bold text-green-400">
+                  <CircleCheck size={14} />
+                  Prices Include VAT
+                </div>
+              </div>
+            </div>
+
+            <DeliveryChecker />
+          </div>
+
+          {/* Add To Cart */}
+          <button
+            type="button"
+            disabled={!selectedVariations.length}
+            onClick={addAll}
+            className="
+        flex
+        w-full
+        items-center
+        justify-center
+        gap-3
+        rounded-lg
+        bg-[#a67c52]
+        py-4
+        font-extrabold
+        text-white
+        shadow-lg
+        transition-all
+        hover:bg-[#c19262]
+        active:scale-[0.98]
+        disabled:cursor-not-allowed
+        disabled:opacity-50
+        cursor-pointer
+      "
+          >
+            <ShoppingCart size={18} />
+            Add to Shopping Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

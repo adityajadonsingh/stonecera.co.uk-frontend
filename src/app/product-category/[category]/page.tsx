@@ -181,7 +181,7 @@ export default async function CategoryPage({
             {/* Product Categories */}
             <li>
               <Link
-                href="/categories"
+                href="/product-category/"
                 className="text-stone-500 transition-colors hover:text-[#99a14e]"
               >
                 Product Categories
@@ -310,7 +310,7 @@ export default async function CategoryPage({
       {
         categoryData.faqs && (
           <div className="bg-[#f9f7f3]">
-            <FaqsAccordion mainHeading={categoryData.faqs?.mainHeading} subHeading={categoryData.faqs?.subHeading} faqs={categoryData.faqs?.items} />
+            <FaqsAccordion mainHeading={categoryData.faqs?.mainHeading} subHeading={categoryData.faqs?.subHeading} items={categoryData.faqs?.items} />
           </div>
         )
       }

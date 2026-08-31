@@ -43,7 +43,6 @@ export default function ProductCard({
   ].join(" / ");
 
   const image = product.product.images?.[0];
-  console.log(product);
   return (
     <>
       <Link

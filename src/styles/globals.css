@@ -481,3 +481,9 @@ textarea {
     text-decoration: underline !important;
   }
 }
+.pointers p{
+  margin: 0 !important;
+  svg{
+    display: none !important;
+  }
+}

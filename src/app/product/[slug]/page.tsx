@@ -1,47 +1,22 @@
 // app/product/[slug]/page.tsx
-import Breadcrum from "@/components/Breadcrum";
-import FaqAccordion from "@/components/FaqAccordion";
-import ReviewSection from "@/components/homepage/ReviewSection";
 import CartSidebar from "@/components/product/CartSidebar";
 import ImageGallery from "@/components/product/ImageGallery";
 import NeedHelpBox from "@/components/product/NeedHelpBox";
 import ProductHighlights from "@/components/product/ProductHighlights";
-import ProductReviewForm from "@/components/product/ProductReviewForm";
-import ProductReviews from "@/components/product/ProductReviews";
-import ProductSidebarTrigger from "@/components/product/ProductSidebarTrigger";
 import ShareButton from "@/components/product/ShareButton";
-// import VariationTable from "@/components/product/VariationTable";
 import SchemaInjector from "@/components/SchemaInjector";
 import { getProductBySlug } from "@/lib/api/product";
 import { buildMetadata } from "@/lib/seo";
 import type { JSONObject, Product, Schema } from "@/lib/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import VariationTable from "@/components/product/VariationTable";
+import ProductTabs from "@/components/product/ProductTabs";
+import ProductGrid from "@/components/product/ProductGrid";
 
 type ParamsPromise = Promise<{ slug: string }>;
-
-const faqData = [
-  {
-    question: "What is the future of the granite stone?",
-    answer:
-      "Granite continues to be one of the most durable and stylish natural stones, widely used in kitchens, flooring and outdoor spaces.",
-  },
-  {
-    question: "Use of Porcelain tiles?",
-    answer:
-      "Porcelain tiles are perfect for both indoor and outdoor spaces due to their strength, low water absorption and modern look.",
-  },
-  {
-    question: "What stone is more suitable for gardens?",
-    answer:
-      "Natural stones like sandstone, limestone and cobblestone are ideal for garden pathways and landscaping.",
-  },
-  {
-    question: "How to lie cobblestone?",
-    answer:
-      "Cobblestones should be laid on a compacted base with sand or mortar, ensuring proper drainage and alignment.",
-  },
-];
 
 export async function generateMetadata({
   params,
@@ -71,25 +46,7 @@ export default async function ProductPage({
   if (!product || !product.name) return notFound();
 
   const variations = product.variations ?? [];
-
-  // -------- DISCOUNT LOGIC --------
-  const usedDiscount =
-    product.productDiscount && product.productDiscount > 0
-      ? product.productDiscount
-      : product.category?.categoryDiscount &&
-          product.category.categoryDiscount > 0
-        ? product.category.categoryDiscount
-        : 0;
-
-  // const fromPerM2 =
-  //   variations.length > 0
-  //     ? Math.min(...variations.map((v) => v.Per_m2 ?? Infinity))
-  //     : null;
-
-  const beforePerM2 =
-    usedDiscount > 0 && product.priceBeforeDiscount?.Per_m2
-      ? product.priceBeforeDiscount.Per_m2
-      : null;
+  const selectedVariation = product.selectedVariation;
 
   const breadcrumbSchema = {
     "@context": "https://schema.org/",
@@ -125,7 +82,7 @@ export default async function ProductPage({
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
-    image: `${process.env.NEXT_PUBLIC_MEDIA_URL}${product.image?.url}`,
+    image: `${process.env.NEXT_PUBLIC_MEDIA_URL}${product.images[0]?.url}`,
     description: product.seo?.meta_description ?? product.description,
     brand: {
       "@type": "Brand",
@@ -159,92 +116,155 @@ export default async function ProductPage({
   );
   return (
     <>
-      <div className="container py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="col-span-1 lg:col-span-5 relative h-full">
-            <ImageGallery
-              images={product.images ?? []}
-              productId={product.id}
-              product={product}
-            />
-          </div>
+      <div className="bg-[#fcfcfc]">
+        {/* Breadcrumb */}
+        <nav
+          aria-label="Breadcrumb"
+          className="mx-auto max-w-[1440px] px-4 py-4 font-sans lg:px-8"
+        >
+          <ol className="flex flex-wrap items-center gap-2 text-[13px]">
+            {/* Home */}
+            <li className="flex items-center gap-2">
+              <Link
+                href="/"
+                className="text-[#a67c52] transition-colors hover:underline"
+              >
+                Home
+              </Link>
 
-          <div className="col-span-1 lg:col-span-7">
-            <nav className="text-sm text-gray-500 mb-3 lg:block hidden">
-              {/* Home / {product.category?.name ?? "Category"} / {product.name} */}
-              <Breadcrum
-                breadcrum={[
-                  {
-                    pageName: "Product Category",
-                    pageUrl: "/product-category/",
-                  },
-                  {
-                    pageName: product.category?.name,
-                    pageUrl: `/product-category/${product.category?.slug}/`,
-                  },
-                  {
-                    pageName: product.name,
-                    pageUrl: `/product-category/${product.category?.slug}/${product.slug}/`,
-                  },
-                ]}
+              <ChevronRight
+                size={14}
+                strokeWidth={1.5}
+                className="text-gray-400"
+                aria-hidden="true"
               />
-            </nav>
+            </li>
 
-            <h1 className="md:text-3xl text-xl font-semibold mb-2 text-gray-800">
-              {product.name}
-            </h1>
+            {/* Product Category */}
+            <li className="flex items-center gap-2">
+              <Link
+                href="/product-category"
+                className="text-[#a67c52] transition-colors hover:underline"
+              >
+                Product Category
+              </Link>
 
-            {/* <div className="md:text-lg text-base font-medium mb-4 flex gap-2">
-              <span className="text-[#4c4331] font-semibold">From :</span>
-              {fromPerM2 ? (
-                <div className="flex items-center gap-2">
-                  {beforePerM2 && (
-                    <span className="text-gray-400 line-through">
-                      £{beforePerM2.toFixed(2)}
-                    </span>
-                  )}
+              <ChevronRight
+                size={14}
+                strokeWidth={1.5}
+                className="text-gray-400"
+                aria-hidden="true"
+              />
+            </li>
 
-                  <span className="text-amber-700 font-semibold">
-                    £{fromPerM2.toFixed(2)} /m²
+            {/* Category */}
+            <li className="flex items-center gap-2">
+              <Link
+                href={`/product-category/${product.category?.slug}/`}
+                className="text-[#a67c52] transition-colors hover:underline"
+              >
+                {product.category?.name}
+              </Link>
+
+              <ChevronRight
+                size={14}
+                strokeWidth={1.5}
+                className="text-gray-400"
+                aria-hidden="true"
+              />
+            </li>
+
+            {/* Current Product */}
+            <li>
+              <span aria-current="page" className="text-gray-500 font-semibold">
+                {product.name}
+              </span>
+            </li>
+          </ol>
+        </nav>
+
+        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-7 space-y-4">
+              <ImageGallery
+                images={product.images ?? []}
+                productId={product.id}
+                product={product}
+              />
+            </div>
+
+            <div className="lg:col-span-5">
+              {product.labels?.length > 0 && (
+                <span className="bg-[#a67c52]/10 font-sans text-[#a67c52] text-[10px] font-bold px-2 py-0.5 rounded tracking-widest uppercase">
+                  {product.labels[0].name}
+                </span>
+              )}
+              <h1 className="text-3xl font-bold text-[#262a18] tracking-tight">
+                {product.name}
+              </h1>
+
+              {/* Starting Price */}
+              <div className="mb-6 ">
+                <div className="flex  items-baseline flex-wrap gap-x-2 gap-y-1">
+                  <span className="text-xl font-medium text-[#a67c52]">
+                    From :
                   </span>
 
-                  {usedDiscount > 0 && (
-                    <span className="animate-pulse-bg text-white text-xs font-semibold px-2 py-1 rounded">
-                      {usedDiscount}% OFF
+                  {selectedVariation ? (
+                    <>
+                      {selectedVariation.pricing.isDiscounted && (
+                        <span className="text-sm text-gray-400 font-sans line-through">
+                          £{selectedVariation.pricing.perM2.original.toFixed(2)}
+                        </span>
+                      )}
+
+                      <span className="text-lg font-semibold font-sans text-[#a67c52]">
+                        £{selectedVariation.pricing.perM2.selling.toFixed(2)}{" "}
+                        /m²
+                      </span>
+
+                      <span className="text-xs font-sans text-gray-400">
+                        (Inc VAT)
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-semibold font-sans text-gray-400">
+                      —
                     </span>
                   )}
                 </div>
-              ) : (
-                "—"
-              )}
-            </div> */}
-
-            {/* <VariationTable
-              productId={product.id}
-              variations={variations}
-              productDiscount={product.productDiscount}
-              categoryDiscount={product.category?.categoryDiscount}
-            /> */}
-            <ProductHighlights />
-            <ProductSidebarTrigger description={product.description} />
-            <NeedHelpBox pageName={product.slug} />
-            <ShareButton title={product.name} />
+              </div>
+              <div className="text-sm mb-2 font-bold text-[#262a18ad] uppercase tracking-wider flex items-center gap-2">
+                Available Variations
+              </div>
+              <VariationTable productId={product.id} variations={variations} />
+              <ProductHighlights />
+              {/* <ProductSidebarTrigger description={product.description} /> */}
+              <NeedHelpBox pageName={product.slug} />
+              <ShareButton title={product.name} />
+            </div>
           </div>
         </div>
-      </div>
-      <section className=" mt-8 mb-12 ">
-        <div className="container grid md:grid-cols-2 gap-5">
-          <ProductReviewForm productId={product.id} />
-          <ProductReviews reviews={product.productReviews} />
+        <div className="max-w-[1440px]  mx-auto px-4 lg:px-8 pb-20">
+          <ProductTabs product={product} faqs={product.faqs} />
         </div>
-      </section>
-      <ReviewSection content={product.reviews} isProductPage={true} />
-      <div className="container md:py-16 py-8">
-        FAQ will here soon
-        {/* <FaqAccordion items={faqData} /> */}
+        <div className="max-w-[1440px]  mx-auto px-4 lg:px-8 pb-20">
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-[#262a18] tracking-tight">
+              You May Also Like
+            </h2>
+            <Link
+              className="text-sm font-sans font-bold text-[#a67c52] hover:underline uppercase tracking-widest"
+              href="/product-category/"
+            >
+              View All
+            </Link>
+          </div>
+          <ProductGrid products={product.youMayAlsoLike} isProductPage={true} />
+        </div>
+        <SchemaInjector schemas={safeSchemas} />
+        <CartSidebar />
       </div>
-      <SchemaInjector schemas={safeSchemas} />
-      <CartSidebar />
     </>
   );
 }

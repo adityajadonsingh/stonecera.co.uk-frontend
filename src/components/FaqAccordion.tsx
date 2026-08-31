@@ -3,18 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-
-interface FAQ {
-  question: string;
-  answer: string;
-  sort_order?: number;
-}
-
-interface FaqsProps {
-  mainHeading: string;
-  subHeading: string;
-  faqs: FAQ[];
-}
+import { FAQComponent } from "@/lib/types";
 
 /**
  * Render Strapi CKEditor HTML or normal text.
@@ -38,48 +27,36 @@ function RichText({ content }: { content: string }) {
     return <>{content}</>;
   }
 
-  return (
-    <div
-      dangerouslySetInnerHTML={{ __html: content }}
-    />
-  );
+  return <div dangerouslySetInnerHTML={{ __html: content }} />;
 }
 
 export default function FaqsAccordion({
   mainHeading,
   subHeading,
-  faqs,
-}: FaqsProps) {
+  items,
+  isProductPage = false,
+}: FAQComponent) {
   const [openIndex, setOpenIndex] = useState(0);
 
   const handleToggle = (index: number) => {
-    setOpenIndex((currentIndex) =>
-      currentIndex === index ? -1 : index
-    );
+    setOpenIndex((currentIndex) => (currentIndex === index ? -1 : index));
   };
 
-  if (!faqs?.length) return null;
+  if (!items?.length) return null;
 
   return (
     <section
-      className="border-t py-16"
-      style={{
-        borderTopColor: "rgba(38, 42, 24, 0.1)",
-        borderTopWidth: "0.5px",
-      }}
+      className={` ${isProductPage ? "border-0 py-8" : "border-t-[0.5px] border-[rgba(38,42,24,0.1)] py-16"}`}
     >
       <div className="mx-auto max-w-[1440px] px-4 lg:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-
           {/* LEFT CONTENT */}
           <div>
             <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.25em] text-[#99a14e]">
               Knowledge Base
             </p>
 
-            <h4
-              className="mb-4 font-sans text-3xl leading-tight text-[#262a18]"
-            >
+            <h4 className="mb-4 font-sans text-3xl leading-tight text-[#262a18]">
               {mainHeading}
             </h4>
 
@@ -99,7 +76,7 @@ export default function FaqsAccordion({
 
           {/* FAQ LIST */}
           <div className="lg:col-span-2">
-            {faqs.map((faq, index) => {
+            {items.map((faq, index) => {
               const isOpen = openIndex === index;
 
               return (
@@ -111,7 +88,6 @@ export default function FaqsAccordion({
                       : "border-l-2 border-l-transparent hover:bg-[#faf8f3]"
                   }`}
                 >
-
                   {/* QUESTION */}
                   <button
                     type="button"
@@ -134,9 +110,7 @@ export default function FaqsAccordion({
                       size={17}
                       strokeWidth={1.5}
                       className={`shrink-0 text-[#99a14e] transition-transform duration-500 ease-out ${
-                        isOpen
-                          ? "rotate-180"
-                          : "rotate-0"
+                        isOpen ? "rotate-180" : "rotate-0"
                       }`}
                     />
                   </button>
@@ -152,14 +126,11 @@ export default function FaqsAccordion({
                     <div className="overflow-hidden">
                       <div className="px-5 pb-6">
                         <div className="max-w-3xl text-sm leading-relaxed text-[#4a5530]">
-
                           <RichText content={faq.answer} />
-
                         </div>
                       </div>
                     </div>
                   </div>
-
                 </div>
               );
             })}

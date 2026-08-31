@@ -5,10 +5,12 @@ import type { CategoryProduct } from "@/lib/types";
 
 interface ProductGridProps {
   products: CategoryProduct[];
+  isProductPage?: boolean;
 }
 
 export default function ProductGrid({
   products,
+  isProductPage = false,
 }: ProductGridProps) {
   if (!products?.length) {
     return (
@@ -19,7 +21,7 @@ export default function ProductGrid({
   }
 
   return (
-    <section className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 my-8">
+    <section className={`${isProductPage ? "lg:grid-cols-4" : " lg:grid-cols-3"} grid sm:grid-cols-2 md:grid-cols-3 gap-4 my-8`}>
       {products.map((product, index) => (
         <ProductCard
           key={product.product.id}

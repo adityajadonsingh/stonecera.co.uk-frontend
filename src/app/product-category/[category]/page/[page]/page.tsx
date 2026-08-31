@@ -1,7 +1,7 @@
-// File: src/app/product-category/%5Bcategory%5D/page/%5Bpage%5D/page.tsx
+// File: src/app/product-category/[category]/page/[page]/page.tsx
 
 import Link from "next/link";
-import { FileText, SlidersHorizontal } from "lucide-react";
+import { FileText, SlidersHorizontal, ChevronRight } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -18,6 +18,7 @@ import PageContentBox from "@/components/PageContentBox";
 import FaqsAccordion from "@/components/FaqAccordion";
 
 import { buildMetadata } from "@/lib/seo";
+import { JSONObject, Schema } from "@/lib/types";
 
 
 /* =========================================================
@@ -34,6 +35,10 @@ export async function generateMetadata({
   const { category } = await params;
   const resolvedSearchParams = await searchParams;
 
+  /*
+   * Filters should not be indexed.
+   * Normal paginated pages can be indexed.
+   */
   const hasFilters = Object.keys(resolvedSearchParams).some(
     (key) => !["page", "limit"].includes(key)
   );
@@ -50,13 +55,15 @@ export async function generateMetadata({
   return {
     ...baseMetadata,
 
-    /*
-     * Paginated category pages can be indexed.
-     * Filtered versions should remain noindex.
-     */
     robots: hasFilters
-      ? { index: false, follow: true }
-      : { index: true, follow: true },
+      ? {
+          index: false,
+          follow: true,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
   };
 }
 
@@ -75,8 +82,9 @@ export default async function CategoryPaginatedPage({
   const { category, page: pageParam } = await params;
   const resolvedSearchParams = await searchParams;
 
+
   /* =======================================================
-     PAGE
+     PAGE NUMBER
   ======================================================= */
 
   const page = parseInt(pageParam || "1", 10);
@@ -85,7 +93,9 @@ export default async function CategoryPaginatedPage({
    * /page/1 should always redirect to the main category URL.
    */
   if (page === 1) {
-    const queryString = new URLSearchParams(resolvedSearchParams).toString();
+    const queryString = new URLSearchParams(
+      resolvedSearchParams
+    ).toString();
 
     redirect(
       queryString
@@ -95,11 +105,22 @@ export default async function CategoryPaginatedPage({
   }
 
 
+  /*
+   * Invalid page numbers
+   */
+  if (page < 1 || Number.isNaN(page)) {
+    return notFound();
+  }
+
+
   /* =======================================================
      PRODUCTS PER PAGE
   ======================================================= */
 
-  const limit = parseInt(resolvedSearchParams.limit || "12", 10);
+  const limit = parseInt(
+    resolvedSearchParams.limit || "12",
+    10
+  );
 
   const offset = (page - 1) * limit;
 
@@ -109,7 +130,9 @@ export default async function CategoryPaginatedPage({
   ======================================================= */
 
   const categoryData = await getCategoryBySlug(category, {
-    ...Object.fromEntries(Object.entries(resolvedSearchParams)),
+    ...Object.fromEntries(
+      Object.entries(resolvedSearchParams)
+    ),
     limit,
     offset,
   });
@@ -125,17 +148,22 @@ export default async function CategoryPaginatedPage({
 
   const totalProducts = categoryData.totalProducts || 0;
 
-  const totalPages = Math.ceil(totalProducts / limit);
-
+  const totalPages = Math.ceil(
+    totalProducts / limit
+  );
 
   /*
-   * If the requested page doesn't exist, return 404.
+   * Requested page doesn't exist.
    *
    * Example:
-   * Category has 20 products
-   * limit = 12
-   * valid pages = 1, 2
-   * /page/3 => 404
+   * 20 products
+   * 12 per page
+   *
+   * Valid:
+   * /page/2
+   *
+   * Invalid:
+   * /page/3
    */
   if (page > totalPages && totalPages > 0) {
     return notFound();
@@ -146,23 +174,20 @@ export default async function CategoryPaginatedPage({
      SAFE FILTER COUNTS
   ======================================================= */
 
-  const safeFilterCounts = categoryData.filterCounts ?? {
-    price: {
-      min: 0,
-      max: 0,
-    },
-    colorTone: {},
-    finish: {},
-    thickness: {},
-    size: {},
-    pcs: {},
-    packSize: {},
-  };
+  const safeFilterCounts =
+    categoryData.filterCounts ?? {
+      price: {
+        min: 0,
+        max: 0,
+      },
+      colorTone: {},
+      finish: {},
+      thickness: {},
+      size: {},
+      pcs: {},
+      packSize: {},
+    };
 
-
-  /* =======================================================
-     PAGE
-  ======================================================= */
 
   return (
     <>
@@ -175,7 +200,9 @@ export default async function CategoryPaginatedPage({
           aria-label="Breadcrumb"
           className="mx-auto max-w-[1440px] px-4 py-3 lg:px-8"
         >
-          <ol className="flex flex-wrap items-center gap-1.5 text-xs font-sans">
+          <ol className="flex flex-wrap items-center gap-1.5 font-sans text-xs">
+
+            {/* Home */}
 
             <li>
               <Link
@@ -187,12 +214,19 @@ export default async function CategoryPaginatedPage({
             </li>
 
             <li aria-hidden="true">
-              <span className="text-stone-400">›</span>
+              <ChevronRight
+                size={13}
+                strokeWidth={1.5}
+                className="text-stone-400"
+              />
             </li>
+
+
+            {/* Product Categories */}
 
             <li>
               <Link
-                href="/categories"
+                href="/product-category/"
                 className="text-stone-500 transition-colors hover:text-[#99a14e]"
               >
                 Product Categories
@@ -200,8 +234,15 @@ export default async function CategoryPaginatedPage({
             </li>
 
             <li aria-hidden="true">
-              <span className="text-stone-400">›</span>
+              <ChevronRight
+                size={13}
+                strokeWidth={1.5}
+                className="text-stone-400"
+              />
             </li>
+
+
+            {/* Current Category */}
 
             <li>
               <span
@@ -209,16 +250,6 @@ export default async function CategoryPaginatedPage({
                 className="font-semibold text-[#262a18]"
               >
                 {categoryData.name}
-              </span>
-            </li>
-
-            <li aria-hidden="true">
-              <span className="text-stone-400">›</span>
-            </li>
-
-            <li>
-              <span className="text-stone-500">
-                Page {page}
               </span>
             </li>
 
@@ -233,9 +264,10 @@ export default async function CategoryPaginatedPage({
 
       <section className="border-b border-[#262a18]/10 bg-[#f5f0e8]">
         <div className="container">
-          <div className="py-10 gap-4 flex justify-between items-baseline-last">
+          <div className="flex flex-wrap items-baseline-last justify-between gap-4 py-10">
 
             <div>
+
               <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.25em] text-[#99a14e]">
                 Natural Stone Collection
               </p>
@@ -247,6 +279,7 @@ export default async function CategoryPaginatedPage({
               <p className="max-w-3xl text-sm text-[#4a5530]">
                 {categoryData.short_description}
               </p>
+
             </div>
 
 
@@ -259,17 +292,27 @@ export default async function CategoryPaginatedPage({
                 rel="noopener noreferrer"
                 href={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.catalogue.file}`}
                 className="
-                  flex items-center gap-3
+                  flex
+                  h-fit
+                  w-fit
+                  items-center
+                  gap-2
                   bg-[#262a18]
-                  w-fit h-fit
-                  px-6 py-3
-                  text-xs font-medium uppercase tracking-wider
+                  px-6
+                  py-3
+                  text-xs
+                  font-medium
+                  uppercase
+                  tracking-wider
                   text-[#d8c06a]
                   transition-all
                   hover:bg-[#30351e]
                 "
               >
-                <FileText size={18} />
+                <FileText
+                  size={18}
+                  strokeWidth={1.5}
+                />
 
                 View Category Catalogue
               </Link>
@@ -286,9 +329,9 @@ export default async function CategoryPaginatedPage({
 
       <div className="bg-[#f9f7f3]">
 
-        <div className="container px-4 cat-container">
+        <div className="container cat-container px-4">
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-8 mb:pt-16 pt-8">
+          <div className="mb:pt-16 grid grid-cols-1 pt-8 lg:grid-cols-4 lg:gap-8">
 
 
             {/* =================================================
@@ -313,32 +356,40 @@ export default async function CategoryPaginatedPage({
             <div className="lg:col-span-3">
 
 
-              {/* ===============================================
+              {/* =================================================
                   TOP BAR
-              =============================================== */}
+              ================================================= */}
 
               <div
                 className="
                   mb-6
-                  flex items-center justify-between
-                  border-b border-[#262a18]/10
+                  flex
+                  items-center
+                  justify-between
+                  border-b
+                  border-[#262a18]/10
                   pb-4
                 "
               >
 
                 {/* LEFT */}
 
-                <div className="flex items-center gap-4">
+                <div className="flex w-full items-center gap-4 sm:w-6/12">
 
                   {/* Mobile Filters */}
 
                   <button
                     type="button"
                     className="
-                      flex items-center gap-2
-                      border border-[#262a18]/20
-                      px-3 py-2
-                      text-xs font-medium
+                      flex
+                      items-center
+                      gap-2
+                      border
+                      border-[#262a18]/20
+                      px-3
+                      py-2
+                      text-xs
+                      font-medium
                       text-[#262a18]
                       lg:hidden
                     "
@@ -354,8 +405,8 @@ export default async function CategoryPaginatedPage({
 
                   {/* Product Count */}
 
-                  <span className="text-xs font-sans text-[#99a14e]">
-                    {totalProducts} products
+                  <span className="ml-3 block font-sans text-xs text-[#99a14e]">
+                    {categoryData.totalProducts} products
                   </span>
 
                 </div>
@@ -363,7 +414,7 @@ export default async function CategoryPaginatedPage({
 
                 {/* RIGHT */}
 
-                {totalProducts > 12 && (
+                {categoryData.totalProducts > 12 && (
                   <div className="flex items-center gap-3">
 
                     <ProductsPerPageSelector
@@ -379,16 +430,18 @@ export default async function CategoryPaginatedPage({
               </div>
 
 
-              {/* ===============================================
+              {/* =================================================
                   PRODUCT GRID
-              =============================================== */}
+              ================================================= */}
 
-              <ProductGrid products={categoryData.products} />
+              <ProductGrid
+                products={categoryData.products}
+              />
 
 
-              {/* ===============================================
+              {/* =================================================
                   PAGINATION
-              =============================================== */}
+              ================================================= */}
 
               <Pagination
                 totalPages={totalPages}
@@ -400,18 +453,6 @@ export default async function CategoryPaginatedPage({
             </div>
 
           </div>
-
-
-          {/* =================================================
-              FOOTER CONTENT
-          ================================================= */}
-
-          {categoryData.footerContent && (
-            <PageContentBox
-              content={categoryData.footerContent}
-              isFullPage={false}
-            />
-          )}
 
         </div>
 
@@ -426,9 +467,15 @@ export default async function CategoryPaginatedPage({
         <div className="bg-[#f9f7f3]">
 
           <FaqsAccordion
-            mainHeading={categoryData.faqs.mainHeading}
-            subHeading={categoryData.faqs.subHeading}
-            faqs={categoryData.faqs.items}
+            mainHeading={
+              categoryData.faqs.mainHeading
+            }
+            subHeading={
+              categoryData.faqs.subHeading
+            }
+            items={
+              categoryData.faqs.items
+            }
           />
 
         </div>

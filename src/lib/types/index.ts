@@ -37,19 +37,29 @@ export interface ProductVariation {
   pricing: VariationPricing;
 }
 
-interface FAQItem{
+export interface ProductLabel {
+  id: number;
+  name: string;
+}
+
+export interface ProductCategory {
+  name: string;
+  slug: string;
+  categoryDiscount: number;
+}
+
+interface FAQItem {
   question: string;
   answer: string;
   sort_order: number;
 }
 
-interface FAQComponent
-{
-    mainHeading: string;
-    subHeading: string;
-    items: FAQItem[];
+export interface FAQComponent {
+  mainHeading: string;
+  subHeading: string;
+  items: FAQItem[];
+  isProductPage?: boolean;
 }
-
 
 export interface Category {
   id: number;
@@ -75,17 +85,10 @@ export interface Category {
   faqs?: FAQComponent | null;
 }
 
-
-
-
 export interface CategoryProduct {
   variations: ProductVariation[];
   selectedVariation: ProductVariation;
   product: Product;
-  priceBeforeDiscount?: {
-    Per_m2: number;
-    Price: number;
-  } | null;
 }
 
 export interface FilterCounts {
@@ -101,29 +104,42 @@ export interface FilterCounts {
   packSize: Record<string, number>;
 }
 
+export interface ProductContentPoint {
+  point: string;
+}
+
+export interface ProductHighlightCard {
+  title: string;
+  icon: "ShieldCheck" | "Award" | string;
+  points: ProductContentPoint[];
+}
+
+export interface ProductContent {
+  introContent: string;
+  highlightCards: ProductHighlightCard[];
+  closingContent: string;
+}
+
 export interface Product {
   id: number;
   name: string;
   slug: string;
   description: string;
-  productDiscount: number | null;
-  categoryDiscount: number | null;
+  productDiscount: number;
   images: ImageAttributes[];
-  image: {
-    url: string;
-    alt: string;
-  } | null;
   variations: ProductVariation[];
-  category: { name: string; slug: string; categoryDiscount: number };
-  priceBeforeDiscount?: {
-    Per_m2: number;
-    Price: number;
-  } | null;
+  selectedVariation: ProductVariation | null;
+  labels: ProductLabel[];
+  category: ProductCategory | null;
   reviews: CustomerReviewsSection;
   productReviews: ProductReview[];
+  content: ProductContent;
+  faqs: FAQComponent | null;
+  youMayAlsoLike: CategoryProduct[];
   seo: StrapiSEO | null;
-  updatedAt: string;
+  updatedAt?: string;
 }
+
 
 export interface UserAttributes {
   id?: number;
@@ -338,6 +354,7 @@ export type HomepageData = {
   bestSeller: BestSellerSection;
   reviews: CustomerReviewsSection;
   blogs: Blog[];
+  faqs?: FAQComponent | null;
   seo: StrapiSEO | null;
 };
 
