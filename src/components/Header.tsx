@@ -134,17 +134,17 @@ export default function Header({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, loading } = useAuthUser();
-  
+
   const [query, setQuery] = useState("");
   const debounced = useDebounce(query, 300);
   const [results, setResults] = useState({ categories: [], products: [] });
 
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  
+
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const { totalQuantity } = useCart();
-  
+
   const [headerVisible, setHeaderVisible] = useState(true);
   const headerRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
@@ -161,39 +161,39 @@ export default function Header({
   }, [debounced]);
 
   useEffect(() => {
-  const handleScroll = () => {
-    const currentScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
 
-    const headerHeight = headerRef.current?.offsetHeight ?? 0;
+      const headerHeight = headerRef.current?.offsetHeight ?? 0;
 
-    // Always show header when we're near the top
-    if (currentScrollY <= headerHeight) {
-      setHeaderVisible(true);
+      // Always show header when we're near the top
+      if (currentScrollY <= headerHeight) {
+        setHeaderVisible(true);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      // Scrolling down → hide
+      if (currentScrollY > lastScrollY.current) {
+        setHeaderVisible(false);
+      }
+
+      // Scrolling up → show
+      else if (currentScrollY < lastScrollY.current) {
+        setHeaderVisible(true);
+      }
+
       lastScrollY.current = currentScrollY;
-      return;
-    }
+    };
 
-    // Scrolling down → hide
-    if (currentScrollY > lastScrollY.current) {
-      setHeaderVisible(false);
-    }
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
-    // Scrolling up → show
-    else if (currentScrollY < lastScrollY.current) {
-      setHeaderVisible(true);
-    }
-
-    lastScrollY.current = currentScrollY;
-  };
-
-  window.addEventListener("scroll", handleScroll, {
-    passive: true,
-  });
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -211,11 +211,11 @@ export default function Header({
   return (
     <>
       <header
-  ref={headerRef}
-  className={`fixed z-50 w-full bg-white font-sans shadow-sm transition-transform duration-300 ease-in-out ${
-    headerVisible ? "translate-y-0" : "-translate-y-full"
-  }`}
->
+        ref={headerRef}
+        className={`fixed z-50 w-full bg-white font-sans shadow-sm transition-transform duration-300 ease-in-out ${
+          headerVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
         <div className="top-header bg-dark-n py-2 lg:block hidden">
           <div className="container">
             <div className="flex text-xs">

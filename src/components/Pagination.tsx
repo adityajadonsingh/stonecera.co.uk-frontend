@@ -6,6 +6,7 @@ interface PaginationProps {
   currentPage: number;
   category: string;
   currentFilters: Record<string, string>;
+  pageName?: string;
 }
 
 export default function Pagination({
@@ -13,6 +14,7 @@ export default function Pagination({
   currentPage,
   category,
   currentFilters,
+  pageName = "product-category",
 }: PaginationProps) {
   const router = useRouter();
 
@@ -25,10 +27,21 @@ export default function Pagination({
     const qs = params.toString();
 
     let targetUrl = "";
-    if (page === 1) {
-      targetUrl = `/product-category/${category}${qs ? `?${qs}` : ""}`;
-    } else {
-      targetUrl = `/product-category/${category}/page/${page}${qs ? `?${qs}` : ""}`;
+
+    switch (pageName) {
+      case "product-category":
+        if (page === 1) {
+          targetUrl = `/product-category/${category}${qs ? `?${qs}` : ""}`;
+        } else {
+          targetUrl = `/product-category/${category}/page/${page}${qs ? `?${qs}` : ""}`;
+        }
+        break;
+      case "blogs":
+        if (page === 1) {
+          targetUrl = `/blogs${qs ? `?${qs}` : ""}`;
+        } else {
+          targetUrl = `/blogs/page/${page}${qs ? `?${qs}` : ""}`;
+        }
     }
 
     router.push(targetUrl);
@@ -42,7 +55,9 @@ export default function Pagination({
         <button
           key={p}
           className={`px-3 py-1 shadow-xs text-lg font-medium w-[40px] cursor-pointer  ${
-            p === currentPage ? "bg-[#4c4331] text-white" : "bg-white text-[#4a3a2a] hover:bg-[#4c4331] hover:text-white"
+            p === currentPage
+              ? "bg-[#4c4331] text-white"
+              : "bg-white text-[#4a3a2a] hover:bg-[#4c4331] hover:text-white"
           }`}
           onClick={() => handleNavigation(p)}
         >

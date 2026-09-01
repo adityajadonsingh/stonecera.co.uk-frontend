@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Filters from "@/components/category/Filter";
-import Pagination from "@/components/category/Pagination";
+import Pagination from "@/components/Pagination";
 import ProductGrid from "@/components/product/ProductGrid";
 import { FileText, SlidersHorizontal } from "lucide-react";
 import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelector";

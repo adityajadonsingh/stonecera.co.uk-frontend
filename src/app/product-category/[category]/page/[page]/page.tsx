@@ -12,7 +12,7 @@ import {
 
 import Filters from "@/components/category/Filter";
 import ProductGrid from "@/components/product/ProductGrid";
-import Pagination from "@/components/category/Pagination";
+import Pagination from "@/components/Pagination";
 import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelector";
 import PageContentBox from "@/components/PageContentBox";
 import FaqsAccordion from "@/components/FaqAccordion";
