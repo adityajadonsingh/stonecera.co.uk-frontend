@@ -138,6 +138,7 @@ export interface Product {
   youMayAlsoLike: CategoryProduct[];
   seo: StrapiSEO | null;
   updatedAt?: string;
+  image?: string;
 }
 
 

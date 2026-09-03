@@ -65,10 +65,10 @@ export default function WishlistClient({
         >
           {/* Image */}
           <div className="relative h-[100px]">
-            {item.images[0]?.url && (
+            {item.image.url && (
               <Image
-                src={process.env.NEXT_PUBLIC_MEDIA_URL + item.images[0]?.url}
-                alt={item.images[0]?.alt || item.name}
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${item.image.url}`}
+                alt={item.image.alt || item.name}
                 fill
                 className="object-contain"
               />
