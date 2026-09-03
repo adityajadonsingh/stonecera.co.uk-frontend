@@ -45,7 +45,7 @@ export default function HomeBannerSlider({ banners }: { banners: Banner[] }) {
               className="text-base sm:text-lg leading-relaxed mb-10 max-w-lg"
               style={{ color: "rgba(245, 240, 232, 0.7)", fontFamily: "\"Work Sans\", sans-serif" }}
             >
-              Architectural-grade sandstone, limestone, porcelain and granite. Globally sourced, rigorously graded, and delivered nationwide.
+              Experience an exclusive range of natural stones and modern porcelain, combining unique personality, superior quality and proven performance for all types of garden and landscaping projects.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link

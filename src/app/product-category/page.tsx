@@ -42,7 +42,7 @@ const collections = [
     slug: "porcelain-planks",
     image: PorcelainPlanks,
     description:
-      "Combining the warmth of natural wood with the extreme durability and low maintenance of porcelain. Perfect for contemporary seamless indoor-outdoor transitions.",
+      "Make your design fresh and modern with porcelain planks, which will provide a sense of space due to their elongated shape as well as natural timber effects. Porcelain planks allow you to have a wood-like floor with less maintenance compared to the use of genuine timber.",
     labels: ["Scratch Resistant", "Zero Maintenance", "Anti-Slip R11"],
   },
   {
@@ -50,7 +50,7 @@ const collections = [
     slug: "outdoor-porcelain-tiles",
     image: OutdoorPorcelainTiles,
     description:
-      "Precision-engineered tiles offering a sleek, modern aesthetic. Non-porous and frost-resistant, making them ideal for the unpredictable British weather.",
+      "Your garden will look beautiful and elegant with the help of porcelain tiles. In addition, their clean look will be in harmony with all furniture and planting, and the thick surface makes their cleaning easy. Porcelain tiles are perfect for the British garden with a lot of activity.",
     labels: ["Precision Calibrated", "Frost Resistant", "Stain Proof"],
   },
   {
@@ -58,7 +58,7 @@ const collections = [
     slug: "cobblestone-paving",
     image: CobblestonePaving,
     description:
-      "Timeless and exceptionally durable paving for driveways and decorative edging. Available in granite, limestone, and sandstone variations.",
+      "No other style provides a unique charm of cobbling like this. With their small-sized and classical look, cobbling can give additional accents to driveways, pathways, gardens, and even the border of the garden. You can use them individually or together with large paving formats.",
     labels: ["Heavy Duty", "Permeable Options", "Natural Texture"],
   },
   {
@@ -66,7 +66,7 @@ const collections = [
     slug: "slate-stone",
     image: SlateStone,
     description:
-      "Characterised by its unique riven texture and deep, sophisticated color palette. Our slate is ethically sourced and split by hand for authentic character.",
+      "If you need an intense natural look, then slate stone will be the right choice with its unique combination of colour variations and textures. The layered structure of slate stone makes any paved area very special and the natural riven face adds a tactile quality.",
     labels: ["Hand Split", "Natural Riven", "Rich Tones"],
   },
   {
@@ -74,7 +74,7 @@ const collections = [
     slug: "limestone-paving",
     image: LimestonePaving,
     description:
-      "Favoured for its consistent color and smooth finish. Limestone offers an elegant, understated look that complements both traditional and modern designs.",
+      "Limestone creates a quiet and sophisticated alternative to paving materials. This material's modest colors and naturally occurring smoothness will enable the creation of harmonious surroundings. Limestone works best when the aim is to incorporate the paving into the architecture, plantings, and outdoor furniture.",
     labels: ["Sawn Edges", "Uniform Color", "Cool to Touch"],
   },
   {
@@ -82,7 +82,7 @@ const collections = [
     slug: "sandstone-paving",
     image: SandstonePaving,
     description:
-      "The UK's most popular natural stone choice. Durable, versatile, and featuring a beautiful array of natural earth tones and textures.",
+      "Sandstone gives your garden a relaxing and natural feel. Each piece of stone has a unique combination of colors and markings so the finished product will have a natural appearance and not a perfectly flat surface. Its warm sandstone is an excellent choice for patios, seating areas and gardens.",
     labels: ["Ethically Sourced", "Weather Resistant", "Unique Veining"],
   },
   {
@@ -90,7 +90,7 @@ const collections = [
     slug: "wall-cladding",
     image: WallCladding,
     description:
-      "Transform vertical surfaces with our natural stone walling. Ideal for garden retaining walls, building facades, and interior feature walls.",
+      "Alter the character of any wall without rebuilding it. Using cladding, you can create an interesting, layered texture that will transform ordinary walls into unique elements. This technique is useful for highlighting doorways, garden walls, building façades or creating special elements inside and outside your home.",
     labels: ["Easy Install", "Z-Panel Design", "Natural Finish"],
   },
   {
@@ -98,31 +98,31 @@ const collections = [
     slug: "bricks",
     image: Bricks,
     description:
-      "Classic clay and concrete bricks for traditional paving, borders, and walling. Available in various finishes from reclaimed styles to crisp modern edges.",
+      "The wide variety of bricks enables their use for building various structures such as fences and walls. You may use bricks to define boundaries of certain areas, create pathways, add decorative elements or construct complete walls.",
     labels: ["Herringbone Ready", "Clay & Concrete", "Edge Borders"],
   },
 ];
 
 const materialGuides = [
   {
-    title: "Natural Stone Maintenance",
+    title: "Natural Stone Care Guide",
     description:
-      "Natural stones like Limestone and Sandstone are porous and require sealing to prevent staining and water ingress. We recommend high-performance impregnating sealers that preserve the stone's breathability while enhancing its natural color and providing long-term protection against the elements.",
+      "Natural stone is characterized by individual tones, texture, and pattern that makes each installation unique. Sandstone and limestone will serve you well for decades with proper maintenance. Clean the surface regularly, seal it properly and use only products recommended for natural stone in order to protect the surface from daily dirt, moisture and stains and preserve its original condition.",
   },
   {
-    title: "Porcelain Performance",
+    title: "Why Porcelain Paving Stands Out?",
     description:
-      "Our vitrified porcelain paving is engineered for extreme durability. With a water absorption rate of less than 0.1%, it is inherently frost-proof and stain-resistant. The R11 anti-slip rating ensures a safe surface even when wet, making it the premier choice for poolside applications and high-traffic modern patios.",
+      "Porcelain is a great option for those who need a modern and low-maintenance surface. With minimal upkeep required, porcelain paving offers a practical and long-lasting solution while maintaining its elegant look for years to come. Denseness of the structure limits water absorption, which makes it perfect for varying weather conditions in Britain. Good frost, stain and daily wear resistance allows using porcelain paving tiles for creating durable patios, pathways, terraces and other outdoor surfaces.",
   },
   {
-    title: "Ethical Sourcing",
+    title: "Selected Materials With Care",
     description:
-      "We are committed to the Ethical Stone Register. Every natural stone product in our collection is sourced from quarries that adhere to strict environmental and social standards, ensuring fair wages and safe working conditions for all quarry workers.",
+      "Material quality is not only about what you buy but also where it comes from. We collaborate with carefully chosen suppliers to deliver paving materials that live up to our standards in terms of quality, reliability and sustainable manufacture. By evaluating the origin and the process of manufacture of our products, we strive to offer paving that will combine visual appeal with a more sustainable approach to material sourcing.",
   },
   {
-    title: "Technical Support",
+    title: "Advice Beyond The Product",
     description:
-      "Our team provides comprehensive technical support including CAD drawings, load-bearing specifications, and sub-base preparation guides. Whether you are installing over a traditional sand/cement bed or a modern pedestal system, we have the expertise to assist.",
+      "Paving is only one aspect of successfully installing outdoor structures. We offer professional advice that will help you to select the right paving and install it. From the appropriateness of materials, laying procedures to the sub-base and technical issues, we are here to help you throughout the whole process.",
   },
 ];
 
@@ -168,7 +168,7 @@ export default function ProductCategoryPage() {
               transform: "none",
             }}
           >
-            Exquisite Materials
+            TIMELESS IN NATURE
           </p>
 
           <h1
@@ -183,15 +183,13 @@ export default function ProductCategoryPage() {
           </h1>
 
           <p
-            className="text-stone-400 max-w-3xl mx-auto text-lg leading-relaxed"
+            className="text-stone-300 max-w-4xl mx-auto text-lg leading-relaxed"
             style={{
               opacity: 1,
               transform: "none",
             }}
           >
-            Discover our curated range of premium natural stone and
-            precision-engineered porcelain. Sourced from the finest quarries
-            globally and delivered directly to your project.
+            Explore our range of quality natural stone and modern paving, perfect for adding character, style and function to any outdoor area. Find the materials you need to turn your ideas into spaces you'll enjoy for years to come - from understated textures to statement finishes.
           </p>
         </div>
       </section>
@@ -302,21 +300,19 @@ export default function ProductCategoryPage() {
               <h2
                 className="mb-8 text-4xl text-[#f5f0e8]"
               >
+                
                 Material Selection <em>Guide</em>
               </h2>
 
               <p className="mb-8 leading-relaxed font-sans">
-                Choosing the right paving material is a critical decision for
-                any landscape project. From the natural variation of Sandstone
-                to the precision of Italian Porcelain, each material offers
-                unique technical and aesthetic properties.
+                A good design for your outdoor space always starts with selecting the appropriate paving material. Whether you want to highlight the natural beauty of sandstone, limestone or create a sleek and contemporary surface with porcelain, different paving materials have their own unique qualities. Discover all of our paving choices and select the one that fits your design, budget, and needs.
               </p>
 
               <Link
-                href="/idjudha5g8q1jss8u4rpt/preview/journal"
+                href="/product-catalogue"
                 className="inline-flex items-center gap-2 border-b border-[#d8c06a]/30 pb-1 text-sm font-medium text-[#d8c06a] transition-colors hover:border-[#d8c06a]"
               >
-                Read our material guides
+                See Our Digital Catalogue
                 <ChevronRight size={14} />
               </Link>
             </div>

@@ -23,7 +23,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const homepage = await getHomepage();
-  console.log("Homepage data:", homepage);
   if (!homepage) return <p>Unable to load homepage</p>;
   return (
     <>

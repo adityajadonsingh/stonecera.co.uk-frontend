@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 
 export default function PageContent2() {
   return (
@@ -6,21 +8,14 @@ export default function PageContent2() {
         <div className="max-w-[1440px] mx-auto px-4 lg:px-8">
           <div className="max-w-full">
             <h2 className="text-4xl mb-10 text-[#262a18]">
-              Leading Suppliers of Premium Natural Stone Paving & Outdoor
-              Porcelain
+              Trusted Suppliers of Premium Natural Stone Paving & Outdoor Porcelain
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-stone-600 leading-relaxed text-sm font-sans">
               {/* Left Column */}
               <div className="space-y-6 ">
                 <p>
-                  Transform your outdoor living space with Stonecera&apos;s
-                  exquisite collection of natural stone and vitrified porcelain
-                  paving. We specialize in sourcing the highest quality{" "}
-                  <strong>Indian Sandstone</strong>, including the popular{" "}
-                  <em>Raj Green</em> and <em>Kandla Grey</em> varieties, as well
-                  as premium <strong>Portuguese Limestone</strong> and{" "}
-                  <strong>Brazilian Slate</strong>.
+                  Using selected paving in terms of looks and functionality, you are able to create an attractive outdoor area from a standard garden. Stonecera is the only company that offers all-natural stones combined with <Link href="/product-category/outdoor-porcelain-tiles/"><strong>Outdoor Porcelain Paving</strong></Link>, with many options to create a beautiful outside space.
                 </p>
 
                 <p>

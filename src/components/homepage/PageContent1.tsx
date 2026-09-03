@@ -21,10 +21,7 @@ export default function PageContent1() {
 
           <div className="space-y-8 text-stone-400 leading-relaxed text-lg">
             <p>
-              As a family-owned business with over 20 years of experience in
-              the stone industry, Stonecera has built its reputation on a
-              simple promise: providing architectural-grade paving materials
-              directly to your doorstep without the middleman markups.
+              Successful outdoor projects depend not just on selecting aesthetically pleasing slabs, but also using reliable materials and advice from those who understand paving performance in practice. We combine the best products and practical experience to ease any stage of your project.
             </p>
 
             {/* Advantages */}
@@ -38,13 +35,12 @@ export default function PageContent1() {
                   />
 
                   <h4 className="font-bold text-white uppercase tracking-wider text-xs">
-                    Rigorous Quality Control
+                    QUALITY YOU CAN SEE
                   </h4>
                 </div>
 
                 <p className="text-sm leading-relaxed">
-                  Every pallet is inspected at the source and again at our UK
-                  distribution hub.
+                  Each range is chosen with care regarding aesthetics, quality and performance of materials. We ensure to provide products that meet the modern standards of landscape materials, making your choices easier.
                 </p>
               </div>
 
@@ -57,13 +53,12 @@ export default function PageContent1() {
                   />
 
                   <h4 className="font-bold text-white uppercase tracking-wider text-xs">
-                    Direct Import Pricing
+                    VALUE WITHOUT COMPROMISE
                   </h4>
                 </div>
 
                 <p className="text-sm leading-relaxed">
-                  We own our supply chain, ensuring we offer the best value for
-                  premium materials.
+                  Our mission is to provide true value to our customers, not just compete on the price level. Great materials procurement and supply means we can offer you high quality paving at competitive prices giving you more options.
                 </p>
               </div>
 
@@ -76,13 +71,12 @@ export default function PageContent1() {
                   />
 
                   <h4 className="font-bold text-white uppercase tracking-wider text-xs">
-                    Trade Support
+                    TRADE AND PROJECT ASSISTANCE
                   </h4>
                 </div>
 
                 <p className="text-sm leading-relaxed">
-                  Dedicated account managers for landscape designers and
-                  contractors.
+                  Whatever you do - change your garden or work on a number of projects - we are committed to making your ordering process and product choice simple. Our consultants are always at hand to answer your questions and help you choose appropriate materials.
                 </p>
               </div>
 
@@ -95,12 +89,12 @@ export default function PageContent1() {
                   />
 
                   <h4 className="font-bold text-white uppercase tracking-wider text-xs">
-                    Expert Technical Advice
+                    PROFESSIONAL TECHNICAL GUIDANCE
                   </h4>
                 </div>
 
                 <p className="text-sm leading-relaxed">
-                  From sub-base preparation to sealing, our team knows stone.
+                  Adequate preparation is the first step toward proper installation. We can assist with preparing the ground, laying techniques, jointing and sealing materials.
                 </p>
               </div>
             </div>
@@ -109,7 +103,7 @@ export default function PageContent1() {
           {/* CTA */}
           <div className="mt-12">
             <Link
-              href="/contact"
+              href="/contact-us/"
               className="inline-flex items-center gap-3 px-8 py-4 text-xs font-bold uppercase tracking-widest bg-white text-[#262a18] hover:bg-[#f5f0e8] transition-all"
             >
               Speak to a Stone Specialist
