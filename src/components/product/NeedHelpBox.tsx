@@ -64,11 +64,11 @@ export default function NeedHelpBox({ pageName }: { pageName: string }) {
 
   return (
     <>
-      <div className="need-help-section border-2 rounded-sm border-gray-200 text-center sm:px-5 px-3 py-2 mt-5">
+      <div className="need-help-section border rounded-sm border-gray-100 bg-white text-center sm:px-5 px-3 py-2 mt-2">
         <span className="block heading font-bold text-xl mb-4">
           Need Help ?
         </span>
-        <div className="grid 2xl:grid-cols-4 lg:grid-cols-2 grid-cols-2 sm:gap-4 gap-2 mb-2 justify-center">
+        <div className="grid lg:grid-cols-2 grid-cols-2 sm:gap-4 gap-2 mb-2 justify-center">
           <Link href={`tel:+441234567890`} title="Call Us">
             <button className="col cursor-pointer w-full sm:p-4 p-2 shadow-sm bg-[#f7f3eb] text-[#4c4331] hover:bg-[#4c4331] hover:text-white rounded-sm flex items-center justify-center xl:gap-x-3 gap-x-2">
               <Phone size={20} />{" "}

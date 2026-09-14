@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
   totalPages: number;
@@ -18,15 +19,22 @@ export default function PaginationProducts({
   if (totalPages <= 1) return null;
 
   const goToPage = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) {
+      return;
+    }
+
     const params = new URLSearchParams();
 
-    Object.entries(currentFilters).forEach(([k, v]) => {
-      if (typeof v === "string") params.set(k, v);
+    Object.entries(currentFilters).forEach(([key, value]) => {
+      if (typeof value === "string") {
+        params.set(key, value);
+      }
     });
 
     params.delete("page");
 
     const qs = params.toString();
+
     const url =
       page === 1
         ? `/products${qs ? `?${qs}` : ""}`
@@ -35,21 +43,163 @@ export default function PaginationProducts({
     router.push(url);
   };
 
+  /*
+   * ---------------------------------------------------------
+   * Generate visible page numbers
+   * ---------------------------------------------------------
+   *
+   * <= 4 pages:
+   *
+   * 1  2  3  4
+   *
+   * More pages:
+   *
+   * First pages:
+   * 1  2  3  4 ... 20
+   *
+   * Middle:
+   * 1 ... 9 10 11 ... 20
+   *
+   * Last:
+   * 1 ... 17 18 19 20
+   */
+  const getPages = (): (number | "...")[] => {
+    if (totalPages <= 4) {
+      return Array.from(
+        { length: totalPages },
+        (_, index) => index + 1,
+      );
+    }
+
+    // Beginning
+    if (currentPage <= 3) {
+      return [1, 2, 3, 4, "...", totalPages];
+    }
+
+    // End
+    if (currentPage >= totalPages - 2) {
+      return [
+        1,
+        "...",
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    // Middle
+    return [
+      1,
+      "...",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "...",
+      totalPages,
+    ];
+  };
+
+  const pages = getPages();
+
   return (
-    <nav className="flex justify-center mt-8 gap-2">
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+    <nav
+      aria-label="Products pagination"
+      className="mt-12 flex w-full justify-center"
+    >
+      <div className="flex max-w-full items-center overflow-hidden rounded-sm">
+        {/* Previous */}
         <button
-          key={p}
-          onClick={() => goToPage(p)}
-          className={`px-3 py-1 rounded-sm text-lg font-medium w-[40px] ${
-            p === currentPage
-              ? "bg-[#4c4331] text-white"
-              : "bg-[#f7f3eb] text-[#4a3a2a] hover:bg-[#4c4331] hover:text-white"
-          }`}
+          type="button"
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="
+          cursor-pointer
+            flex h-10 shrink-0 items-center gap-1
+            bg-white px-3 sm:px-4
+            text-sm font-medium text-[#4a3a2a]
+            transition-colors
+            hover:bg-[#f7f3eb]
+            disabled:cursor-not-allowed
+            disabled:text-gray-300
+          "
+          aria-label="Previous page"
         >
-          {p}
+          <ChevronLeft size={16} strokeWidth={1.5} />
+
+          <span className="hidden xs:inline sm:inline">
+            Previous
+          </span>
         </button>
-      ))}
+
+        {/* Page Numbers */}
+        <div className="flex items-center">
+          {pages.map((page, index) => {
+            if (page === "...") {
+              return (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="
+                    flex h-10 w-8 shrink-0
+                    items-center justify-center
+                    bg-white
+                    text-sm text-[#4a3a2a]
+                  "
+                >
+                  ...
+                </span>
+              );
+            }
+
+            const isActive = page === currentPage;
+
+            return (
+              <button
+                key={page}
+                type="button"
+                onClick={() => goToPage(page)}
+                aria-current={isActive ? "page" : undefined}
+                className={`
+                  cursor-pointer
+                  flex h-10 w-10 shrink-0
+                  items-center justify-center
+                  text-sm font-medium
+                  transition-colors
+                  ${
+                    isActive
+                      ? "bg-[#262a18] text-white"
+                      : "bg-white text-[#4a3a2a] hover:bg-[#f7f3eb]"
+                  }
+                `}
+              >
+                {page}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Next */}
+        <button
+          type="button"
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="
+          cursor-pointer
+            flex h-10 shrink-0 items-center gap-1
+            bg-white px-3 sm:px-4
+            text-sm font-medium text-[#4a3a2a]
+            transition-colors
+            hover:bg-[#f7f3eb]
+            disabled:cursor-not-allowed
+            disabled:text-gray-300
+          "
+          aria-label="Next page"
+        >
+          <span>Next</span>
+
+          <ChevronRight size={16} strokeWidth={1.5} />
+        </button>
+      </div>
     </nav>
   );
 }

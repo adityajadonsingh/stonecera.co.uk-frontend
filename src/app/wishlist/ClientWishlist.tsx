@@ -34,10 +34,10 @@ export default function ClientWishlist() {
               href={`/product/${p.slug}`}
               className="border rounded-md p-3"
             >
-              {p.image && (
+              {p.images[0] && (
                 <Image
-                  src={process.env.NEXT_PUBLIC_MEDIA_URL + p.image.url}
-                  alt={p.image.alt || p.name}
+                  src={process.env.NEXT_PUBLIC_MEDIA_URL + p.images[0]?.url}
+                  alt={p.images[0]?.alt || p.name}
                   width={320}
                   height={320}
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"

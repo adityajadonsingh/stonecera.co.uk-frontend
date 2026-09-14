@@ -4,7 +4,6 @@ import { ChevronDown, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-
 interface SelectorProps {
   currentLimit: number;
   currentFilters: Record<string, string>;
@@ -35,7 +34,7 @@ export default function ProductsPerPageSelector({
     router.push(
       queryString
         ? `/product-category/${categorySlug}?${queryString}`
-        : `/product-category/${categorySlug}`
+        : `/product-category/${categorySlug}`,
     );
 
     setOpen(false);
@@ -53,23 +52,19 @@ export default function ProductsPerPageSelector({
   }, []);
 
   return (
-    <div ref={ref} className="relative flex items-center gap-3">
-      <span className="text-sm font-medium text-dark whitespace-nowrap">
+    <div
+      ref={ref}
+      className="relative w-fit hidden items-center gap-2 sm:flex font-sans"
+    >
+      <span className="text-[12px] font-semibold text-[rgb(153,161,78)]">
         Products per page
       </span>
-
       {/* Trigger */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="
-          flex items-center gap-1
-          rounded-lg border border-gray-300
-          bg-white px-3 py-1
-          text-sm font-semibold text-gray-700
-          shadow-xs
-          hover:border-[#cb934f]
-          focus:outline-none focus:ring-1 focus:ring-[#cb934f]/40
+          appearance-none flex gap-x-1 cursor-pointer border border-[#262a18]/20 bg-white py-2 px-3 text-xs font-sans text-[#262a18]
         "
       >
         {currentLimit}
@@ -84,14 +79,13 @@ export default function ProductsPerPageSelector({
         <div
           className="
             absolute right-0 top-full z-50 mt-2 w-32
-            rounded-lg border border-gray-200
+           border border-[#262a18]/20
             bg-white shadow-lg
             overflow-hidden
           "
         >
           {options.map((opt) => {
             const active = opt === currentLimit;
-
             return (
               <button
                 key={opt}
@@ -99,10 +93,13 @@ export default function ProductsPerPageSelector({
                 className={`
                   flex w-full items-center justify-between
                   px-4 py-2 text-sm
+                  cursor-pointer
                   transition
-                  ${active
-                    ? "bg-[#cb934f]/10 text-[#cb934f] font-semibold"
-                    : "hover:bg-gray-100"}
+                  ${
+                    active
+                      ? "bg-[#cb934f]/10 text-[#cb934f] font-semibold"
+                      : "hover:bg-[#f5f0e8]"
+                  }
                 `}
               >
                 {opt}

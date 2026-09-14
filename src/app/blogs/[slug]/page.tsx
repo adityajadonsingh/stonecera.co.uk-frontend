@@ -7,6 +7,7 @@ import { buildMetadata } from "@/lib/seo";
 import { Metadata } from "next";
 import { JSONObject, Schema } from "@/lib/types";
 import SchemaInjector from "@/components/SchemaInjector";
+import { Calendar, ChevronRight } from "lucide-react";
 
 export default async function BlogDetailPage({
   params,
@@ -18,6 +19,18 @@ export default async function BlogDetailPage({
   if (!data?.blog) return notFound();
 
   const { blog, recentBlogs } = data;
+
+  /* =========================================================
+     DATE FORMAT
+  ========================================================= */
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   const commonSchema = {
     "@context": "https://schema.org",
@@ -91,58 +104,131 @@ export default async function BlogDetailPage({
 
   return (
     <>
-      <section className="md:py-16 py-8">
+      <div className="border-b-[0.5px] border-[rgba(38,42,24,0.12)]">
+        <nav
+          aria-label="Breadcrumb"
+          className="mx-auto max-w-[1440px] px-4 py-3 lg:px-8"
+        >
+          <ol className="flex flex-wrap font-sans items-center gap-1.5 text-xs">
+            <li>
+              <Link
+                href="/"
+                className="text-stone-500 transition-colors hover:text-[#99a14e]"
+              >
+                Home
+              </Link>
+            </li>
+
+            <li aria-hidden="true">
+              <ChevronRight
+                size={13}
+                strokeWidth={1.5}
+                className="text-stone-400"
+              />
+            </li>
+
+            <li>
+              <Link
+                href="/product-category/"
+                className="text-stone-500 transition-colors hover:text-[#99a14e]"
+              >
+                Blogs
+              </Link>
+            </li>
+
+            <li aria-hidden="true">
+              <ChevronRight
+                size={13}
+                strokeWidth={1.5}
+                className="text-stone-400"
+              />
+            </li>
+
+            {/* Current Page */}
+            <li>
+              <span
+                aria-current="page"
+                className="font-semibold text-[#262a18]"
+              >
+                {blog.title}
+              </span>
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <section className="md:py-16 py-8 bg-[#f9f7f3]">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-6 lg:gap-16 gap-10">
             {/* LEFT CONTENT */}
-            <article className="lg:col-span-3">
-              <div className="text-sm text-gray-500 mb-3">
-                <Breadcrum
-                  breadcrum={[
-                    {
-                      pageName: "Blog",
-                      pageUrl: "/blogs/",
-                    },
-                    {
-                      pageName: blog.title,
-                      pageUrl: `/blogs/${blog.slug}/`,
-                    },
-                  ]}
+            <article className="lg:col-span-4">
+              <div className="flex gap-x-2 items-center mb-4">
+                <Calendar size={16} color="#99a14e" />
+                <span
+                  className="
+                      block
+                      text-xs
+                      font-medium
+                      uppercase
+                      tracking-widest
+                      text-[#99a14e]
+                    "
+                >
+                  {formatDate(blog.createdOn)}
+                </span>
+              </div>
+              <h1 className="text-5xl lg:text-6xl text-[#262a18] leading-none mb-8">
+                {blog.title}
+              </h1>
+              <div className="aspect-4/2 overflow-hidden border border-stone-200">
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${blog.image.url}`}
+                  alt="Luxury garden patio with Raj Green sandstone paving at sunset"
+                  width={960}
+                  height={450}
+                  className="h-full w-full object-cover"
                 />
               </div>
-              <h1 className="text-3xl font-bold mb-4 heading">{blog.title}</h1>
               <div
-                className="prose max-w-none"
+                className="prose max-w-none blog-content"
                 dangerouslySetInnerHTML={{ __html: blog.content }}
               />
             </article>
 
             {/* RIGHT SIDEBAR */}
-            <aside className="lg:col-span-1">
-              <h3 className="text-xl font-semibold mb-4">Recent Blogs</h3>
+            <aside className="lg:col-span-2">
+              <div className="bg-[#f5f0e8] p-8 border border-stone-200">
+                <h3 className="text-2xl text-[#262a18] mb-6">Recent Posts</h3>
 
-              <div className="space-y-4">
-                {recentBlogs.map((b: any) => (
-                  <Link
-                    key={b.slug}
-                    href={`/blogs/${b.slug}`}
-                    className="group block"
-                  >
-                    <div className="relative h-[120px] w-full overflow-hidden rounded">
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${b.image.url}`}
-                        alt={b.image.alt || b.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition"
-                      />
-                      <div className="absolute inset-0 bg-black/40 flex items-end p-2">
-                        <h4 className="text-white text-sm font-semibold leading-snug">
-                          {b.title}
-                        </h4>
+                <div className="space-y-6">
+                  {recentBlogs.map((b: any) => (
+                    <Link
+                      key={b.slug}
+                      href={`/blogs/${b.slug}`}
+                      className="group block"
+                    >
+                      <div className="relative aspect-[4/2] overflow-hidden ">
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_MEDIA_URL}${b.image.url}`}
+                          alt={b.image.alt || b.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition"
+                        />
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              "linear-gradient(to top, rgba(38, 42, 24, 0.85) 0%, rgba(38, 42, 24, 0.1) 60%)",
+                          }}
+                        ></div>
+                        <div className="absolute bottom-0 left-0 p-4">
+                          <h4 className="text-white text-sm font-medium leading-snug">
+                            {b.title}
+                          </h4>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </aside>
           </div>

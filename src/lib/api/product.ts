@@ -1,6 +1,6 @@
 // lib/api/product.ts
 
-import { Product } from "../types";
+import { CategoryProduct, Product } from "../types";
 
 const REVALIDATE_TIME = process.env.REVALIDATE_TIME
   ? parseInt(process.env.REVALIDATE_TIME)
@@ -22,19 +22,32 @@ export async function getProductBySlug(slug: string): Promise<Product> {
 }
 
 export async function getAllProducts(params: {
+  page: number;
   limit: number;
-  offset: number;
 }) {
   const qs = new URLSearchParams({
+    page: String(params.page),
     limit: String(params.limit),
-    page: String(params.offset / params.limit + 1),
   });
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/products?${qs.toString()}`,
-    { next: { revalidate: REVALIDATE_TIME } },
+    {
+      next: {
+        revalidate: REVALIDATE_TIME,
+      },
+    },
   );
 
-  if (!res.ok) throw new Error("Failed to fetch products");
-  return res.json();
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
+  return res.json() as Promise<{
+    totalProducts: number;
+    products: CategoryProduct[];
+    page: number;
+    limit: number;
+    totalPages: number;
+  }>;
 }

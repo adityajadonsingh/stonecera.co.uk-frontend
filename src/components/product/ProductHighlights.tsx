@@ -1,30 +1,80 @@
-"use client";
+import {
+  Award,
+  ShieldCheck,
+  Truck,
+  Gem,
+} from "lucide-react";
 
-import { Truck, Heart, RefreshCcw, BadgeEuro, Gem, HeartHandshake } from "lucide-react";
+const highlights = [
+  {
+    label: "Premium Grade",
+    icon: Award,
+  },
+  {
+    label: "Secure Payment",
+    icon: ShieldCheck,
+  },
+  {
+    label: "Free Delivery",
+    icon: Truck,
+  },
+  {
+    label: "Quality Guaranteed",
+    icon: Gem,
+  },
+];
 
 export default function ProductHighlights() {
   return (
-    <div className="border-y border-gray-200 py-4 px-5 my-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 sm:text-sm text-xs text-gray-700">
-        <div className="flex items-center gap-2">
-          <Truck className="sm:w-8 w-6 sm:h-8 h-6 text-[#ca924e]" />
-          <span className="font-semibold text-[#4c4331]">
-            Free Delivery<span className="text-xs align-super">*</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Gem className="sm:w-8 w-6 sm:h-8 h-6 text-[#ca924e]" />
-          <span className="font-semibold text-[#4c4331]">Quality Guaranteed</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <BadgeEuro className="sm:w-8 w-6 sm:h-8 h-6 text-[#ca924e]" />
-          <span className="font-semibold text-[#4c4331]">Best in Price</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <HeartHandshake className="sm:w-8 w-6 sm:h-8 h-6 text-[#ca924e]" />
-          <span className="font-semibold text-[#4c4331]">Customer Satisfaction</span>
-        </div>
-      </div>
+    <div className="grid grid-cols-2 gap-4 py-4">
+      {highlights.map((highlight) => {
+        const Icon = highlight.icon;
+
+        return (
+          <div
+            key={highlight.label}
+            className="
+              group
+              flex
+              flex-col
+              items-center
+              gap-2
+              rounded-lg
+              border
+              border-gray-100
+              bg-white
+              p-4
+              text-center
+              transition-colors
+              duration-200
+              hover:border-[#a67c52]
+            "
+          >
+            <Icon
+              size={20}
+              strokeWidth={1.8}
+              className="
+                text-[#a67c52]
+                transition-transform
+                duration-200
+                group-hover:scale-110
+              "
+            />
+
+            <span
+              className="
+                text-[10px]
+                font-bold
+                uppercase
+                tracking-wider
+                text-[#262a18]
+              "
+            >
+              {highlight.label}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }

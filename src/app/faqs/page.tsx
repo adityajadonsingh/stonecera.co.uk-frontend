@@ -1,4 +1,5 @@
-
+import Breadcrum from "@/components/Breadcrum";
+import FaqContent from "@/components/faq/FaqContent";
 import FaqAccordion from "@/components/FaqAccordion";
 import { Metadata } from "next";
 
@@ -45,7 +46,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 const faqData = [
   {
     question: "Do you offer split packs?",
@@ -75,10 +75,15 @@ const faqData = [
 ];
 
 export default function FaqsPage() {
-
   return (
-    <div className="container md:py-16 py-8">
-      <FaqAccordion items={faqData}/>
-    </div>
+    <>
+      <Breadcrum
+        breadcrum={[{ pageName: "FAQ", pageUrl: "/faq" }]}
+       
+      />
+      <div className="mx-auto max-w-[1000px] px-4 py-16 lg:px-8">
+        <FaqContent />
+      </div>
+    </>
   );
 }

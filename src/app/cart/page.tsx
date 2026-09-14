@@ -1,14 +1,15 @@
 // FILE: frontend/src/app/cart/page.tsx
 "use client";
 
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import type { AppUser, ProductVariation } from "@/lib/types";
+import type { ProductVariation } from "@/lib/types";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import Image from "next/image";
+import Breadcrum from "@/components/Breadcrum";
 // --- Type Definitions ---
 
 type MinimalImage = { url: string; alt: string | null };
@@ -70,9 +71,7 @@ function isRecord(x: unknown): x is Record<string, unknown> {
 export default function CartPage() {
   const router = useRouter();
   const { user } = useAuthUser();
-  // State for cart, user, and delivery logic
   const [items, setItems] = useState<CartItem[]>([]);
-  // const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
@@ -93,7 +92,6 @@ export default function CartPage() {
       let data = await res.json();
       if (!res.ok) {
         const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-        // console.log(cart);
         const res = await fetch("/api/cart/guest", {
           method: "POST",
           headers: {
@@ -105,7 +103,6 @@ export default function CartPage() {
         });
 
         data = await res.json();
-        // console.log(data);
       }
       const cartJson = data as CartItem[];
       setItems(Array.isArray(cartJson) ? cartJson : []);
@@ -149,26 +146,24 @@ export default function CartPage() {
     return items.reduce((acc, it) => acc + it.quantity, 0);
   }, [items]);
 
-const shippingCost = useMemo(() => {
-  if (!delivery || !method) return 0;
+  const shippingCost = useMemo(() => {
+    if (!delivery || !method) return 0;
 
-  const priceStr =
-    method === "economy"
-      ? delivery.economy_price
-      : delivery.premium_price;
+    const priceStr =
+      method === "economy" ? delivery.economy_price : delivery.premium_price;
 
-  const basePrice = Number(priceStr ?? 0);
+    const basePrice = Number(priceStr ?? 0);
 
-  return basePrice * totalQuantity * 1.05; // 5% surcharge per item
-}, [delivery, method, totalQuantity]);
+    return basePrice * totalQuantity * 1.05; // 5% surcharge per item
+  }, [delivery, method, totalQuantity]);
 
-const tailLiftCost = useMemo(() => {
-  return tailLift ? TAIL_LIFT_COST * totalQuantity : 0;
-}, [tailLift, totalQuantity]);
+  const tailLiftCost = useMemo(() => {
+    return tailLift ? TAIL_LIFT_COST * totalQuantity : 0;
+  }, [tailLift, totalQuantity]);
 
-const total = useMemo(() => {
-  return cartSubtotal + shippingCost + tailLiftCost;
-}, [cartSubtotal, shippingCost, tailLiftCost]);
+  const total = useMemo(() => {
+    return cartSubtotal + shippingCost + tailLiftCost;
+  }, [cartSubtotal, shippingCost, tailLiftCost]);
 
   // --- API Handlers ---
 
@@ -284,14 +279,13 @@ const total = useMemo(() => {
   if (err) return <div className="p-6 text-red-500">{err}</div>;
 
   return (
-    <div className="bg-skin">
-      <div className="container mx-auto md:py-16 py-8 px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="bg-[#f9f7f3]">
+      <Breadcrum breadcrum={[{ pageName: "Cart", pageUrl: "/cart" }]} />
+      <div className="container mx-auto md:py-16 pt-3 pb-8 px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column: Cart Items */}
         <div className="md:col-span-2">
-          <p className="text-sm text-gray-500 mb-2">
-            <Link href="/">Home</Link> / Cart
-          </p>
-          <h1 className="text-3xl font-semibold mb-8">Your Cart</h1>
+          
+          <h1 className="text-3xl lg:text-4xl mb-8 text-[#262a18]">Shopping Cart</h1>
           <div className="space-y-4">
             {items.length === 0 ? (
               <div className="min-h-[40vh]">
@@ -300,12 +294,12 @@ const total = useMemo(() => {
             ) : (
               items.map((item) => {
                 const stock = item.variation?.stock;
-                const imageUrl = item.product?.image;
-                // console.log(imageUrl);
+                const imageUrl = process.env.NEXT_PUBLIC_MEDIA_URL + (item.product?.image ?? "");
+                console.log(imageUrl);
                 return (
                   <div
                     key={item.id}
-                    className="flex items-start justify-between border-b pb-4"
+                    className="flex items-start justify-between bg-white border border-stone-200 p-6"
                   >
                     <div className="flex items-start gap-4">
                       <Link href={`/product/${item.product?.slug}/`}>
@@ -316,7 +310,7 @@ const total = useMemo(() => {
                             width={96}
                             height={96}
                             sizes="96px"
-                            className="w-24 h-24 object-cover rounded"
+                            className="w-32 h-32 object-cover border border-stone-100"
                           />
                         ) : (
                           <div className="w-24 h-24 bg-gray-200 rounded"></div>
@@ -324,7 +318,7 @@ const total = useMemo(() => {
                       </Link>
                       <div>
                         <Link href={`/product/${item.product?.slug}/`}>
-                          <h3 className="font-medium">{item.product?.name}</h3>
+                          <h3 className="text-xl text-[#262a18]">{item.product?.name}</h3>
                         </Link>
                         {item.metadata?.variation && (
                           <div className="text-sm text-gray-500">
@@ -438,17 +432,17 @@ const total = useMemo(() => {
         {/* Right Column: Cart Totals & Delivery */}
         {items.length !== 0 && (
           <div className="md:col-span-1 space-y-6">
-            <div className="p-4 shadow-md bg-gray-50 rounded-lg ">
-              <h2 className="text-lg font-semibold mb-4">Cart Totals</h2>
-              <div className="space-y-2">
+            <div className="bg-white p-8 border border-stone-200 h-fit space-y-6">
+              <h2 className="text-2xl text-[#262a18] mb-4">Order Summary</h2>
+              <div className="space-y-4 text-[#4a5530] text-sm ">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
+                  <span>Subtotal (inc. VAT)</span>
                   <span>{currencyFormat(cartSubtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Delivery</span>
+                  <span>Shipping</span>
                   <span>
-                    {shippingCost > 0 ? currencyFormat(shippingCost) : "—"}
+                    {shippingCost > 0 ? currencyFormat(shippingCost) : "Check your Postcode"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -461,9 +455,10 @@ const total = useMemo(() => {
                   <span>{currencyFormat(total)}</span>
                 </div>
               </div>
+              <p className="text-[10px] text-center text-[#99a14e] uppercase tracking-widest">Secure SSL Encrypted Checkout</p>
             </div>
 
-            <div className="p-4 shadow-md bg-gray-50 rounded-lg">
+            <div className="bg-white p-8 border border-stone-200 h-fit">
               <h2 className="text-lg font-semibold mb-4">Delivery Options</h2>
               {user?.userDetails?.savedAddresses &&
                 user.userDetails.savedAddresses.length > 0 && (
@@ -503,7 +498,7 @@ const total = useMemo(() => {
                       htmlFor="pincode"
                       className="block text-sm font-medium mb-1"
                     >
-                      Or enter Postcode
+                      Enter Postcode
                     </label>
                   ) : (
                     <label
@@ -546,7 +541,8 @@ const total = useMemo(() => {
                     <div>
                       <span className="font-medium">Economy Delivery</span>
                       <span className="ml-2">
-                        {currencyFormat(Number(delivery.economy_price ?? 0))} / palet
+                        {currencyFormat(Number(delivery.economy_price ?? 0))} /
+                        palet
                       </span>
                     </div>
                   </label>
@@ -560,7 +556,8 @@ const total = useMemo(() => {
                     <div>
                       <span className="font-medium">Premium Delivery</span>
                       <span className="ml-2">
-                        {currencyFormat(Number(delivery.premium_price ?? 0))} / palet
+                        {currencyFormat(Number(delivery.premium_price ?? 0))} /
+                        palet
                       </span>
                     </div>
                   </label>
@@ -584,7 +581,7 @@ const total = useMemo(() => {
             <button
               onClick={handleProceedToCheckout}
               disabled={items.length === 0 || !method || loading}
-              className="w-full cursor-pointer py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+              className="w-full cursor-pointer py-3 bg-green-600 text-white font-semibold hover:bg-green-700 disabled:bg-gray-400"
             >
               Proceed to Checkout
             </button>

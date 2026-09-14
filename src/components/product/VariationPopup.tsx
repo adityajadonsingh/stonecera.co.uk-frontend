@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
+import { X } from "lucide-react";
 import { ProductVariation } from "@/lib/types";
 import { formatFilterLabel } from "@/lib/formatters";
 
@@ -9,6 +11,7 @@ interface Props {
   onClose: () => void;
   variations?: ProductVariation[];
   name?: string;
+  slug?: string;
 }
 
 export default function VariationPopup({
@@ -16,10 +19,12 @@ export default function VariationPopup({
   onClose,
   variations = [],
   name,
+  slug,
 }: Props) {
   const popupRef = useRef<HTMLDivElement>(null);
 
   /* ---------- CLOSE ON OUTSIDE CLICK / ESC ---------- */
+
   useEffect(() => {
     if (!open) return;
 
@@ -30,16 +35,20 @@ export default function VariationPopup({
     };
 
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEsc);
+
     document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEsc);
+
       document.body.style.overflow = "";
     };
   }, [open, onClose]);
@@ -50,80 +59,124 @@ export default function VariationPopup({
     <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-[2px] flex items-center justify-center px-4">
       <div
         ref={popupRef}
-        className="bg-white rounded-md w-full max-w-6xl overflow-hidden shadow-lg"
+        className="bg-white w-full max-w-4xl overflow-hidden shadow-lg"
       >
         {/* HEADER */}
-        <div className="flex justify-between items-center bg-dark px-4 py-3">
-          <h3 className="text-white font-semibold text-sm">{name}</h3>
+
+        <div className="flex justify-between items-center bg-[#262a18] p-6">
+          <h3 className="text-white font-sans text-xl font-bold uppercase tracking-widest">
+            {name} - Variations
+          </h3>
+
           <button
             onClick={onClose}
-            className="bg-red-600 text-white text-xs cursor-pointer px-4 py-1 rounded hover:bg-red-500 "
+            className=" text-white/70 hover:text-white cursor-pointer"
           >
-            CLOSE
+            <X />
           </button>
         </div>
 
         {/* TABLE */}
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead >
-              <tr className="bg-dark">
-                <th className="p-3 text-left">Size</th>
-                <th className="p-3 text-center">Pcs</th>
-                <th className="p-3 text-center">Texture</th>
-                <th className="p-3 text-center">Stock</th>
-                <th className="p-3 text-center">Thickness</th>
-                <th className="p-3 text-center">Per m²</th>
-                <th className="p-3 text-center">Per Pack</th>
-              </tr>
-            </thead>
-            <tbody className="text-dark">
-              {variations.map((v, i) => (
-                <tr
-                  key={i}
-                  className="border-b border-gray-200 last:border-none hover:bg-gray-50"
-                >
-                  <td className="p-3">
-                    <div className="font-medium">
-                      {formatFilterLabel("size", v.Size)}
-                    </div>
-                    <span
-                      className={`text-xs font-semibold ${
-                        v.Stock > 0 ? "text-green-600" : "text-gray-400"
-                      }`}
+          <div className="p-6 font-sans">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b-2 border-gray-100 text-[11px] uppercase tracking-wider font-bold text-gray-400">
+                  <th className="px-4 py-4">Size &amp; Thickness</th>
+                  <th className="px-4 py-4">Pcs</th>
+                  <th className="px-4 py-4">Finish</th>
+                  <th className="px-4 py-4 text-center">Status</th>
+                  <th className="px-4 py-4 text-right">Per m²</th>
+                  <th className="px-4 py-4 text-right">Per Pack</th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-50">
+                {variations.map((v) => {
+                  const pricing = v.pricing;
+                  const hasDiscount = pricing.isDiscounted;
+
+                  const size = formatFilterLabel("size", v.Size);
+                  const thickness = formatFilterLabel("thickness", v.Thickness);
+
+                  return (
+                    <tr
+                      key={v.id}
+                      className="text-sm text-[#262a18] hover:bg-gray-50 transition-colors"
                     >
-                      {v.Stock > 0 ? "In Stock" : "Out of Stock"}
-                    </span>
-                  </td>
+                      {/* SIZE & THICKNESS */}
+                      <td className="px-4 py-5 font-bold">
+                        {size} • {thickness}
+                      </td>
 
-                  <td className="p-3 text-center">{v.Pcs}</td>
-                  <td className="p-3 text-center">{v.Finish}</td>
+                      {/* PCS */}
+                      <td className="px-4 py-5 text-gray-500">{v.Pcs}</td>
 
-                  <td className="p-3 text-center">{v.Stock}</td>
+                      {/* FINISH */}
+                      <td className="px-4 py-5 text-gray-500 uppercase">
+                        {v.Finish}
+                      </td>
 
-                  <td className="p-3 text-center">
-                    {formatFilterLabel("thickness", v.Thickness)}
-                  </td>
+                      {/* STATUS */}
+                      <td className="px-4 py-5 text-center">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-1 rounded-full ${
+                            v.Stock > 0
+                              ? "bg-green-50 text-green-600"
+                              : "bg-red-50 text-red-500"
+                          }`}
+                        >
+                          {v.Stock > 0 ? "AVAILABLE" : "OUT OF STOCK"}
+                        </span>
+                      </td>
 
-                  <td className="p-3 text-center font-semibold">
-                    £{Number(v.Per_m2).toFixed(2)}
-                  </td>
+                      {/* PER M² */}
+                      <td className="px-4 py-5 text-right font-bold text-[#a67c52]">
+                        {hasDiscount && (
+                          <div className="text-gray-400 line-through text-[10px] font-medium">
+                            £{pricing.perM2.original.toFixed(2)}
+                          </div>
+                        )}
 
-                  <td className="p-3 text-center font-semibold">
-                    £{Number(v.Price).toFixed(2)}
-                  </td>
-                </tr>
-              ))}
+                        <div>£{pricing.perM2.selling.toFixed(2)}</div>
+                      </td>
 
-              {!variations.length && (
-                <tr>
-                  <td colSpan={6} className="p-6 text-center text-gray-400">
-                    No variations available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      {/* PER PACK */}
+                      <td className="px-4 py-5 text-right font-bold">
+                        {hasDiscount && (
+                          <div className="text-gray-400 line-through text-[10px] font-medium">
+                            £{pricing.pack.original.toFixed(2)}
+                          </div>
+                        )}
+
+                        <div>£{pricing.pack.selling.toFixed(2)}</div>
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                {!variations.length && (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="px-4 py-10 text-center text-gray-400"
+                    >
+                      No variations available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="bg-gray-50 p-6 flex justify-end">
+          <Link
+            className="bg-[#a67c52] text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#8e6a46] transition-colors"
+            href={`/product/${slug}`}
+          >
+            View Details
+          </Link>
         </div>
       </div>
     </div>
