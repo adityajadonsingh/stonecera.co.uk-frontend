@@ -2,6 +2,7 @@ import { getCatalogues } from "@/lib/api/catalogue";
 import Image from "next/image";
 import { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import Breadcrum from "@/components/Breadcrum";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = {
@@ -23,8 +24,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ProductCataloguePage() {
   const catalogues = await getCatalogues();
   return (
+    
     <div className="bg-[#f9f7f3]">
-      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-16 ">
+      <Breadcrum breadcrum={
+          [{ pageName: "Product Catalogue", pageUrl: "/product-catalogue" }]
+        }/>
+      <div className="max-w-[1440px] mx-auto px-4 pt-6 pb-16 ">
+        
         <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-2xl">
             <h1

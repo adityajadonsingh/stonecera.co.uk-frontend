@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import Pagination from "@/components/Pagination";
 import { getBlogs } from "@/lib/api/blog";
 import { buildMetadata } from "@/lib/seo";
+import Breadcrum from "@/components/Breadcrum";
 
 
 /* =========================================================
@@ -58,6 +59,9 @@ export default async function BlogsPage() {
 
   return (
     <>
+    <Breadcrum breadcrum={
+              [{ pageName: "Blogs", pageUrl: "/blogs" }]
+            }/>
       {/* =====================================================
           PAGE HEADER
       ===================================================== */}

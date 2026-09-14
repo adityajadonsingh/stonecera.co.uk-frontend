@@ -34,14 +34,12 @@ export default async function Home() {
       <ReviewSection content={homepage.reviews} isProductPage={false} />
       <ContactSection page="homepage" />
       <PageContent2 />
-      {homepage.faqs ? (
+      {homepage.faqs && (
         <FaqsAccordion
           mainHeading={homepage.faqs.mainHeading}
           subHeading={homepage.faqs.subHeading}
           items={homepage.faqs.items}
         />
-      ) : (
-        <div>No FAQs available</div>
       )}
       <SchemaInjector schemas={homepage.seo?.schemas} />
     </>

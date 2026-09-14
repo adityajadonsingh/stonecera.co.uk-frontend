@@ -19,6 +19,7 @@ import { JSONObject, Schema } from "@/lib/types";
 import SchemaInjector from "@/components/SchemaInjector";
 import { ChevronRight } from "lucide-react";
 import FaqsAccordion from "@/components/FaqAccordion";
+import Breadcrum from "@/components/Breadcrum";
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
@@ -154,60 +155,15 @@ export default async function CategoryPage({
   );
   return (
     <>
-      <div className="border-b-[0.5px] border-[rgba(38,42,24,0.12)]">
-        <nav
-          aria-label="Breadcrumb"
-          className="mx-auto max-w-[1440px] px-4 py-3 lg:px-8"
-        >
-          <ol className="flex flex-wrap font-sans items-center gap-1.5 text-xs">
-            {/* Home */}
-            <li>
-              <Link
-                href="/"
-                className="text-stone-500 transition-colors hover:text-[#99a14e]"
-              >
-                Home
-              </Link>
-            </li>
-
-            <li aria-hidden="true">
-              <ChevronRight
-                size={13}
-                strokeWidth={1.5}
-                className="text-stone-400"
-              />
-            </li>
-
-            {/* Product Categories */}
-            <li>
-              <Link
-                href="/product-category/"
-                className="text-stone-500 transition-colors hover:text-[#99a14e]"
-              >
-                Product Categories
-              </Link>
-            </li>
-
-            <li aria-hidden="true">
-              <ChevronRight
-                size={13}
-                strokeWidth={1.5}
-                className="text-stone-400"
-              />
-            </li>
-
-            {/* Current Page */}
-            <li>
-              <span
-                aria-current="page"
-                className="font-semibold text-[#262a18]"
-              >
-                {categoryData.name}
-              </span>
-            </li>
-          </ol>
-        </nav>
-      </div>
+      <Breadcrum
+        breadcrum={[
+          { pageName: "Product Category", pageUrl: "/product-category" },
+          {
+            pageName: categoryData.name,
+            pageUrl: `/product-category/${categoryData.slug}`,
+          },
+        ]}
+      />
 
       <section className="border-b border-[#262a18]/10 bg-[#f5f0e8] ">
         <div className="container">
@@ -307,13 +263,15 @@ export default async function CategoryPage({
           )}
         </div>
       </div>
-      {
-        categoryData.faqs && (
-          <div className="bg-[#f9f7f3]">
-            <FaqsAccordion mainHeading={categoryData.faqs?.mainHeading} subHeading={categoryData.faqs?.subHeading} items={categoryData.faqs?.items} />
-          </div>
-        )
-      }
+      {categoryData.faqs && (
+        <div className="bg-[#f9f7f3]">
+          <FaqsAccordion
+            mainHeading={categoryData.faqs?.mainHeading}
+            subHeading={categoryData.faqs?.subHeading}
+            items={categoryData.faqs?.items}
+          />
+        </div>
+      )}
       <SchemaInjector schemas={safeSchemas} />
     </>
   );

@@ -19,46 +19,39 @@ export default function PageContent2() {
                 </p>
 
                 <p>
-                  Our <strong>Outdoor Porcelain</strong> range represents the
-                  pinnacle of paving technology. Vitrified porcelain is fired at
-                  extreme temperatures, resulting in a non-porous, incredibly
-                  durable slab that is frost-proof, slip-resistant (R11 rated),
-                  and completely resistant to moss and algae growth. It&apos;s
-                  the perfect choice for modern, low-maintenance patios.
+                  <Link href="/product-category/sandstone-paving/"><strong>Sandstone</strong></Link> brings a touch of warmth and individuality, while <Link href="/product-category/limestone-paving/"><strong>Limestone</strong></Link> offers a smoother look. For more detailed visual solutions, slate will provide you with naturally textured surface; porcelain is a modern alternative with its neat surfaces and ease of maintenance.
                 </p>
               </div>
 
               {/* Right Column */}
               <div className="space-y-6">
                 <p>
-                  At Stonecera, we believe that quality stone should be
-                  accessible. By working directly with quarries in India,
-                  Portugal, Italy, and beyond, we eliminate the unnecessary
-                  costs of intermediaries. This allows us to provide
-                  professional-grade materials at competitive prices, whether
-                  you&apos;re ordering a single pack for a DIY project or
-                  multiple crates for a commercial development.
+                  Our paving is supplied by reputable producers and suppliers, enabling us to provide customers with reliable range at affordable prices. Whether it is a private patio or bigger landscaping project - we can help you to select suitable materials for your needs.
                 </p>
 
                 <ul className="space-y-3 font-bold text-[#262a18] uppercase tracking-tighter text-[11px]">
                   <li className="flex items-center gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#99a14e]" />
-                    Ethically Sourced & CE Certified
+                    Carefully selected paving ranges
                   </li>
 
                   <li className="flex items-center gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#99a14e]" />
-                    Nationwide Pallet Delivery in 3-5 Working Days
+                    Affordable direct supplier prices
                   </li>
 
                   <li className="flex items-center gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#99a14e]" />
-                    Full Technical Support for Installation
+                    Delivery across the UK via pallet
                   </li>
 
                   <li className="flex items-center gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#99a14e]" />
-                    Trade Accounts for Landscaping Professionals
+                    Advice on installation and technical issues
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#99a14e]" />
+                    Support for landscaping professionals
                   </li>
                 </ul>
               </div>
