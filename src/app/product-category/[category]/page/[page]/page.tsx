@@ -1,49 +1,20 @@
-// File: src/app/product-category/[category]/page/[page]/page.tsx
-
-import Link from "next/link";
-import { FileText, SlidersHorizontal, ChevronRight } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
-import type { Metadata } from "next";
-
-import {
-  getCategoryBySlug,
-  getCategoryBySlugForMeta,
-} from "@/lib/api/category";
-
+import { getCategoryBySlug, getCategoryBySlugForMeta } from "@/lib/api/category";
 import Filters from "@/components/category/Filter";
 import ProductGrid from "@/components/product/ProductGrid";
-import Pagination from "@/components/Pagination";
+import Pagination from "@/components/category/Pagination";
 import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelector";
-import FaqsAccordion from "@/components/FaqAccordion";
-
+import PageBanner from "@/components/PageBanner";
 import { buildMetadata } from "@/lib/seo";
-import { JSONObject, Schema } from "@/lib/types";
-import Breadcrum from "@/components/Breadcrum";
-
-/* =========================================================
-   METADATA
-========================================================= */
+import { Metadata } from "next";
 
 export async function generateMetadata({
-  params,
-  searchParams,
+  params
 }: {
-  params: Promise<{ category: string; page: string }>;
-  searchParams: Promise<Record<string, string>>;
+  params: Promise<{ category: string }>;
 }): Promise<Metadata> {
   const { category } = await params;
-  const resolvedSearchParams = await searchParams;
-
-  /*
-   * Filters should not be indexed.
-   * Normal paginated pages can be indexed.
-   */
-  const hasFilters = Object.keys(resolvedSearchParams).some(
-    (key) => !["page", "limit"].includes(key),
-  );
-
   const data = await getCategoryBySlugForMeta(category);
-
   if (!data) return {};
 
   const baseMetadata = buildMetadata({
@@ -53,115 +24,36 @@ export async function generateMetadata({
 
   return {
     ...baseMetadata,
-
-    robots: hasFilters
-      ? {
-          index: false,
-          follow: true,
-        }
-      : {
-          index: true,
-          follow: true,
-        },
+    robots: { index: true, follow: true }
   };
 }
 
-/* =========================================================
-   PAGE
-========================================================= */
-
-export default async function CategoryPaginatedPage({
-  params,
-  searchParams,
-}: {
+export default async function CategoryPaginatedPage(props: {
   params: Promise<{ category: string; page: string }>;
   searchParams: Promise<Record<string, string>>;
 }) {
-  const { category, page: pageParam } = await params;
-  const resolvedSearchParams = await searchParams;
-
-  /* =======================================================
-     PAGE NUMBER
-  ======================================================= */
+  const { category, page: pageParam } = await props.params;
+  const searchParams = await props.searchParams;
 
   const page = parseInt(pageParam || "1", 10);
-
-  /*
-   * /page/1 should always redirect to the main category URL.
-   */
-  if (page === 1) {
-    const queryString = new URLSearchParams(resolvedSearchParams).toString();
-
-    redirect(
-      queryString
-        ? `/product-category/${category}?${queryString}`
-        : `/product-category/${category}`,
-    );
-  }
-
-  /*
-   * Invalid page numbers
-   */
-  if (page < 1 || Number.isNaN(page)) {
-    return notFound();
-  }
-
-  /* =======================================================
-     PRODUCTS PER PAGE
-  ======================================================= */
-
-  const limit = parseInt(resolvedSearchParams.limit || "12", 10);
-
+  // grab limit from query, default to 10
+  const limit = parseInt(searchParams.limit || "12", 10);
   const offset = (page - 1) * limit;
 
-  /* =======================================================
-     FETCH CATEGORY
-  ======================================================= */
+  if (page === 1) redirect(`/product-category/${category}`);
 
   const categoryData = await getCategoryBySlug(category, {
-    ...Object.fromEntries(Object.entries(resolvedSearchParams)),
+    ...Object.fromEntries(Object.entries(searchParams)),
     limit,
     offset,
   });
 
-  if (!categoryData.name) {
-    return notFound();
-  }
-
-  /* =======================================================
-     PAGINATION
-  ======================================================= */
-
+  if (!categoryData.name) return notFound();
   const totalProducts = categoryData.totalProducts || 0;
-
   const totalPages = Math.ceil(totalProducts / limit);
 
-  /*
-   * Requested page doesn't exist.
-   *
-   * Example:
-   * 20 products
-   * 12 per page
-   *
-   * Valid:
-   * /page/2
-   *
-   * Invalid:
-   * /page/3
-   */
-  if (page > totalPages && totalPages > 0) {
-    return notFound();
-  }
-
-  /* =======================================================
-     SAFE FILTER COUNTS
-  ======================================================= */
-
-  const safeFilterCounts = categoryData.filterCounts ?? {
-    price: {
-      min: 0,
-      max: 0,
-    },
+  const filterCounts = categoryData.filterCounts ?? {
+    price: {},
     colorTone: {},
     finish: {},
     thickness: {},
@@ -172,190 +64,57 @@ export default async function CategoryPaginatedPage({
 
   return (
     <>
-      <Breadcrum
+      <PageBanner
+        pageName={categoryData.name}
+        pageDescription={categoryData.short_description}
         breadcrum={[
-          { pageName: "Product Category", pageUrl: "/product-category" },
+          {
+            pageName: "Product Category",
+            pageUrl: "/product-category/",
+          },
           {
             pageName: categoryData.name,
-            pageUrl: `/product-category/${categoryData.slug}`,
+            pageUrl: `/product-category/${categoryData.slug}/`,
           },
         ]}
+        bgImage={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.bannerImg?.url}`}
       />
+      <div className="container cat-container px-4">
+        
 
-      {/* =====================================================
-          CATEGORY HEADER
-      ===================================================== */}
-
-      <section className="border-b border-[#262a18]/10 bg-[#f5f0e8]">
-        <div className="container">
-          <div className="flex flex-wrap items-baseline-last justify-between gap-4 py-10">
-            <div>
-              <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.25em] text-[#99a14e]">
-                Natural Stone Collection
-              </p>
-
-              <h1 className="mb-3 text-4xl capitalize text-[#262a18] lg:text-5xl">
-                {categoryData.name}
-              </h1>
-
-              <p className="max-w-3xl text-sm text-[#4a5530]">
-                {categoryData.short_description}
-              </p>
-            </div>
-
-            {/* Catalogue */}
-
-            {categoryData.catalogue && (
-              <Link
-                title={`View ${categoryData.name} Catalogue`}
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`${process.env.NEXT_PUBLIC_MEDIA_URL}${categoryData.catalogue.file}`}
-                className="
-                  flex
-                  h-fit
-                  w-fit
-                  items-center
-                  gap-2
-                  bg-[#262a18]
-                  px-6
-                  py-3
-                  text-xs
-                  font-medium
-                  uppercase
-                  tracking-wider
-                  text-[#d8c06a]
-                  transition-all
-                  hover:bg-[#30351e]
-                "
-              >
-                <FileText size={18} strokeWidth={1.5} />
-                View Category Catalogue
-              </Link>
-            )}
+        <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-8 mb:pt-16 pt-8">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <Filters
+              currentFilters={searchParams}
+              categorySlug={category}
+              filterCounts={filterCounts}
+            />
           </div>
-        </div>
-      </section>
 
-      {/* =====================================================
-          PRODUCTS AREA
-      ===================================================== */}
-
-      <div className="bg-[#f9f7f3]">
-        <div className="container cat-container px-4">
-          <div className="mb:pt-16 grid grid-cols-1 pt-8 lg:grid-cols-4 lg:gap-8">
-            {/* =================================================
-                SIDEBAR FILTERS
-            ================================================= */}
-
-            <div className="lg:col-span-1">
-              <Filters
-                currentFilters={resolvedSearchParams}
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            {/* Products‑per‑page dropdown */}
+            <div className="flex justify-end mb-4">
+              <ProductsPerPageSelector
+                currentLimit={limit}
+                currentFilters={searchParams}
                 categorySlug={category}
-                filterCounts={safeFilterCounts}
-              />
-            </div>
-
-            {/* =================================================
-                PRODUCTS
-            ================================================= */}
-
-            <div className="lg:col-span-3">
-              {/* =================================================
-                  TOP BAR
-              ================================================= */}
-
-              <div
-                className="
-                  mb-6
-                  flex
-                  items-center
-                  justify-between
-                  border-b
-                  border-[#262a18]/10
-                  pb-4
-                "
-              >
-                {/* LEFT */}
-
-                <div className="flex w-full items-center gap-4 sm:w-6/12">
-                  {/* Mobile Filters */}
-
-                  <button
-                    type="button"
-                    className="
-                      flex
-                      items-center
-                      gap-2
-                      border
-                      border-[#262a18]/20
-                      px-3
-                      py-2
-                      text-xs
-                      font-medium
-                      text-[#262a18]
-                      lg:hidden
-                    "
-                  >
-                    <SlidersHorizontal size={13} strokeWidth={1.5} />
-                    Filters
-                  </button>
-
-                  {/* Product Count */}
-
-                  <span className="ml-3 block font-sans text-xs text-[#99a14e]">
-                    {categoryData.totalProducts} products
-                  </span>
-                </div>
-
-                {/* RIGHT */}
-
-                {categoryData.totalProducts > 12 && (
-                  <div className="flex items-center gap-3">
-                    <ProductsPerPageSelector
-                      currentLimit={limit}
-                      currentFilters={resolvedSearchParams}
-                      categorySlug={category}
-                      currentPage={page}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* =================================================
-                  PRODUCT GRID
-              ================================================= */}
-
-              <ProductGrid products={categoryData.products} />
-
-              {/* =================================================
-                  PAGINATION
-              ================================================= */}
-
-              <Pagination
-                totalPages={totalPages}
                 currentPage={page}
-                category={category}
-                currentFilters={resolvedSearchParams}
               />
             </div>
+
+            <ProductGrid products={categoryData.products} />
+
+            <Pagination
+              totalPages={totalPages}
+              currentPage={page}
+              category={category}
+              currentFilters={searchParams}
+            />
           </div>
         </div>
       </div>
-
-      {/* =====================================================
-          FAQ
-      ===================================================== */}
-
-      {categoryData.faqs && (
-        <div className="bg-[#f9f7f3]">
-          <FaqsAccordion
-            mainHeading={categoryData.faqs.mainHeading}
-            subHeading={categoryData.faqs.subHeading}
-            items={categoryData.faqs.items}
-          />
-        </div>
-      )}
     </>
   );
 }

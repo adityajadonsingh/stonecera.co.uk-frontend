@@ -3,12 +3,13 @@
 
 import type { ImageAttributes, Product } from "@/lib/types";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
-import { ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search } from "lucide-react";
 import WishlistButton from "../WishlistButton";
+import Breadcrum from "../Breadcrum";
 
 export default function ImageGallery({
   images = [],
@@ -22,52 +23,26 @@ export default function ImageGallery({
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
 
-  // First visible thumbnail
-  const [thumbnailStart, setThumbnailStart] = useState(0);
+  const thumbsRef = useRef<HTMLDivElement | null>(null);
+  const selectedThumbRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (index >= images.length) setIndex(Math.max(0, images.length - 1));
+  }, [images, index]);
+
+  useEffect(() => {
+    const btn = selectedThumbRef.current;
+    const container = thumbsRef.current;
+    if (!btn || !container) return;
+    const btnRect = btn.getBoundingClientRect();
+    const contRect = container.getBoundingClientRect();
+    if (btnRect.left < contRect.left || btnRect.right > contRect.right) {
+      btn.scrollIntoView({ behavior: "smooth", inline: "center" });
+    }
+  }, [index]);
 
   const base = process.env.NEXT_PUBLIC_MEDIA_URL ?? "";
   const main = images[index];
-
-  /* =========================================================
-     KEEP INDEX VALID
-  ========================================================= */
-
-  useEffect(() => {
-    if (images.length === 0) {
-      setIndex(0);
-      setThumbnailStart(0);
-      return;
-    }
-
-    if (index >= images.length) {
-      setIndex(images.length - 1);
-    }
-  }, [images, index]);
-
-  /* =========================================================
-     KEEP SELECTED IMAGE VISIBLE IN THUMBNAIL SLIDER
-  ========================================================= */
-
-  useEffect(() => {
-    if (images.length <= 4) {
-      setThumbnailStart(0);
-      return;
-    }
-
-    // Selected image is before the visible range
-    if (index < thumbnailStart) {
-      setThumbnailStart(index);
-    }
-
-    // Selected image is after the visible range
-    else if (index >= thumbnailStart + 4) {
-      setThumbnailStart(index - 3);
-    }
-  }, [index, thumbnailStart, images.length]);
-
-  /* =========================================================
-     LIGHTBOX SLIDES
-  ========================================================= */
 
   const slides = images
     .filter((img) => img?.url)
@@ -76,325 +51,112 @@ export default function ImageGallery({
       alt: img.alt ?? "Product image",
     }));
 
-  /* =========================================================
-     KEYBOARD NAVIGATION
-  ========================================================= */
-
   const onKey = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") {
-      setIndex((i) => Math.max(0, i - 1));
-    }
-
-    if (e.key === "ArrowRight") {
+    if (e.key === "ArrowLeft") setIndex((i) => Math.max(0, i - 1));
+    if (e.key === "ArrowRight")
       setIndex((i) => Math.min(images.length - 1, i + 1));
-    }
-
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setOpen(true);
-    }
-  };
-
-  /* =========================================================
-     THUMBNAIL NAVIGATION
-  ========================================================= */
-
-  const showPreviousThumbnails = () => {
-    setThumbnailStart((prev) => Math.max(0, prev - 1));
-  };
-
-  const showNextThumbnails = () => {
-    setThumbnailStart((prev) => Math.min(images.length - 4, prev + 1));
   };
 
   return (
     <>
-      <div
-        className="
-          mx-auto
-          mt-5
-          w-full
-          sm:w-5/6
-          md:w-3/6
-          lg:sticky
-          lg:left-0
-          lg:top-[10%]
-          lg:m-0
-          lg:w-full
-        "
-      >
-        {/* =====================================================
-            MAIN IMAGE
-        ===================================================== */}
-
+      <nav className="text-sm text-gray-500 mb-3 lg:hidden">
+        {/* Home / {product.category?.name ?? "Category"} / {product.name} */}
+        <Breadcrum
+          breadcrum={[
+            {
+              pageName: "Product Category",
+              pageUrl: "/product-category/",
+            },
+            {
+              pageName: product.category?.name,
+              pageUrl: `/product-category/${product.category?.slug}/`,
+            },
+            {
+              pageName: product.name,
+              pageUrl: `/product-category/${product.category?.slug}/${product.slug}/`,
+            },
+          ]}
+        />
+      </nav>
+      <div className="lg:sticky lg:top-[18%] lg:left-0 lg:w-full md:w-3/6 sm:w-5/6 lg:m-0 mx-auto mt-5">
+        {/* Main image */}
         <div
+          className="
+    relative w-full rounded overflow-hidden
+    sm:h-[40vh] h-[40vh]
+    md:aspect-[4/3] md:h-auto
+    lg:h-[60vh]
+    xl:h-[55vh]
+    mb-4 bg-gray-100
+  "
           tabIndex={0}
           onKeyDown={onKey}
-          className="
-            group
-            relative
-            aspect-[4/3]
-            w-full
-            overflow-hidden
-            border
-            border-gray-100
-            bg-gray-100
-            outline-none
-            focus-visible:ring-2
-            focus-visible:ring-[#99a14e]
-          "
         >
+          <div className="absolute rounded-full flex items-center justify-center bg-[#4c4331]/80 backdrop-blur-[1px] hover:bg-[#4c4331] h-[36px] w-[36px] z-10 top-3 left-3">
+            <WishlistButton productId={productId} />
+          </div>
           {main?.url ? (
             <>
-              {/* Product Image */}
-
               <Image
                 src={base + main.url}
-                alt={main.alt ?? product?.name ?? "Product image"}
+                alt={main.alt ?? "Product image"}
                 width={1200}
-                height={900}
-                sizes="
-                  (max-width: 640px) 100vw,
-                  (max-width: 1024px) 60vw,
-                  45vw
-                "
-                className="
-                  h-full
-                  w-full
-                  object-cover
-                  transition-transform
-                  duration-500
-                  group-hover:scale-[1.02]
-                "
+                height={800}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 45vw"
+                className="object-cover w-full h-full"
                 priority
               />
 
-              {/* =================================================
-                  WISHLIST
-              ================================================= */}
-
-              <div
-                className="
-                  absolute
-                  left-4
-                  top-4
-                  z-10
-                  flex
-                  h-10
-                  w-10
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-white/80
-                  bg-white
-                  transition-transform
-                  duration-200
-                  hover:scale-110
-                "
-              >
-                <WishlistButton
-                  productId={productId}
-                  iconColor="text-gray-500"
-                  size={22}
-                />
-              </div>
-
-              {/* =================================================
-                  ZOOM
-              ================================================= */}
-
+              {/* 🔍 Magnifying glass */}
               <button
-                type="button"
                 onClick={() => setOpen(true)}
-                aria-label="Open product image gallery"
-                className="
-                  absolute
-                  right-4
-                  top-4
-                  z-10
-                  flex
-                  h-10
-                  w-10
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-gray-100
-                  bg-white
-                  text-gray-500
-                  transition-all
-                  duration-200
-                  hover:scale-110
-                  hover:text-[#262a18]
-                "
+                aria-label="Open image gallery"
+                className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md transition"
               >
-                <ZoomIn size={22} />
+                <Search size={20} />
               </button>
             </>
           ) : (
-            /* =================================================
-               NO IMAGE
-            ================================================= */
-
-            <div
-              className="
-                flex
-                h-full
-                w-full
-                items-center
-                justify-center
-                bg-gray-100
-                text-sm
-                text-gray-400
-              "
-            >
-              No image available
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              No image
             </div>
           )}
         </div>
 
-        {/* =====================================================
-            THUMBNAILS
-        ===================================================== */}
-
-        {images.length > 0 && (
-          <div className="relative mt-4 w-full">
-            {/* =================================================
-                PREVIOUS ARROW
-            ================================================= */}
-
-            {images.length > 4 && thumbnailStart > 0 && (
+        {/* Thumbnails */}
+        <div ref={thumbsRef} className="flex gap-2 overflow-x-auto py-1 px-1">
+          {images.map((img, i) => {
+            const isSelected = i === index;
+            return (
               <button
-                type="button"
-                onClick={showPreviousThumbnails}
-                aria-label="Previous product images"
-                className="
-                    absolute
-                    left-2
-                    top-1/2
-                    z-10
-                    flex
-                    h-9
-                    w-9
-                    -translate-y-1/2
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-[#262a18]/10
-                    bg-[#f5f0e8]/95
-                    text-[#262a18]
-                    backdrop-blur-sm
-                    transition-all
-                    duration-200
-                    hover:scale-105
-                    hover:bg-[#f5f0e8]
-                  "
+                key={i}
+                ref={isSelected ? selectedThumbRef : null}
+                onClick={() => setIndex(i)}
+                aria-pressed={isSelected}
+                aria-label={`View image ${i + 1}`}
+                className={`md:w-20 w-14 md:h-20 h-14 rounded overflow-hidden flex-shrink-0 focus:outline-none ${
+                  isSelected
+                    ? "ring-2 ring-[#cc9450]"
+                    : "border border-gray-200"
+                }`}
               >
-                <ChevronLeft size={18} strokeWidth={1.5} />
+                {img?.url ? (
+                  <Image
+                    src={base + img.url}
+                    alt={img.alt ?? ""}
+                    width={80}
+                    height={80}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-300" />
+                )}
               </button>
-            )}
+            );
+          })}
+        </div>
 
-            {/* =================================================
-                THUMBNAIL VIEWPORT
-            ================================================= */}
-
-            <div className="grid w-full grid-cols-4 gap-3 overflow-hidden">
-              {images
-                .slice(thumbnailStart, thumbnailStart + 4)
-                .map((img, visibleIndex) => {
-                  const actualIndex = thumbnailStart + visibleIndex;
-
-                  const isSelected = actualIndex === index;
-
-                  return (
-                    <button
-                      key={actualIndex}
-                      type="button"
-                      onClick={() => setIndex(actualIndex)}
-                      aria-pressed={isSelected}
-                      aria-label={`View product image ${actualIndex + 1}`}
-                      className={`
-            group
-            relative
-            aspect-square
-            min-w-0
-            overflow-hidden
-            bg-gray-100
-            outline-none
-            transition-all
-            duration-300
-            ${isSelected ? "opacity-100" : "opacity-60 hover:opacity-100"}
-            focus-visible:ring-2
-            focus-visible:ring-[#99a14e]
-          `}
-                    >
-                      {img?.url ? (
-                        <Image
-                          src={base + img.url}
-                          alt={img.alt ?? `Product image ${actualIndex + 1}`}
-                          width={300}
-                          height={300}
-                          className="
-                h-full
-                w-full
-                object-cover
-                transition-transform
-                duration-300
-                group-hover:scale-105
-              "
-                        />
-                      ) : (
-                        <div className="h-full w-full bg-gray-200" />
-                      )}
-                    </button>
-                  );
-                })}
-            </div>
-
-            {/* =================================================
-                NEXT ARROW
-            ================================================= */}
-
-            {images.length > 4 && thumbnailStart + 4 < images.length && (
-              <button
-                type="button"
-                onClick={showNextThumbnails}
-                aria-label="Next product images"
-                className="
-                    absolute
-                    right-2
-                    top-1/2
-                    z-10
-                    flex
-                    h-9
-                    w-9
-                    -translate-y-1/2
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-[#262a18]/10
-                    bg-[#f5f0e8]/95
-                    text-[#262a18]
-                    backdrop-blur-sm
-                    transition-all
-                    duration-200
-                    hover:scale-105
-                    hover:bg-[#f5f0e8]
-                  "
-              >
-                <ChevronRight size={18} strokeWidth={1.5} />
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* =====================================================
-            LIGHTBOX
-        ===================================================== */}
-
+        {/*  Lightbox */}
         <Lightbox
           open={open}
           close={() => setOpen(false)}
@@ -402,9 +164,7 @@ export default function ImageGallery({
           slides={slides}
           plugins={[Zoom]}
           on={{
-            view: ({ index }) => {
-              setIndex(index);
-            },
+            view: ({ index }) => setIndex(index),
           }}
           zoom={{
             maxZoomPixelRatio: 2.5,
