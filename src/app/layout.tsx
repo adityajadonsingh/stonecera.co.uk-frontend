@@ -40,14 +40,16 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   authors: [{ name: "stonecera.co.uk" }],
+
   robots: {
-    index: true,
-    follow: true,
-    nocache: false,
+    index: process.env.DEVELOPMENT !== "dev",
+    follow: process.env.DEVELOPMENT !== "dev",
+    nocache: process.env.DEVELOPMENT === "dev",
+
     googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
+      index: process.env.DEVELOPMENT !== "dev",
+      follow: process.env.DEVELOPMENT !== "dev",
+      noimageindex: process.env.DEVELOPMENT === "dev",
     },
   },
 };
