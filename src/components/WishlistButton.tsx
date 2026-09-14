@@ -3,7 +3,7 @@
 import { Heart } from "lucide-react";
 import { useWishlistContext } from "@/context/WishlistContext";
 
-export default function WishlistButton({ productId, iconColor="text-gray-500 hover:text-white", size=18 }: { productId: number; iconColor?: string; size?: number }) {
+export default function WishlistButton({ productId }: { productId: number }) {
   const wishlist = useWishlistContext(); 
   const active = wishlist.has(productId);
 
@@ -18,9 +18,9 @@ export default function WishlistButton({ productId, iconColor="text-gray-500 hov
       title="Add to wishlist"
     >
       <Heart
-        size={size}
+        size={24}
         className={`transition ${
-          active ? "fill-red-500 text-red-500" : iconColor
+          active ? "fill-red-500 text-red-500" : "text-gray-100"
         }`}
       />
     </button>

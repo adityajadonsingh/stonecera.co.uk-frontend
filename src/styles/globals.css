@@ -2,7 +2,7 @@
 
 :root {
   --scrollbar-color: #4a3a2a;
-  --color-skin: #f5f0e8;
+  --color-skin: #f7f3eb;
   --color-skin-text: #4a3a2a;
   --color-dark: #4a3a2a;
   --color-dark-text: #fff;
@@ -11,47 +11,13 @@
   --color-logo-1: #bd7e40;
 }
 
-@layer base {
-  * {
-    /* Directly sets the color using your shadcn custom variables */
-    border-color: var(--border);
-  }
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-work);
-  }
-  h1,
-  h2,
-  h3,
-  .serif {
-    font-family: "Instrument Serif", serif;
-  }
-}
-@theme {
-  --font-serif: var(--font-instrument-serif);
-  --font-work: var(--font-work-sans);
-}
-
-.icon-clr {
-  color: #d8c06a;
-}
-
-.new-heading {
-  color: #262a18;
-}
-
-.bg-dark-n {
-  background: #262a18;
-}
-
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
 
 main {
-  padding-top: 161px;
+  padding-top: 140px;
 }
 
 input,
@@ -86,11 +52,6 @@ textarea {
 
 .container {
   margin: 0 auto;
-  max-width: 1400px;
-}
-.section-border {
-  border-top-color: rgba(38, 42, 24, 0.1);
-  border-top-width: 0.5px;
 }
 .text-dark {
   color: var(--color-dark);
@@ -192,6 +153,7 @@ textarea {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
   animation: gradientFlow 3s linear infinite;
 }
 
@@ -210,12 +172,12 @@ textarea {
     background-color: #4d4431;
   }
   50% {
-    background-color: #b68446;
+    background-color: #cd9450;
   }
 }
 
 .animate-pulse-bg {
-  animation: pulseBg 3s linear infinite;
+  animation: pulseBg 1s linear infinite;
 }
 .prose {
   img {
@@ -225,10 +187,10 @@ textarea {
     border-radius: 6px;
   }
   h2 {
-    font-size: 20pt;
+    font-size: 16pt;
   }
   h3 {
-    font-size: 18pt;
+    font-size: 14pt;
   }
   h4 {
     font-size: 12pt;
@@ -236,9 +198,9 @@ textarea {
   h2,
   h3,
   h4 {
-    font-weight: 700 !important;
+    font-weight: 700;
     margin: 15px 0;
-    font-family: "Instrument Serif, serif";
+    font-family: 'Montserrat', sans-serif !important;
   }
   h3,
   h4 {
@@ -248,13 +210,13 @@ textarea {
     margin-top: 16px;
     margin-bottom: 16px;
     font-size: 12pt;
-    font-family: "Montserrat", sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   a span {
     color: #f36c23 !important;
     text-decoration: none !important;
     font-weight: 700 !important;
-    font-family: "Montserrat", sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   a:hover span {
     color: #ff782f !important;
@@ -263,7 +225,7 @@ textarea {
     color: #f36c23 !important;
     text-decoration: none !important;
     font-weight: 700 !important;
-    font-family: "Montserrat", sans-serif !important;
+    font-family: 'Montserrat', sans-serif !important;
   }
   a:hover {
     color: #ff782f !important;
@@ -461,7 +423,7 @@ textarea {
 .animate-slide-in {
   animation: slide-in 0.35s ease-out;
 }
-.prose .related-post {
+.prose  .related-post {
   font-size: 16px;
   border: 1px solid #bd7e40;
   border-left: 0;
@@ -473,21 +435,11 @@ textarea {
   display: block;
   width: 100%;
   font-weight: 600;
-  span {
+  span{
     color: rgb(97, 90, 82);
     font-weight: 700;
   }
-  a {
+  a{
     text-decoration: underline !important;
   }
-}
-.pointers p{
-  margin: 0 !important;
-  svg{
-    display: none !important;
-  }
-}
-
-.blog-content [style*="background-color"] {
-  background-color: transparent !important;
 }

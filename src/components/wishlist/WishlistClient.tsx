@@ -1,29 +1,25 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-
-import ProductGrid from "@/components/product/ProductGrid";
+import WishlistRemoveButton from "./WishlistRemoveButton";
+import { Product } from "@/lib/types";
 import { useWishlistContext } from "@/context/WishlistContext";
-
-import type { CategoryProduct } from "@/lib/types";
 
 export default function WishlistClient({
   initialItems,
 }: {
-  initialItems: CategoryProduct[] | null;
+  initialItems: Product[] | null;
 }) {
   const wishlist = useWishlistContext();
-
-  const [items, setItems] = useState<CategoryProduct[]>(
-    initialItems ?? [],
-  );
-
+  const [items, setItems] = useState<Product[]>(initialItems ?? []);
   const [loading, setLoading] = useState(false);
 
+  /* 🔒 STABLE DEPENDENCY */
   const wishlistKey = useMemo(
-    () => [...wishlist.items].sort((a, b) => a - b).join(","),
-    [wishlist.items],
+    () => wishlist.items.sort((a, b) => a - b).join(","),
+    [wishlist.items]
   );
 
   useEffect(() => {
@@ -32,44 +28,17 @@ export default function WishlistClient({
       return;
     }
 
-    const loadWishlistProducts = async () => {
-      setLoading(true);
+    setLoading(true);
 
-      try {
-        const res = await fetch(
-          `/api/wishlist/products?ids=${wishlistKey}`,
-          {
-            cache: "no-store",
-          },
-        );
-
-        if (!res.ok) {
-          setItems([]);
-          return;
-        }
-
-        const data = await res.json();
-
+    fetch(`/api/wishlist/products?ids=${wishlistKey}`)
+      .then((res) => res.json())
+      .then((data) => {
         setItems(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error(
-          "Failed to load wishlist products:",
-          error,
-        );
+      })
+      .finally(() => setLoading(false));
+  }, [wishlistKey]); // ✅ STABLE
 
-        setItems([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadWishlistProducts();
-  }, [wishlistKey]);
-
-  // ============================================================
-  // EMPTY
-  // ============================================================
-
+  /* ---------- EMPTY ---------- */
   if (!items.length && !loading) {
     return (
       <div className="text-center py-20">
@@ -86,26 +55,50 @@ export default function WishlistClient({
     );
   }
 
-  // ============================================================
-  // LOADING
-  // ============================================================
-
-  if (loading && !items.length) {
-    return (
-      <p className="text-center text-gray-400 italic mt-10">
-        Loading wishlist...
-      </p>
-    );
-  }
-
-  // ============================================================
-  // PRODUCTS
-  // ============================================================
-
+  /* ---------- UI ---------- */
   return (
-    <ProductGrid
-      products={items}
-      isProductPage
-    />
+    <div className="space-y-4">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="bg-white rounded shadow-sm grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr] gap-4 items-center p-4"
+        >
+          {/* Image */}
+          <div className="relative h-[100px]">
+            {item.image?.url && (
+              <Image
+                src={process.env.NEXT_PUBLIC_MEDIA_URL + item.image.url}
+                alt={item.image.alt || item.name}
+                fill
+                className="object-contain"
+              />
+            )}
+          </div>
+
+          {/* Name */}
+          <div>
+            <h3 className="font-medium">{item.name}</h3>
+            {item.category && (
+              <p className="text-sm text-gray-500">
+                {item.category.name}
+              </p>
+            )}
+          </div>
+
+          {/* View */}
+          <Link
+            href={`/product/${item.slug}`}
+            className="bg-[#6b6257] text-white px-5 py-2 rounded text-center"
+          >
+            View
+          </Link>
+
+          {/* Remove */}
+          <div className="flex justify-center">
+            <WishlistRemoveButton productId={item.id} />
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

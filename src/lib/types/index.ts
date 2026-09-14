@@ -5,60 +5,18 @@ export interface ImageAttributes {
   url: string;
   alt: string;
 }
-
-export interface VariationPricing {
-  isDiscounted: boolean;
-
-  discount: {
-    percentage: number;
-    amount: number;
-  } | null;
-  pack: {
-    original: number;
-    selling: number;
-  };
-  perM2: {
-    original: number;
-    selling: number;
-  };
-  packSize: number;
-}
-
 export interface ProductVariation {
   id: number;
   SKU: string;
-  Stock: number;
   Thickness: string;
   Size: string;
   Finish: string;
-  Pcs: number;
-  ColorTone: string;
   PackSize: number;
-  pricing: VariationPricing;
-}
-
-export interface ProductLabel {
-  id: number;
-  name: string;
-}
-
-export interface ProductCategory {
-  name: string;
-  slug: string;
-  categoryDiscount: number;
-}
-
-interface FAQItem {
-  question: string;
-  answer: string;
-  sort_order: number;
-}
-
-export interface FAQComponent {
-  mainHeading: string;
-  subHeading: string;
-  items: FAQItem[];
-  isProductPage?: boolean;
+  Pcs: number;
+  Stock: number;
+  ColorTone: string;
+  Price: number;
+  Per_m2: number;
 }
 
 export interface Category {
@@ -67,7 +25,7 @@ export interface Category {
   slug: string;
   bannerImg: ImageAttributes;
   footerContent?: string;
-  categoryDiscount: number;
+  categoryDiscount: number | null;
   short_description: string;
   images: ImageAttributes[];
   products: CategoryProduct[];
@@ -76,26 +34,20 @@ export interface Category {
   startingFrom?: number;
   seo: StrapiSEO | null;
   updatedAt: string;
-  sub_heading?: string;
-  productCount?: number;
-  catalogue?: {
-    name: string;
-    file: string;
-  } | null;
-  faqs?: FAQComponent | null;
 }
 
 export interface CategoryProduct {
-  variations: ProductVariation[];
+  variations: ProductVariation[]; 
   selectedVariation: ProductVariation;
   product: Product;
+  priceBeforeDiscount?: {
+    Per_m2: number;
+    Price: number;
+  } | null;
 }
 
 export interface FilterCounts {
-  price: {
-    min: number;
-    max: number;
-  };
+  price: Record<string, number>;
   colorTone: Record<string, number>;
   finish: Record<string, number>;
   thickness: Record<string, number>;
@@ -104,43 +56,29 @@ export interface FilterCounts {
   packSize: Record<string, number>;
 }
 
-export interface ProductContentPoint {
-  point: string;
-}
-
-export interface ProductHighlightCard {
-  title: string;
-  icon: "ShieldCheck" | "Award" | string;
-  points: ProductContentPoint[];
-}
-
-export interface ProductContent {
-  introContent: string;
-  highlightCards: ProductHighlightCard[];
-  closingContent: string;
-}
-
 export interface Product {
   id: number;
   name: string;
   slug: string;
   description: string;
-  productDiscount: number;
+  productDiscount: number | null;
+  categoryDiscount: number | null;
   images: ImageAttributes[];
+  image: {
+    url: string;
+    alt: string;
+  } | null;
   variations: ProductVariation[];
-  selectedVariation: ProductVariation | null;
-  labels: ProductLabel[];
-  category: ProductCategory | null;
+  category: { name: string; slug: string; categoryDiscount: number };
+  priceBeforeDiscount?: {
+    Per_m2: number;
+    Price: number;
+  } | null;
   reviews: CustomerReviewsSection;
   productReviews: ProductReview[];
-  content: ProductContent;
-  faqs: FAQComponent | null;
-  youMayAlsoLike: CategoryProduct[];
   seo: StrapiSEO | null;
-  updatedAt?: string;
-  image?: string;
+  updatedAt: string;
 }
-
 
 export interface UserAttributes {
   id?: number;
@@ -317,7 +255,7 @@ export interface BestSellerProduct {
 export interface BestSellerSection {
   sectionTitle: string;
   sectionSubtitle: string;
-  products: CategoryProduct[];
+  products: BestSellerProduct[];
 }
 type Review = {
   name: string;
@@ -340,7 +278,7 @@ export interface Blog {
   createdOn: string;
   image: ImageAttributes;
 }
-export interface BlogPage {
+export interface BlogPage{
   data: Blog[];
   meta: {
     page: number;
@@ -355,15 +293,14 @@ export type HomepageData = {
   bestSeller: BestSellerSection;
   reviews: CustomerReviewsSection;
   blogs: Blog[];
-  faqs?: FAQComponent | null;
   seo: StrapiSEO | null;
 };
 
 export type WishlistItem = number;
 
-export interface BreadcrumType {
-  pageName: string;
-  pageUrl: string;
+export interface BreadcrumType{
+    pageName: string;
+    pageUrl: string;
 }
 
 export interface ProductReview {
@@ -385,7 +322,7 @@ export interface Catalogue {
     name: string;
   };
 }
-export interface SitePolicy {
+export interface SitePolicy{
   pageName: string;
   pageDescription: string;
 }
