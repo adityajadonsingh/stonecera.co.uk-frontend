@@ -270,6 +270,7 @@ textarea {
   ol,
   ul {
     margin-left: 20px;
+    margin-bottom: 8px;
   }
   ol,
   ol li {

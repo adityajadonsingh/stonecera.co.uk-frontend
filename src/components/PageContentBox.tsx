@@ -11,42 +11,30 @@ export default function PageContentBox({
   isFullPage: boolean;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [contentHeight, setContentHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(400);
 
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const element = contentRef.current;
 
-    if (!element) return;
+    if (!element || isFullPage) return;
 
     const measureHeight = () => {
       setContentHeight(element.scrollHeight);
     };
 
-    // Initial measurement after render
+    // Wait until the HTML content has rendered
     requestAnimationFrame(measureHeight);
-
-    // Keep height updated if content/layout changes
-    const observer = new ResizeObserver(() => {
-      measureHeight();
-    });
-
-    observer.observe(element);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [content]);
+  }, [content, isFullPage]);
 
   const hasMoreContent = contentHeight > 400;
 
   return (
-    <section className=" bg-[#f9f7f3] py-2 lg:py-6 lg:pt-0">
+    <section className="bg-[#f9f7f3] py-2 lg:py-6 lg:pt-0">
       <div>
-        <div className="bg-[#f5f0e8] px-5 md:py-8 py-4 sm:px-8 lg:px-12 lg:py-10">
+        <div className="bg-[#f5f0e8] px-5 py-4 sm:px-8 md:py-8 lg:px-12 lg:py-10">
 
-          {/* FULL CONTENT */}
           {isFullPage ? (
             <div
               className="
@@ -80,9 +68,7 @@ export default function PageContentBox({
             />
           ) : (
             <>
-              {/* COLLAPSIBLE CONTENT */}
               <div className="relative">
-
                 <div
                   ref={contentRef}
                   className="
@@ -125,7 +111,6 @@ export default function PageContentBox({
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
 
-                {/* FADE */}
                 {!isExpanded && hasMoreContent && (
                   <div
                     className="
@@ -143,7 +128,6 @@ export default function PageContentBox({
                 )}
               </div>
 
-              {/* READ MORE / SHOW LESS */}
               {hasMoreContent && (
                 <div className="mt-7 flex justify-center">
                   <button

@@ -27,7 +27,7 @@ function RichText({ content }: { content: string }) {
     return <>{content}</>;
   }
 
-  return <div dangerouslySetInnerHTML={{ __html: content }} />;
+  return <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: content }} />;
 }
 
 export default function FaqsAccordion({
