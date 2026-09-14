@@ -23,7 +23,7 @@ export function buildMetadata({
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
 
-  const robotsValue = seo.robots?.toLowerCase() || "";
+  const robotsValue = process.env.DEVELOPMENT === "dev" ? "noindex, nofollow, noarchive" : seo.robots?.toLowerCase() || "";
 
   return {
     title: seo.meta_title,
