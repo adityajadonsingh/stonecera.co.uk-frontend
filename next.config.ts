@@ -1,6 +1,23 @@
 import type { NextConfig } from "next";
-
+const isDevelopment = process.env.DEVELOPMENT === "dev";
 const nextConfig: NextConfig = {
+  async headers() {
+    if (!isDevelopment) {
+      return [];
+    }
+
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+    ];
+  },
   images: {
     dangerouslyAllowLocalIP: process.env.DANGEROUSLY_ALLOW_LOCAL_IP === "true",
     dangerouslyAllowSVG: process.env.DANGEROUSLY_ALLOW_LOCAL_IP === "true",
@@ -22,7 +39,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "1337", 
+        port: "1337",
         pathname: "/uploads/**",
       },
     ],
