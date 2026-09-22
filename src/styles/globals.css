@@ -481,13 +481,31 @@ textarea {
     text-decoration: underline !important;
   }
 }
-.pointers p{
+.pointers p {
   margin: 0 !important;
-  svg{
+  svg {
     display: none !important;
   }
 }
 
 .blog-content [style*="background-color"] {
   background-color: transparent !important;
+}
+
+.linking {
+  strong{
+    font-weight: 600;
+  }
+  p:not(:last-child) {
+    margin-bottom: 8px;
+  }
+  a {
+    color: #f36c23 ;
+    text-decoration: underline ;
+    font-weight: 600 ;
+  }
+  a:hover {
+    color: #ff782f;
+    text-decoration: none;
+  }
 }

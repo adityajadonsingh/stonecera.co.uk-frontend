@@ -27,7 +27,7 @@ function RichText({ content }: { content: string }) {
     return <>{content}</>;
   }
 
-  return <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: content }} />;
+  return <div className="linking" dangerouslySetInnerHTML={{ __html: content }} />;
 }
 
 export default function FaqsAccordion({
@@ -96,7 +96,7 @@ export default function FaqsAccordion({
                     className="group flex w-full  cursor-pointer items-center justify-between gap-6 px-5 py-5 text-left"
                   >
                     <span
-                      className={`pr-4 text-sm font-medium leading-snug transition-colors duration-300 ${
+                      className={`pr-4 text-base font-medium leading-snug transition-colors duration-300 ${
                         isOpen
                           ? "text-[#262a18]"
                           : "text-[#262a18] group-hover:text-[#99a14e]"
