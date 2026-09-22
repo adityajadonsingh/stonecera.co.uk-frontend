@@ -36,11 +36,11 @@ const menu = [
     items: [
       {
         name: "County Anthracite Porcelain",
-        href: "product/county-anthracite-porcelain/",
+        href: "/product/county-anthracite-porcelain/",
       },
       {
         name: "County Lgy Porcelain",
-        href: "product/county-lgy-porcelain/",
+        href: "/product/county-lgy-porcelain/",
       },
     ],
   },
@@ -53,19 +53,19 @@ const menu = [
     items: [
       {
         name: "Kandla Grey Porcelain",
-        href: "product/kandla-grey-porcelain/",
+        href: "/product/kandla-grey-porcelain/",
       },
       {
         name: "County Gris Porcelain",
-        href: "product/county-gris-porcelain/",
+        href: "/product/county-gris-porcelain/",
       },
       {
         name: "Anthracite Grey Porcelain",
-        href: "product/anthracite-grey-porcelain/",
+        href: "/product/anthracite-grey-porcelain/",
       },
       {
         name: "Hammerstone Beige Porcelain",
-        href: "product/hammerstone-beige-porcelain/",
+        href: "/product/hammerstone-beige-porcelain/",
       },
     ],
   },
@@ -78,19 +78,19 @@ const menu = [
     items: [
       {
         name: "Kandla Grey Cobblestone Paving",
-        href: "product/kandla-grey-cobblestone-paving/",
+        href: "/product/kandla-grey-cobblestone-paving/",
       },
       {
         name: "Raj Green Cobblestone Paving",
-        href: "product/raj-green-cobblestone-paving/",
+        href: "/product/raj-green-cobblestone-paving/",
       },
       {
         name: "Black Limestone Cobblestone Paving",
-        href: "product/black-limestone-cobblestone-paving/",
+        href: "/product/black-limestone-cobblestone-paving/",
       },
       {
         name: "Yellow Limestone Cobblestone Paving",
-        href: "product/yellow-limestone-cobblestone-paving/",
+        href: "/product/yellow-limestone-cobblestone-paving/",
       },
     ],
   },
@@ -366,7 +366,7 @@ export default function Header({
                             {category.items.map((item) => (
                               <li key={item.name}>
                                 <Link
-                                  href={"/" + item.href}
+                                  href={item.href}
                                   className="flex justify-between group border-b border-[#262A1833] py-2 hover:text-[#c9a74e] transition-colors"
                                 >
                                   {item.name}

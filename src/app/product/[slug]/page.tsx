@@ -47,7 +47,6 @@ export default async function ProductPage({
 
   const variations = product.variations ?? [];
   const selectedVariation = product.selectedVariation;
-  console.log(variations, "variations");
   const breadcrumbSchema = {
     "@context": "https://schema.org/",
     "@type": "BreadcrumbList",
