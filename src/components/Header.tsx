@@ -366,7 +366,7 @@ export default function Header({
                             {category.items.map((item) => (
                               <li key={item.name}>
                                 <Link
-                                  href={item.href}
+                                  href={"/" + item.href}
                                   className="flex justify-between group border-b border-[#262A1833] py-2 hover:text-[#c9a74e] transition-colors"
                                 >
                                   {item.name}

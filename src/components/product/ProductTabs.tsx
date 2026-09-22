@@ -55,7 +55,8 @@ export default function ProductTabs({ product, faqs }: Props) {
                   shrink-0
                   cursor-pointer
                   pb-4
-                  text-sm
+                  md:text-sm
+                  text-xs
                   font-bold
                   tracking-widest
                   transition-colors

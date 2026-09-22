@@ -118,7 +118,7 @@ export default function ProductContent({ content }: Props) {
 
           {/* CLOSING CONTENT */}
           {content.closingContent && (
-            <div className="text-[15px] leading-7 mt-6">
+            <div className="text-[15px] mt-6 leading-7 ">
               <RichText content={content.closingContent} />
             </div>
           )}
