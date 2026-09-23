@@ -136,7 +136,7 @@ const submit = async (e: React.FormEvent<HTMLFormElement>) => {
                   </h3>
 
                   <p className="text-stone-600">
-                    +44 (0) 123 456 7890
+                    +44 333 242 0255
                   </p>
 
                   <p className="text-sm text-stone-400">
@@ -157,11 +157,11 @@ const submit = async (e: React.FormEvent<HTMLFormElement>) => {
                   </h3>
 
                   <p className="text-stone-600">
-                    sales@premiumstone.co.uk
+                    info@stonecera.co.uk
                   </p>
 
                   <p className="text-stone-600">
-                    support@premiumstone.co.uk
+                    support@stonecera.co.uk
                   </p>
                 </div>
               </div>
@@ -174,15 +174,15 @@ const submit = async (e: React.FormEvent<HTMLFormElement>) => {
 
                 <div>
                   <h3 className="text-lg font-semibold text-[#262a18]">
-                    Showroom Address
+                    Address
                   </h3>
 
                   <p className="text-stone-600">
-                    123 Stone Paving Way,
+                    21 High Street
                     <br />
-                    Design District,
+                    Harrow On The Hill
                     <br />
-                    London, SW1A 1AA
+                    Middlesex, HA1 3HT
                   </p>
                 </div>
               </div>
