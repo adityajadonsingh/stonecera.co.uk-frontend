@@ -28,23 +28,6 @@ import UserDropdown from "./UserDropdown";
 
 const menu = [
   {
-    name: "Porcelain Planks",
-    slug: "porcelain-planks",
-    aboutTitle: "About Porcelain Planks",
-    about:
-      "Porcelain planks are a versatile and durable flooring option that mimics the look of natural wood or stone.",
-    items: [
-      {
-        name: "County Anthracite Porcelain",
-        href: "/product/county-anthracite-porcelain/",
-      },
-      {
-        name: "County Lgy Porcelain",
-        href: "/product/county-lgy-porcelain/",
-      },
-    ],
-  },
-  {
     name: "Outdoor Porcelain Tiles",
     slug: "outdoor-porcelain-tiles",
     aboutTitle: "About Outdoor Porcelain",
@@ -60,37 +43,16 @@ const menu = [
         href: "/product/county-gris-porcelain/",
       },
       {
-        name: "Anthracite Grey Porcelain",
-        href: "/product/anthracite-grey-porcelain/",
+        name: "Quartz White Porcelain",
+        href: "/product/quartz-white-porcelain/",
       },
       {
-        name: "Hammerstone Beige Porcelain",
-        href: "/product/hammerstone-beige-porcelain/",
-      },
-    ],
-  },
-  {
-    name: "Cobblestone Paving",
-    slug: "cobblestone-paving",
-    aboutTitle: "About Cobblestone Paving",
-    about:
-      "Durable cobblestone paving ideal for creating beautiful outdoor spaces.",
-    items: [
-      {
-        name: "Kandla Grey Cobblestone Paving",
-        href: "/product/kandla-grey-cobblestone-paving/",
+        name: "Earthcore Grey Porcelain",
+        href: "/product/earthcore-grey-porcelain/",
       },
       {
-        name: "Raj Green Cobblestone Paving",
-        href: "/product/raj-green-cobblestone-paving/",
-      },
-      {
-        name: "Black Limestone Cobblestone Paving",
-        href: "/product/black-limestone-cobblestone-paving/",
-      },
-      {
-        name: "Yellow Limestone Cobblestone Paving",
-        href: "/product/yellow-limestone-cobblestone-paving/",
+        name: "Brazilian Black Porcelain",
+        href: "/product/brazilian-black-porcelain/",
       },
     ],
   },
@@ -102,27 +64,86 @@ const menu = [
       "Natural split texture, ideal for garden paths, patios and landscaping projects.",
     items: [
       {
-        name: "Indian Sandstone",
-        href: "/product/indian-sandstone",
+        name: "Kandla Grey Natural Sandstone",
+        href: "/product/kandla-grey-natural-sandstone-paving/",
       },
       {
-        name: "Raj Green",
-        href: "/product/raj-green",
+        name: "Raj Green Natural Sandstone",
+        href: "/product/raj-green-natural-sandstone-paving/",
       },
       {
-        name: "Kandla Grey",
-        href: "/product/kandla-grey",
+        name: "Raj Blend Natural Sandstone",
+        href: "/product/raj-blend-natural-sandstone-paving",
       },
       {
-        name: "Mint Fossil",
-        href: "/product/mint-fossil",
+        name: "Mint Fossil Sandstone",
+        href: "/product/mint-fossil-sandstone-natural-paving/",
       },
       {
-        name: "Camel Dust",
-        href: "/product/camel-dust",
+        name: "Rippon Buff Natural Sandstone",
+        href: "/product/rippon-buff-natural-sandstone-paving/",
       },
     ],
   },
+  {
+    name: "Limestone Paving",
+    slug: "limestone-paving",
+    aboutTitle: "About Sandstone",
+    about:
+      "Natural split texture, ideal for garden paths, patios and landscaping projects.",
+    items: [
+      {
+        name: "Yellow Natural Limestone",
+        href: "/product/yellow-limestone-natural-paving/",
+      },
+      {
+        name: "Black Natural Limestone",
+        href: "/product/black-limestone-natural-paving/",
+      },
+      {
+        name: "Egyptian Limestone Paving",
+        href: "/product/egyptian-limestone-paving/",
+      },
+      {
+        name: "Kota Blue Natural Limestone",
+        href: "/product/kota-blue-natural-limestone-paving/",
+      },
+      {
+        name: "Dark Grey Limestone",
+        href: "/product/dark-grey-limestone-paving/",
+      },
+    ],
+  },
+  {
+    name: "Wall Cladding",
+    slug: "wall-cladding",
+    aboutTitle: "About Wall Cladding",
+    about:
+      "Natural split texture, ideal for garden paths, patios and landscaping projects.",
+    items: [
+      {
+        name: "Kandla Grey",
+        href: "/product/kandla-grey-wall-cladding/",
+      },
+      {
+        name: "Mint Fossil",
+        href: "/product/mint-fossil-wall-cladding/",
+      },
+      {
+        name: "Himachal White",
+        href: "/product/himachal-white-wall-cladding/",
+      },
+      {
+        name: "Black Slate",
+        href: "/product/black-slate-wall-cladding/",
+      },
+      {
+        name: "Autumn Brown",
+        href: "/product/autumn-brown-wall-cladding/",
+      },
+    ],
+  },
+
 ];
 
 export default function Header({
