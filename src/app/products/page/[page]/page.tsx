@@ -11,7 +11,27 @@ import { Metadata } from "next";
    METADATA
 ========================================================= */
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ page: string }>;
+}): Promise<Metadata> {
+  const { page } = await params;
+
+  const pageNum = parseInt(page, 10);
+
+  if (!pageNum || pageNum < 1) {
+    return {};
+  }
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://stonecera.co.uk";
+
+  const canonicalUrl =
+    pageNum === 1
+      ? `${siteUrl}/products/`
+      : `${siteUrl}/products/page/${pageNum}/`;
+
   return buildMetadata({
     seo: {
       meta_title: "Explore Natural Stone Tiles & Outdoor Paving | Stonecera",
@@ -19,12 +39,12 @@ export async function generateMetadata(): Promise<Metadata> {
       meta_description:
         "Find premium natural stone tiles, paving slabs, and flooring at Stonecera. Perfect for patios, landscaping, and beautiful indoor spaces.",
 
-      canonical_tag: "https://stonecera.co.uk/products/",
+      canonical_tag: canonicalUrl,
 
       robots: "index, follow",
     },
 
-    url: process.env.NEXT_PUBLIC_SITE_URL,
+    url: canonicalUrl,
   });
 }
 

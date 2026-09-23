@@ -15,23 +15,48 @@ import { buildMetadata } from "@/lib/seo";
    METADATA
 ========================================================= */
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ page: string }>;
+}): Promise<Metadata> {
+  const { page } = await params;
+
+  const pageNum = parseInt(page, 10);
+
+  if (!pageNum || pageNum < 1) {
+    return {};
+  }
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://stonecera.co.uk";
+
+  const canonicalUrl =
+    pageNum === 1
+      ? `${siteUrl}/blogs/`
+      : `${siteUrl}/blogs/page/${pageNum}/`;
+
   const data = {
     seo: {
       meta_title: "Expert Guides on Natural Stone Tiles | Stonecera Blog",
       meta_description:
         "Read the Stonecera blog for insights on natural stone tiles, paving slabs, patio ideas, and expert tips to create stylish indoor and outdoor spaces.",
-      canonical_tag: "https://stonecera.co.uk/blogs/",
+      canonical_tag: canonicalUrl,
       robots: "index, follow",
     },
   };
 
-  if (!data) return {};
-
-  return buildMetadata({
+  const metadata = buildMetadata({
     seo: data.seo,
-    url: process.env.NEXT_PUBLIC_SITE_URL,
+    url: canonicalUrl,
   });
+
+  return {
+    ...metadata,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  };
 }
 
 
