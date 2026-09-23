@@ -1,7 +1,7 @@
 // File: src/app/product-category/[category]/page/[page]/page.tsx
 
 import Link from "next/link";
-import { FileText, SlidersHorizontal, ChevronRight } from "lucide-react";
+import { FileText, SlidersHorizontal } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -15,9 +15,7 @@ import ProductGrid from "@/components/product/ProductGrid";
 import Pagination from "@/components/Pagination";
 import ProductsPerPageSelector from "@/components/product/ProductsPerPageSelector";
 import FaqsAccordion from "@/components/FaqAccordion";
-
 import { buildMetadata } from "@/lib/seo";
-import { JSONObject, Schema } from "@/lib/types";
 import Breadcrum from "@/components/Breadcrum";
 
 /* =========================================================
@@ -31,28 +29,36 @@ export async function generateMetadata({
   params: Promise<{ category: string; page: string }>;
   searchParams: Promise<Record<string, string>>;
 }): Promise<Metadata> {
-  const { category } = await params;
+  const { category, page } = await params;
   const resolvedSearchParams = await searchParams;
 
-  /*
-   * Filters should not be indexed.
-   * Normal paginated pages can be indexed.
-   */
   const hasFilters = Object.keys(resolvedSearchParams).some(
-    (key) => !["page", "limit"].includes(key),
+    (key) => !["page"].includes(key),
   );
 
   const data = await getCategoryBySlugForMeta(category);
 
   if (!data) return {};
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://stonecera.co.uk";
+
+  const canonicalUrl =
+    page === "1"
+      ? `${siteUrl}/product-category/${category}/`
+      : `${siteUrl}/product-category/${category}/page/${page}/`;
+
   const baseMetadata = buildMetadata({
     seo: data.seo,
-    url: process.env.NEXT_PUBLIC_SITE_URL,
+    url: canonicalUrl,
   });
 
   return {
     ...baseMetadata,
+
+    alternates: {
+      canonical: canonicalUrl,
+    },
 
     robots: hasFilters
       ? {
