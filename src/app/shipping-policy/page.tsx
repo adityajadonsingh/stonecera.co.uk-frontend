@@ -3,6 +3,7 @@ import { getPolicy } from "@/lib/api/policy";
 import PageBannerImg from "../../../public/media/bg/image.webp";
 import { buildMetadata } from "@/lib/seo";
 import { Metadata } from "next";
+import Breadcrum from "@/components/Breadcrum";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = {
@@ -26,18 +27,15 @@ export default async function ShippingPolicyPage() {
   if (!data) return null;
   return (
     <>
-      <PageBanner
-        pageName="Shipping Policy"
-        pageDescription={null}
+      <Breadcrum
         breadcrum={[
-          {
-            pageName: "Shipping Policy",
-            pageUrl: "/shipping-policy/",
-          },
+          { pageName: "Shipping Policy", pageUrl: "" },
         ]}
-        bgImage={PageBannerImg.src}
       />
       <div className="container py-16">
+        <h1 className="text-5xl mb-12 text-[#262a18]">
+          Shipping Policy
+        </h1>
         <div
           className="prose max-w-none"
           dangerouslySetInnerHTML={{ __html: data.pageDescription }}
