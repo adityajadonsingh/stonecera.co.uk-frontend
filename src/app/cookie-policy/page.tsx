@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
     seo: {
       meta_title: "Cookie Policy | Stonecera Natural Stone",
       meta_description:
-        "Learn about Stonecera's cancellations and refunds policy covering order changes, returns, and refund processes for natural stone tiles.",
+        "Learn how Stonecera uses cookies on our website, including how cookies work, why we use them, and how you can manage your cookie preferences.",
       canonical_tag: "https://stonecera.co.uk/cancellations-and-refunds",
       robots: "index, follow",
     },
