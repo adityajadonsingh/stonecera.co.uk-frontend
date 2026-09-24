@@ -27,7 +27,7 @@ export default function BestSeller({
             </p> */}
           </div>
           <div className="flex md:justify-end justify-center">
-            <Link href="/product/">
+            <Link href="/products/">
               <button className="flex items-center gap-x-2 cursor-pointer text-xs font-semibold border-b-2 border-[#d8c06a] pb-1 tracking-widest uppercase">
                   View All Products
                   <span>
