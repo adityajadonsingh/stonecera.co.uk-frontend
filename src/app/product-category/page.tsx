@@ -13,6 +13,7 @@ import SandstonePaving from "../../../public/media/product-category/sandstone-pa
 import SlateStone from "../../../public/media/product-category/slate-stone.webp";
 import WallCladding from "../../../public/media/product-category/wall-cladding.webp";
 import FaqsAccordion from "@/components/FaqAccordion";
+import Breadcrum from "@/components/Breadcrum";
 
 const features = [
   {
@@ -172,6 +173,7 @@ const stoneCollectionsFaq = {
 export default function ProductCategoryPage() {
   return (
     <>
+    <Breadcrum breadcrum={[{ pageName: "Product Category", pageUrl: "" }]} />
       <section className="bg-[#262a18] py-20 px-4 relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 opacity-20">

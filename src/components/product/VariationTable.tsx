@@ -328,7 +328,7 @@ export default function VariationTable({ productId, variations }: Props) {
                   >
                     {isOutOfStock
                       ? "Out of Stock"
-                      : `In Stock: ${stock} ${stock === 1 ? "pack" : "packs"}`}
+                      : `In Stock`}
                   </span>
                 </div>
               </div>

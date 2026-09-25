@@ -3,6 +3,7 @@ import PageBannerImg from "../../../public/media/bg/image.webp";
 import ContactForm from "@/components/homepage/ContactForm";
 import { buildMetadata } from "@/lib/seo";
 import { Metadata } from "next";
+import Breadcrum from "@/components/Breadcrum";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = {
@@ -25,6 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ContactUsPage() {
   return (
     <>
+    <Breadcrum breadcrum={[{ pageName: "Contact Us", pageUrl: "" }]} />
       <section className="bg-slate-50 py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">

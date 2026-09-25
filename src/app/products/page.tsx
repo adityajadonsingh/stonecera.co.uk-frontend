@@ -6,6 +6,7 @@ import ProductsPerPageSelectorProducts from "@/components/product/ProductsPerPag
 import PageBannerImg from "../../../public/media/bg/image.webp";
 import { buildMetadata } from "@/lib/seo";
 import { Metadata } from "next";
+import Breadcrum from "@/components/Breadcrum";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
@@ -42,6 +43,7 @@ export default async function ProductsPage({
 
   return (
     <>
+    <Breadcrum breadcrum={[{ pageName: "Products", pageUrl: "" }]} />
       <section className="bg-[#262a18] px-4 py-20">
         <div className="mx-auto max-w-[1440px] text-center">
           <p className="mb-4 text-xs font-medium uppercase tracking-[0.4em] text-[#d8c06a]">
