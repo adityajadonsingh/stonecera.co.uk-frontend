@@ -55,7 +55,7 @@ export default async function ProductsPage({
           </h1>
 
           <p className="mx-auto max-w-2xl leading-relaxed text-stone-400">
-            From architectural-grade sandstone to precision-engineered Italian
+            From architectural-grade sandstone to precision-engineered
             porcelain. Browse our complete selection of premium paving
             solutions.
           </p>

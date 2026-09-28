@@ -37,7 +37,7 @@ export default function HomeBannerSlider({ banners }: { banners: Banner[] }) {
               style={{ fontFamily: "\"Instrument Serif\", serif", color: "rgb(245, 240, 232)" }}
             >
               Stone that<br />
-              <em>lasts</em>
+              lasts
               <br />
               generations.
             </h1>
