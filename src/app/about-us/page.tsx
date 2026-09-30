@@ -212,7 +212,7 @@ export default function AboutUsPage() {
                   </h3>
 
                   <p className="text-[10px] font-medium uppercase tracking-wider text-[#262a18]">
-                    Years of Innovation
+                    Years of Experience
                   </p>
                 </div>
 
