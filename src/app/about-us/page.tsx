@@ -149,41 +149,22 @@ export default function AboutUsPage() {
 
                 <div className="space-y-5 sm:space-y-6">
                   <p className="text-base leading-relaxed text-[#4a5530] sm:text-lg">
-                    Welcome to Stonecera! A name that has become synonymous with
-                    quality, trust, and timeless stone solutions. Stonecera is a
-                    respected supplier in the UK, just like other natural and
-                    engineered stone businesses. We pride ourselves on creating
-                    a strong reputation for comfort and consistency in the
-                    quality of products for clients, whether they were for
-                    domestic or commercial use.
+                    At Stonecera, we believe that paving is not only about covering an outdoor area but making sure that it becomes somewhere you really want to spend some time. If you are about to design a new patio, refurbish your garden, redesign your driveway or build an up-to-date outdoor space, we will give you carefully chosen products from stones and porcelain.
                   </p>
 
                   <p className="text-base leading-relaxed text-[#4a5530]">
-                    We started with the vision of connecting our customers with
-                    the finest natural materials sourced from the best quarries
-                    and manufacturers. Our collection is filled with natural
-                    sandstone, limestone, granite, or precision-made porcelain
-                    and quartz. We have represented craftsmanship, durability,
-                    and style.
+                    We are a UK-based paving distributor with a wide range of natural stones and porcelain paving to meet the demands of all sorts of projects. We have natural sandstone and limestone paving as well as up-to-date porcelain paving in a number of different colors, textures, sizes and finishes. You can find both warm and traditional tones and cold and contemporary ones. We know that choosing paving can be a hard task. There is a lot of material to consider before choosing anything. We are here to make it easier for you.
                   </p>
 
                   <p className="text-base leading-relaxed text-[#4a5530]">
-                    All products sold through this website are delivered to you
-                    “as is” and “as available”. While we use our best efforts to
-                    make sure the information about products and their
-                    performance that our website offers is correct, we make no
-                    warranties, express or implied, concerning the appropriate
-                    of any information, completeness of the content, or fitness
-                    for a particular purpose or products.
+                    We choose quality, aesthetics and practicality. Porcelain is modern and elegant with uniform colors and finishes, while natural stone has its own characteristics and variations.
                   </p>
 
                   <p className="text-base leading-relaxed text-[#4a5530]">
-                    At Stonecera, we're aware that selecting the ideal stone is
-                    not just about appearance, it's about performance,
-                    durability and ultimately value. That's why our teams go the
-                    extra mile to provide suitable recommendations to provide
-                    our customers with valuable insight that meets their design
-                    and functional goals.
+                    We're excited to help customers find the right materials for their areas at Stonecera. From a little garden project to a complete landscaping plan, we would like to make selecting the correct paving easy and fun.
+                  </p>
+                  <p className="text-base leading-relaxed text-[#4a5530]">
+                    Stonecera is about quality products, smart decisions and great outdoor spaces. Discover the stone and porcelain paving from our range and make your choice!
                   </p>
                 </div>
               </div>
@@ -199,32 +180,25 @@ export default function AboutUsPage() {
           ========================== */}
             <div>
               <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.25em] text-[#99a14e]">
-                Our Journey
+                Our Story
               </p>
 
               <h2
                 className="mb-6 font-serif text-4xl leading-tight text-[#262a18]"
                 style={{ fontFamily: '"Instrument Serif", serif' }}
               >
-                A modern legacy in the making.
+                Stone with purpose. Design with character.
               </h2>
 
               <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
-                Founded 5 years ago, Stonecera was born from a vision to disrupt
-                the traditional stone industry. While we are a relatively young
-                company, our expertise spans decades of combined experience in
-                geological sourcing and architectural design. We've quickly
-                grown from a small Yorkshire-based team into one of the UK's
-                most trusted suppliers of premium natural stone and porcelain.
+                At Stonecera, we believe that there’s no such thing as a perfect material unless combined with high-quality design and excellent performance. Stonecera history started with one simple idea - creating a combination of natural stone and porcelain that would be unique in its appearance, high in quality, and reliable enough to meet the needs of any project.
               </p>
 
               <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
-                Our growth has been driven by a simple mission: to provide the
-                highest quality materials with absolute transparency. By
-                building direct relationships with quarry owners in India,
-                Italy, and Portugal, we've removed the middlemen, ensuring that
-                every slab delivered meets our exacting standards for
-                calibration, color consistency, and durability.
+                The materials we offer are selected taking into account their look, texture, finish, durability, and suitability for specific purposes. The natural variations of stone like sandstone or limestone, as well as the elegant porcelain tiles with their unique textures and patterns – everything that gives us new design opportunities.
+              </p>
+              <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
+                For us, a large variety of products is not only about having a big collection. It is also about providing an opportunity to choose products that are both stylish and practical. We work with reliable suppliers and create strict standards for our collections so that the selection process for each client will become easier.
               </p>
 
               {/* Stats */}
@@ -262,21 +236,23 @@ export default function AboutUsPage() {
           ========================== */}
             <div>
               <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.25em] text-[#99a14e]">
-                Technical Excellence
+                QUALITY & PERFORMANCE
               </p>
 
               <h2
-                className="mb-6 font-serif text-4xl leading-tight text-[#262a18]"
-                style={{ fontFamily: '"Instrument Serif", serif' }}
+                className="mb-6 text-4xl leading-tight text-[#262a18]"
               >
-                Performance is not an optional extra.
+                Exquisite materials. Consistent performance.
               </h2>
 
               <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
-                At Stonecera, technical integrity is at the heart of everything
-                we do. We don't just sell stone; we provide engineered solutions
-                for modern living. Every product in our collection undergoes
-                rigorous testing to meet and exceed British Standards.
+                Stonecera believes that quality must both speak for itself once the project is complete, and perform dependably every day. For this reason, performance is a vital factor in our collection selection process. We move past aesthetics to consider factors that could make all the difference in the completed project.
+              </p>
+              <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
+               Every material is unique in terms of its attributes and properties, and this is information that should be considered when customers are making their decisions. Our selection of products takes into account the factors of color, texture, surface finish, consistency, durability, and application suitability.
+              </p>
+              <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
+                No matter whether your project requires paving for an outdoor area, porcelain tiles for a modern look, natural stone for interior spaces, or wall cladding for a unique touch, we try to offer materials which strike the right balance between style, quality and functionality.
               </p>
 
               {/* Technical Points */}
@@ -289,7 +265,7 @@ export default function AboutUsPage() {
                   />
 
                   <span className="text-sm text-[#4a5530]">
-                    Every batch personally inspected at source quarry
+                    Well-selected natural stone and porcelain
                   </span>
                 </li>
 
@@ -301,7 +277,7 @@ export default function AboutUsPage() {
                   />
 
                   <span className="text-sm text-[#4a5530]">
-                    Calibration tolerance of ±2mm on all products
+                    Quality-minded selection of products
                   </span>
                 </li>
 
@@ -313,7 +289,7 @@ export default function AboutUsPage() {
                   />
 
                   <span className="text-sm text-[#4a5530]">
-                    Water absorption class A tested by independent lab
+                    Exquisite natural colors and textures
                   </span>
                 </li>
 
@@ -325,7 +301,7 @@ export default function AboutUsPage() {
                   />
 
                   <span className="text-sm text-[#4a5530]">
-                    Frost resistance certified to BS EN 12371
+                    Consistent finishes for selected collections
                   </span>
                 </li>
 
@@ -337,7 +313,7 @@ export default function AboutUsPage() {
                   />
 
                   <span className="text-sm text-[#4a5530]">
-                    Colour sorting at our Yorkshire yard before dispatch
+                    Selection based on intended applications
                   </span>
                 </li>
 
@@ -349,7 +325,7 @@ export default function AboutUsPage() {
                   />
 
                   <span className="text-sm text-[#4a5530]">
-                    Guaranteed replacement on any substandard stone
+                    Durable materials for appropriate indoor/outdoor applications
                   </span>
                 </li>
               </ul>
