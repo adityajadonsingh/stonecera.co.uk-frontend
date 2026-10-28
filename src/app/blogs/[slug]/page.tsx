@@ -129,7 +129,7 @@ export default async function BlogDetailPage({
 
             <li>
               <Link
-                href="/product-category/"
+                href="/blogs/"
                 className="text-stone-500 transition-colors hover:text-[#99a14e]"
               >
                 Blogs

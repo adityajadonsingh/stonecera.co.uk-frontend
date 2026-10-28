@@ -195,7 +195,7 @@ export default function AboutUsPage() {
               </p>
 
               <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
-                The materials we offer are selected taking into account their look, texture, finish, durability, and suitability for specific purposes. The natural variations of stone like sandstone or limestone, as well as the elegant porcelain tiles with their unique textures and patterns – everything that gives us new design opportunities.
+                The materials we offer are selected taking into account their look, texture, finish, durability, and suitability for specific purposes. The natural variations of stone like sandstone or limestone, as well as the elegant porcelain tiles with their unique textures and patterns - everything that gives us new design opportunities.
               </p>
               <p className="mb-6 text-sm leading-relaxed text-[#4a5530]">
                 For us, a large variety of products is not only about having a big collection. It is also about providing an opportunity to choose products that are both stylish and practical. We work with reliable suppliers and create strict standards for our collections so that the selection process for each client will become easier.
