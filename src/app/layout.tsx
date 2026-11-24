@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Header from "@/components/Header";
-import { getAllCategories } from "@/lib/api/category";
+import { getAllCategories, getAllCategoriesWithProducts } from "@/lib/api/category";
 import { getFooterDetail } from "@/lib/api/footer";
 import Footer from "@/components/Footer";
 import { WishlistProvider } from "@/context/WishlistContext";
@@ -58,7 +58,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [categories, footerDetail] = await Promise.all([
-    getAllCategories(),
+    getAllCategoriesWithProducts(),
     getFooterDetail(),
   ]);
   return (

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -8,37 +9,39 @@ interface Props {
     categories: { name: string; slug: string }[];
     products: { name: string; slug: string }[];
   };
-  onClose: () => void;
+  onResultClick: () => void;
 }
 
-export default function SearchDropdown({ open, results }: Props) {
+export default function SearchDropdown({ open, results, onResultClick }: Props) {
   if (!open) return null;
 
   const { categories, products } = results;
 
   if (!categories.length && !products.length) {
     return (
-      <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded mt-1 p-3 text-sm text-gray-400">
+      <div className="absolute top-full left-0 mt-2 w-full rounded-lg bg-white p-3 text-sm text-gray-500 shadow-lg">
         No results found
       </div>
     );
   }
 
   return (
-    <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded mt-1 max-h-[300px] overflow-y-auto z-50">
+    <div className="absolute top-full left-0 z-50 mt-2 max-h-[300px] w-full overflow-y-auto rounded-lg bg-white shadow-lg">
       {categories.length > 0 && (
-        <div >
+        <div>
           <div className="bg-skin p-3">
             <p className="font-semibold">Categories</p>
           </div>
+
           <ul className="space-y-2 p-3 text-sm">
-            {categories.map((c) => (
-              <li key={c.slug}>
+            {categories.map((category) => (
+              <li key={category.slug}>
                 <Link
-                  href={`/product-category/${c.slug}`}
+                  href={`/product-category/${category.slug}`}
+                  onClick={onResultClick}
                   className="block hover:text-[#bd7e40]"
                 >
-                  {c.name}
+                  {category.name}
                 </Link>
               </li>
             ))}
@@ -47,18 +50,20 @@ export default function SearchDropdown({ open, results }: Props) {
       )}
 
       {products.length > 0 && (
-        <div >
+        <div>
           <div className="bg-skin p-3">
             <p className="font-semibold">Products</p>
           </div>
-          <ul className="space-y-2 p-3">
-            {products.map((p) => (
-              <li key={p.slug}>
+
+          <ul className="space-y-2 p-3 text-sm">
+            {products.map((product) => (
+              <li key={product.slug}>
                 <Link
-                  href={`/product/${p.slug}`}
+                  href={`/product/${product.slug}`}
+                  onClick={onResultClick}
                   className="block hover:text-[#bd7e40]"
                 >
-                  {p.name}
+                  {product.name}
                 </Link>
               </li>
             ))}

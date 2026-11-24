@@ -1,5 +1,5 @@
 import { getCatalogues } from "@/lib/api/catalogue";
-import Image from "next/image";
+import Link from "next/link";
 import { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import Breadcrum from "@/components/Breadcrum";
@@ -26,7 +26,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProductCataloguePage() {
   const catalogues = await getCatalogues();
-
   return (
     <div className="bg-[#f9f7f3]">
       <Breadcrum
@@ -82,7 +81,20 @@ export default async function ProductCataloguePage() {
                 {c.name}
               </h3>
 
-              <p className="mb-6 text-xs text-[#4a5530]">Download PDF</p>
+              <p className="mb-4 text-xs text-[#4a5530]">Download PDF</p>
+
+              {/* View Category */}
+              {c.category && (
+                <div className="mb-5">
+                  <Link
+                    href={`/product-category/${c.category.slug}/`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#4a5530] underline decoration-[#99a14e] underline-offset-4 transition-colors hover:text-[#bd7e40]"
+                  >
+                    View {c.category.name}
+                    <ExternalLink size={12} />
+                  </Link>
+                </div>
+              )}
 
               {/* Actions */}
               <div className="flex gap-3">
@@ -91,21 +103,22 @@ export default async function ProductCataloguePage() {
                   href={`/api/catalogue/download?url=${encodeURIComponent(
                     `${process.env.NEXT_PUBLIC_MEDIA_URL}${c.file?.url}`,
                   )}`}
-                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-none bg-[#262a18] px-4 py-2 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-[#3d4428]"
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 bg-[#262a18] px-3 py-2 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#3d4428]"
                 >
                   <Download size={14} strokeWidth={2} />
                   Download
                 </a>
 
-                {/* Open */}
+                {/* Preview PDF */}
                 <a
                   href={`${process.env.NEXT_PUBLIC_MEDIA_URL}${c.file?.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Open ${c.name}`}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-none border border-stone-200 bg-white p-0 text-stone-400 transition-colors hover:text-[#262a18]"
+                  aria-label={`Preview ${c.name} PDF`}
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 border border-[#262a18] bg-white px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#262a18] transition-colors hover:bg-[#f5f0e8]"
                 >
-                  <ExternalLink size={14} strokeWidth={2} />
+                  <FileText size={14} strokeWidth={2} />
+                  Preview PDF
                 </a>
               </div>
             </div>

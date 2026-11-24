@@ -141,7 +141,6 @@ export interface Product {
   image?: string;
 }
 
-
 export interface UserAttributes {
   id?: number;
   username?: string;
@@ -366,6 +365,17 @@ export interface BreadcrumType {
   pageUrl: string;
 }
 
+export interface HeaderProducts {
+  name: string;
+  slug: string;
+}
+
+export interface CategoryWithProducts {
+  name: string;
+  slug: string;
+  products: HeaderProducts[];
+}
+
 export interface ProductReview {
   name: string;
   stars: number;
@@ -383,6 +393,10 @@ export interface Catalogue {
   file: {
     url: string;
     name: string;
+  };
+  category: {
+    name: string;
+    slug: string;
   };
 }
 export interface SitePolicy {

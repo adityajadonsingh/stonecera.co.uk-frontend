@@ -63,11 +63,15 @@ export default function MobileSearchPopup({
         </div>
 
         {/* Results */}
+        {/* Results */}
         <div className="relative">
           <SearchDropdown
             open={true}
             results={results}
-            onClose={onClose}
+            onResultClick={() => {
+              setQuery("");
+              onClose();
+            }}
           />
         </div>
       </div>

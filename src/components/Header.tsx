@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Category, FooterDetail } from "@/lib/types";
+import type { CategoryWithProducts, FooterDetail } from "@/lib/types";
 import AuthMenu from "./AuthMenu";
 import {
   ChevronDown,
@@ -13,7 +13,6 @@ import {
   Phone,
   Search,
   ShoppingCart,
-  User,
 } from "lucide-react";
 import Logo from "../../public/media/logo-small.png";
 import WishlistIcon from "./WishlistIcon";
@@ -26,131 +25,16 @@ import { useCart } from "@/context/CartContext";
 import { Truck } from "lucide-react";
 import UserDropdown from "./UserDropdown";
 
-const menu = [
-  {
-    name: "Outdoor Porcelain Tiles",
-    slug: "outdoor-porcelain-tiles",
-    aboutTitle: "About Outdoor Porcelain",
-    about:
-      "Modern porcelain paving with exceptional durability and low maintenance.",
-    items: [
-      {
-        name: "Kandla Grey Porcelain",
-        href: "/product/kandla-grey-porcelain/",
-      },
-      {
-        name: "County Gris Porcelain",
-        href: "/product/county-gris-porcelain/",
-      },
-      {
-        name: "Quartz White Porcelain",
-        href: "/product/quartz-white-porcelain/",
-      },
-      {
-        name: "Earthcore Grey Porcelain",
-        href: "/product/earthcore-grey-porcelain/",
-      },
-      {
-        name: "Brazilian Black Porcelain",
-        href: "/product/brazilian-black-porcelain/",
-      },
-    ],
-  },
-  {
-    name: "Sandstone Paving",
-    slug: "sandstone-paving",
-    aboutTitle: "About Sandstone",
-    about:
-      "Natural split texture, ideal for garden paths, patios and landscaping projects.",
-    items: [
-      {
-        name: "Kandla Grey Natural Sandstone",
-        href: "/product/kandla-grey-natural-sandstone-paving/",
-      },
-      {
-        name: "Raj Green Natural Sandstone",
-        href: "/product/raj-green-natural-sandstone-paving/",
-      },
-      {
-        name: "Raj Blend Natural Sandstone",
-        href: "/product/raj-blend-natural-sandstone-paving",
-      },
-      {
-        name: "Mint Fossil Sandstone",
-        href: "/product/mint-fossil-sandstone-natural-paving/",
-      },
-      {
-        name: "Rippon Buff Natural Sandstone",
-        href: "/product/rippon-buff-natural-sandstone-paving/",
-      },
-    ],
-  },
-  {
-    name: "Limestone Paving",
-    slug: "limestone-paving",
-    aboutTitle: "About Sandstone",
-    about:
-      "Natural split texture, ideal for garden paths, patios and landscaping projects.",
-    items: [
-      {
-        name: "Yellow Natural Limestone",
-        href: "/product/yellow-limestone-natural-paving/",
-      },
-      {
-        name: "Black Natural Limestone",
-        href: "/product/black-limestone-natural-paving/",
-      },
-      {
-        name: "Egyptian Limestone Paving",
-        href: "/product/egyptian-limestone-paving/",
-      },
-      {
-        name: "Kota Blue Natural Limestone",
-        href: "/product/kota-blue-natural-limestone-paving/",
-      },
-      {
-        name: "Dark Grey Limestone",
-        href: "/product/dark-grey-limestone-paving/",
-      },
-    ],
-  },
-  {
-    name: "Wall Cladding",
-    slug: "wall-cladding",
-    aboutTitle: "About Wall Cladding",
-    about:
-      "Natural split texture, ideal for garden paths, patios and landscaping projects.",
-    items: [
-      {
-        name: "Kandla Grey",
-        href: "/product/kandla-grey-wall-cladding/",
-      },
-      {
-        name: "Mint Fossil",
-        href: "/product/mint-fossil-wall-cladding/",
-      },
-      {
-        name: "Himachal White",
-        href: "/product/himachal-white-wall-cladding/",
-      },
-      {
-        name: "Black Slate",
-        href: "/product/black-slate-wall-cladding/",
-      },
-      {
-        name: "Autumn Brown",
-        href: "/product/autumn-brown-wall-cladding/",
-      },
-    ],
-  },
-
-];
+type SearchResults = {
+  categories: { name: string; slug: string }[];
+  products: { name: string; slug: string }[];
+};
 
 export default function Header({
   categories,
   footerDetail,
 }: {
-  categories: Category[];
+  categories: CategoryWithProducts[];
   footerDetail: FooterDetail | null;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -158,7 +42,10 @@ export default function Header({
 
   const [query, setQuery] = useState("");
   const debounced = useDebounce(query, 300);
-  const [results, setResults] = useState({ categories: [], products: [] });
+  const [results, setResults] = useState<SearchResults>({
+    categories: [],
+    products: [],
+  });
 
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -169,6 +56,14 @@ export default function Header({
   const [headerVisible, setHeaderVisible] = useState(true);
   const headerRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
+
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  const [dropdownPosition, setDropdownPosition] = useState({
+    left: 0,
+    top: 0,
+    width: 0,
+  });
 
   useEffect(() => {
     if (debounced.length < 2) {
@@ -293,28 +188,49 @@ export default function Header({
             </div>
 
             <div className="hidden md:flex md:w-6/12 justify-center items-center gap-4">
-              <div
-                ref={ref}
-                className="relative xl:w-2/3 md:w-5/6 w-full px-3 py-2 gap-x-2 flex justify-center items-center bg-[#f9f7f3] border-[#262A1833] border-[1px]"
-              >
-                <Search size={18} color="#4a5530" />
-                <input
-                  value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                    setOpen(true);
-                  }}
-                  onFocus={() => setOpen(true)}
-                  placeholder="Search products or categories..."
-                  className="text-sm w-full"
-                />
+              <ul className="flex xl:gap-x-5 gap-x-3 lg:text-base text-sm items-center text-[rgb(38,42,24)]">
+                <li>
+                  <Link
+                    href="/products/"
+                    className="block py-3 font-semibold hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
+                  >
+                    Products
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/product-category/"
+                    className="block py-3 font-semibold hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
+                  >
+                    Categories
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/product-catalogue/"
+                    className="block py-3 font-semibold hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
+                  >
+                    Catalogues
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/blogs/"
+                    className="block py-3 font-semibold hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
+                  >
+                    Blogs
+                  </Link>
+                </li>
 
-                <SearchDropdown
-                  open={open}
-                  results={results}
-                  onClose={() => setOpen(false)}
-                />
-              </div>
+                <li>
+                  <Link
+                    href="/contact-us/"
+                    className="block py-3 font-semibold hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
+                  >
+                    Contact Us
+                  </Link>
+                </li>
+              </ul>
             </div>
 
             <div className="md:w-3/12 w-6/12 flex justify-end items-center md:gap-x-4 gap-x-2">
@@ -326,7 +242,69 @@ export default function Header({
                 <Search size={18} color="#262a18" />
                 <span className="sm:block hidden text-[10px]">Search</span>
               </button>
+              {/* Desktop Search */}
+              <div ref={ref} className="relative hidden md:block">
+                <button
+                  type="button"
+                  aria-label="Open search"
+                  aria-expanded={open}
+                  onClick={() => setOpen((prev) => !prev)}
+                  className="flex flex-col items-center justify-center cursor-pointer"
+                >
+                  <Search size={18} color="#262a18" />
+                  <span className="sm:block hidden text-[10px]">Search</span>
+                </button>
+
+                {open && (
+                  <div className="absolute right-0 top-full z-[60] mt-4 w-[min(520px,calc(100vw-32px))] rounded-xl border border-[#262A1833] bg-white p-3 shadow-xl">
+                    {/* Search input and button */}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        setOpen(true);
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="search"
+                        value={query}
+                        onChange={(e) => {
+                          setQuery(e.target.value);
+                          setOpen(true);
+                        }}
+                        onFocus={() => setOpen(true)}
+                        placeholder="Search paving — colour, size, finish..."
+                        className="min-w-0 flex-1 rounded-full border border-[#4a5530] px-4 py-3 text-sm text-gray-800 outline-none focus:ring-1 focus:ring-[#4a5530]"
+                        autoFocus
+                      />
+
+                      <button
+                        type="submit"
+                        className="shrink-0 rounded-full bg-[#3f6255] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#304c41]"
+                      >
+                        Search
+                      </button>
+                    </form>
+
+                    {/* Search results */}
+                    {query.trim().length >= 2 && (
+                      <div className="relative">
+                        <SearchDropdown
+                          open={open}
+                          results={results}
+                          onResultClick={() => {
+                            setOpen(false);
+                            setQuery("");
+                            setResults({ categories: [], products: [] });
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
               <WishlistIcon />
+
               <Link aria-label="Cart" href={"/cart/"} className="relative">
                 <ShoppingCart size={18} color="#262a18" />
                 <span className="sm:block hidden text-[10px]">Cart</span>
@@ -356,14 +334,63 @@ export default function Header({
             </div>
           </div>
         </div>
+
         <div className="bg-dark-n lg:block hidden">
-          <div className="container flex justify-between">
-            <ul className="flex xl:gap-x-4 gap-x-2 items-center">
-              {menu.map((category) => (
-                <li key={category.slug} className="relative group">
+          <div className="container">
+            <ul
+              className="flex xl:gap-x-4 gap-x-2 items-center justify-between px-5"
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              {categories.map((category) => (
+                <li
+                  key={category.slug}
+                  className="relative group"
+                  onMouseEnter={(event) => {
+                    const dropdown =
+                      event.currentTarget.querySelector<HTMLDivElement>(
+                        "[data-category-dropdown]",
+                      );
+
+                    const content = dropdown?.querySelector<HTMLDivElement>(
+                      "[data-dropdown-content]",
+                    );
+
+                    if (!dropdown || !content) {
+                      setActiveDropdown(null);
+                      return;
+                    }
+
+                    const categoryRect =
+                      event.currentTarget.getBoundingClientRect();
+
+                    const maxAllowedWidth = window.innerWidth - 32;
+
+                    // Measure actual content, not the outer dropdown
+                    const dropdownWidth = Math.min(
+                      content.scrollWidth,
+                      maxAllowedWidth,
+                    );
+
+                    const left = Math.max(
+                      16,
+                      Math.min(
+                        categoryRect.left,
+                        window.innerWidth - dropdownWidth - 16,
+                      ),
+                    );
+
+                    setDropdownPosition({
+                      left,
+                      top: categoryRect.bottom,
+                      width: dropdownWidth,
+                    });
+
+                    setActiveDropdown(category.slug);
+                  }}
+                >
                   <Link
                     href={`/product-category/${category.slug}`}
-                    className="flex items-center gap-1 py-3 text-sm text-white hover:text-[#c9a74e] transition-colors h-11 text-stone-cream font-sans font-medium tracking-wide hover:text-ochre"
+                    className="flex items-center gap-1 py-3 xl:text-sm text-xs text-white hover:text-[#c9a74e] transition-colors h-11 font-sans font-semibold tracking-wide"
                   >
                     {category.name}
 
@@ -374,109 +401,89 @@ export default function Header({
                     />
                   </Link>
 
-                  {category.items.length > 0 && (
-                    <div className="absolute left-0 top-full opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 bg-white shadow-xl border-[#262A1833] w-[650px] z-50">
-                      <div className="grid grid-cols-[280px_1fr]">
-                        {/* Left */}
-                        <div className="border-r border-[#262A1833] p-6">
-                          <h4 className="mb-3 text-xs uppercase tracking-[3px] font-medium text-[#c9a74e]">
-                            MATERIAL TYPES
-                          </h4>
+                  {category.products.length > 0 && (
+                    <div
+                      data-category-dropdown
+                      style={{
+                        left: dropdownPosition.left,
+                        top: dropdownPosition.top,
+                        width: dropdownPosition.width || "max-content",
+                      }}
+                      className={`
+                fixed z-50
+                bg-white shadow-xl
+                border border-[#262A1833]
+                max-w-[calc(100vw-32px)]
+                max-h-[calc(100vh-140px)]
+                
+                transition-[opacity,transform] duration-300
 
-                          <ul className="text-sm text-gray-700">
-                            {category.items.map((item) => (
-                              <li key={item.name}>
-                                <Link
-                                  href={item.href}
-                                  className="flex justify-between group border-b border-[#262A1833] py-2 hover:text-[#c9a74e] transition-colors"
-                                >
-                                  {item.name}
-                                  <span className="inline-block group-hover:opacity-100 opacity-0 transition-opacity">
-                                    <ChevronRight
-                                      size={16}
-                                      strokeWidth={1.6}
-                                      color="#c9a74e"
-                                    />
-                                  </span>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                ${
+                  activeDropdown === category.slug
+                    ? "visible opacity-100 translate-y-0"
+                    : "invisible opacity-0 translate-y-2 pointer-events-none"
+                }
+              `}
+                    >
+                      <div className="p-5 md:p-6 w-max" data-dropdown-content>
+                        <h4 className="mb-4 text-xs uppercase tracking-[3px] font-medium text-[#c9a74e]">
+                          MATERIAL TYPES
+                        </h4>
 
-                        {/* Right */}
+                        <ul
+                          className="grid grid-flow-col gap-x-4 text-sm text-gray-700 w-max"
+                          style={{
+                            gridTemplateRows: "repeat(8, minmax(0, auto))",
+                            gridAutoColumns: "minmax(190px, max-content)",
+                          }}
+                        >
+                          {category.products.map((item) => (
+                            <li
+                              key={item.slug}
+                              className="border-b border-[#262A1833]"
+                            >
+                              <Link
+                                href={`/product/${item.slug}/`}
+                                className="
+                          group/item
+                          flex items-center justify-between gap-3
+                          py-2 whitespace-nowrap
+                          hover:text-[#c9a74e]
+                          transition-colors
+                        "
+                              >
+                                <span>{item.name}</span>
 
-                        <div className="p-6 bg-[#f8f3eae5]">
-                          <h4 className="mb-4 text-xs uppercase tracking-[3px] text-[#c9a74e] font-medium">
-                            {category.aboutTitle}
-                          </h4>
-
-                          <p className="text-sm text-gray-700 leading-6">
-                            {category.about}
-                          </p>
-
-                          <Link
-                            href={`/product-category/${category.slug}`}
-                            className="inline-block mt-10 border-b border-black pb-1 hover:text-[#c9a74e]"
-                          >
-                            Browse all {category.name} →
-                          </Link>
-                        </div>
+                                <ChevronRight
+                                  size={15}
+                                  strokeWidth={1.6}
+                                  color="#c9a74e"
+                                  className="
+                            shrink-0 opacity-0
+                            group-hover/item:opacity-100
+                            transition-opacity
+                          "
+                                />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   )}
                 </li>
               ))}
             </ul>
-            <ul className="flex xl:gap-x-5 gap-x-3  items-center text-[rgb(244,240,233)]">
-              <li>
-                <Link
-                  href="/products/"
-                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
-                >
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/product-category/"
-                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
-                >
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/blogs/"
-                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
-                >
-                  Blogs
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  href="/about-us/"
-                  className="block py-3 text-sm hover:text-[#c9a74e] opacity-75 hover:opacity-100 hover:text-ochre transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact-us/"
-                  className="block py-1 px-3 text-sm text-[#262A18] cursor-pointer bg-[#d8c06a]"
-                >
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
           </div>
         </div>
+
         <MobileSidebar
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          categories={categories}
+          categories={categories.map(({ name, slug }) => ({
+            name,
+            slug,
+          }))}
         />
         <MobileSearchPopup
           open={mobileSearchOpen}

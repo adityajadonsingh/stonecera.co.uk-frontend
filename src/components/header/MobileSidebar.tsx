@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -8,7 +9,7 @@ import type { Category } from "@/lib/types";
 import { useAuthUser } from "@/hooks/useAuthUser";
 
 interface Props {
-  categories: Category[];
+  categories: Pick<Category, "name" | "slug">[];
   open: boolean;
   onClose: () => void;
 }
@@ -23,12 +24,11 @@ export default function MobileSidebar({
 
   const { user, loading } = useAuthUser();
 
-  // Wait until we're on the client before using document.body
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Prevent body from scrolling while menu is open
+  // Prevent background scrolling while menu is open
   useEffect(() => {
     if (!open) return;
 
@@ -61,15 +61,11 @@ export default function MobileSidebar({
 
   return createPortal(
     <>
-      {/* =========================
-          OVERLAY
-      ========================== */}
+      {/* Overlay */}
       <div
         onClick={onClose}
         className={`fixed inset-0 transition-opacity duration-300 ${
-          open
-            ? "visible opacity-100"
-            : "invisible opacity-0"
+          open ? "visible opacity-100" : "invisible opacity-0"
         }`}
         style={{
           zIndex: 99998,
@@ -78,14 +74,10 @@ export default function MobileSidebar({
         }}
       />
 
-      {/* =========================
-          SIDEBAR
-      ========================== */}
+      {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-dvh w-[288px] overflow-y-auto transform transition-transform duration-300 ease-in-out ${
-          open
-            ? "translate-x-0"
-            : "-translate-x-full"
+          open ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
           zIndex: 99999,
@@ -111,7 +103,6 @@ export default function MobileSidebar({
 
         {/* Navigation */}
         <nav className="space-y-2 text-sm font-medium text-[#4A3A2A]">
-          {/* About */}
           <Link
             href="/about-us"
             onClick={onClose}
@@ -137,15 +128,15 @@ export default function MobileSidebar({
             </button>
 
             {catOpen && (
-              <ul className="space-y-2 text-sm text-gray-700">
-                {categories.map((cat) => (
-                  <li key={cat.slug}>
+              <ul className="space-y-1 text-sm text-gray-700">
+                {categories.map((category) => (
+                  <li key={category.slug}>
                     <Link
-                      href={`/product-category/${cat.slug}`}
+                      href={`/product-category/${category.slug}`}
                       onClick={onClose}
                       className="block px-6 py-2 hover:bg-[#f7f3eb]"
                     >
-                      {cat.name}
+                      {category.name}
                     </Link>
                   </li>
                 ))}
@@ -153,7 +144,6 @@ export default function MobileSidebar({
             )}
           </div>
 
-          {/* Products */}
           <Link
             href="/products"
             onClick={onClose}
@@ -162,7 +152,6 @@ export default function MobileSidebar({
             Products
           </Link>
 
-          {/* Blogs */}
           <Link
             href="/blogs"
             onClick={onClose}
@@ -171,7 +160,6 @@ export default function MobileSidebar({
             Blogs
           </Link>
 
-          {/* Contact */}
           <Link
             href="/contact-us"
             onClick={onClose}

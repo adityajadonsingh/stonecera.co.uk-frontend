@@ -1,5 +1,7 @@
 import { cache } from "react";
-import { Category } from "../types";
+import { Category, CategoryWithProducts } from "../types";
+
+
 
 const REVALIDATE_TIME = process.env.REVALIDATE_TIME
   ? parseInt(process.env.REVALIDATE_TIME)
@@ -22,6 +24,24 @@ export const getAllCategories = cache(async (): Promise<Category[]> => {
     return res.json();
   } catch (error) {
     console.error("Failed to fetch categories:", error);
+    return [];
+  }
+});
+export const getAllCategoriesWithProducts = cache(async (): Promise<CategoryWithProducts[]> => {
+  try {
+    console.log(`${process.env.API_URL!}/categories/products`);
+    const res = await fetch(`${process.env.API_URL!}/categories/products`, {
+      next: { revalidate: REVALIDATE_TIME },
+    });
+
+    if (!res.ok) {
+      console.error("Error fetching header categories Products:", res.status, res.statusText);
+      return [];
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error("Failed to fetch header categories Products:", error);
     return [];
   }
 });
