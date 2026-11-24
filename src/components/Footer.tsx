@@ -16,15 +16,16 @@ import Mastercard from "../../public/media/mastercard.png";
 import Amex from "../../public/media/amex.png";
 import ApplePay from "../../public/media/apple-pay.png";
 import Skrill from "../../public/media/skrill.png";
-import WhatsAppIcon from "../../public/media/whatsapp.png";
+
+interface FooterProps {
+  categories: Pick<Category, "name" | "slug">[];
+  footerDetail: FooterDetail | null;
+}
 
 export default function Footer({
   categories,
   footerDetail,
-}: {
-  categories: Category[];
-  footerDetail: FooterDetail | null;
-}) {
+}: FooterProps) {
   const phone = footerDetail?.companyPhoneNumbers?.[0]?.phone;
   const email = footerDetail?.companyEmails?.[0]?.email;
   const address = footerDetail?.companyAddress;
