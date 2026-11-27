@@ -16,6 +16,7 @@ import { ToastProvider } from "@/components/ui/ToastProvider";
 import Script from "next/script";
 import { CartProvider } from "@/context/CartContext";
 import SupportWidget from "@/components/SupportWidget";
+import BlackFridayPopup from "@/components/promotions/BlackFridayPopup";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -95,6 +96,7 @@ export default async function RootLayout({
           </WishlistProvider>
         </ToastProvider>
         <SupportWidget />
+        <BlackFridayPopup />
       </body>
     </html>
   );
